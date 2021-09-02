@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="@dimen/standardMargin0.5x"
+    app:cardCornerRadius="@dimen/standardMargin1.5x"
+    android:backgroundTint="?colorPrimary"
+    android:layout_margin="@dimen/standardMargin0.5x"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/comment_image"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/avatar"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/standardMargin"
+            />
+        <ImageView
+            android:id="@+id/comment_info"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/ic_baseline_info"
+            android:layout_margin="@dimen/standardMargin"
+            app:tint="@color/light_black"
+            />
+        <com.dust.extracker.customviews.CTextView
+            android:id="@+id/comment_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ایمان"
+            android:textStyle="bold"
+            android:layout_toStartOf="@+id/comment_image"
+            android:layout_alignTop="@+id/comment_image"
+            android:layout_alignBottom="@+id/comment_image"
+            android:layout_marginEnd="@dimen/standardMargin0.5x"
+            android:gravity="center_vertical"
+            android:textColor="?android:textColor"/>
+
+        <com.dust.extracker.customviews.CTextView
+            android:id="@+id/comment_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="انشالله به زودی حرک صعودی خود را آغاز میکند!"
+            android:layout_below="@+id/comment_image"
+            android:layout_alignParentEnd="true"
+            android:textDirection="rtl"
+            android:layout_marginHorizontal="@dimen/standardMargin2x"
+            android:gravity="center_vertical"
+            android:textColor="?android:textColor"/>
+
+        <View
+            android:id="@+id/like_divider"
+            android:layout_width="1dp"
+            android:layout_height="@dimen/standardMargin"
+            android:background="?colorAccent"
+            android:layout_alignTop="@+id/comment_img_like"
+            android:layout_alignBottom="@+id/comment_img_like"
+            android:layout_marginHorizontal="@dimen/standardMargin"
+            android:layout_toStartOf="@+id/comment_text_like"/>
+
+        <ImageView
+            android:id="@+id/comment_img_like"
+            android:layout_marginVertical="@dimen/standardMargin2x"
+            android:layout_marginEnd="@dimen/standardMargin2x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_sentiment_very_satisfied"
+            android:layout_alignParentEnd="true"
+            app:tint="?android:textColor"
+            android:layout_below="@+id/comment_content"
+            />
+
+        <TextView
+            android:id="@+id/comment_text_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="96"
+            android:textColor="@color/green"
+            android:layout_marginEnd="@dimen/standardMargin0.5x"
+            android:layout_alignTop="@+id/comment_img_like"
+            android:gravity="center"
+            android:textSize="@dimen/standardMargin"
+            android:layout_alignBottom="@+id/comment_img_like"
+            android:layout_toStartOf="@+id/comment_img_like"
+            />
+
+        <ImageView
+            android:id="@+id/comment_img_disslike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_sentiment_very_dissatisfied"
+            android:layout_toStartOf="@+id/like_divider"
+            android:layout_alignTop="@+id/like_divider"
+            app:tint="?android:textColor"
+            />
+        <TextView
+            android:id="@+id/comment_text_disslike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="96"
+            android:textColor="@color/red"
+            android:layout_marginEnd="@dimen/standardMargin0.5x"
+            android:layout_alignTop="@+id/comment_img_disslike"
+            android:gravity="center"
+            android:textSize="@dimen/standardMargin"
+            android:layout_alignBottom="@+id/comment_img_disslike"
+            android:layout_toStartOf="@+id/comment_img_disslike"
+            />
+
+        <com.dust.extracker.customviews.CTextView
+            android:id="@+id/comment_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2 ساعت پیش"
+            android:textSize="@dimen/standardMargin"
+            android:layout_alignTop="@+id/comment_img_disslike"
+            android:layout_alignBottom="@+id/comment_img_disslike"
+            android:layout_marginHorizontal="@dimen/standardMargin2x"
+            android:gravity="center_vertical"
+            android:textColor="?colorAccent"/>
+
+        <com.dust.extracker.customviews.CButton
+            android:id="@+id/comment_send_reply"
+            android:layout_width="@dimen/standardMargin8x"
+            android:layout_height="@dimen/standardMargin3x"
+            android:layout_marginHorizontal="@dimen/standardMargin1.5x"
+            android:layout_marginTop="@dimen/standardMargin0.5x"
+            android:background="@drawable/comment_answer_button_selector"
+            android:textColor="?android:textColor"
+            android:layout_toStartOf="@+id/comment_text_disslike"
+            android:layout_alignTop="@+id/comment_img_disslike"
+            android:layout_alignBottom="@+id/comment_img_disslike"
+            android:textSize="10dp"
+            android:text="پاسخ" />
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

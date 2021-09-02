@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout android:id="@+id/portfolio_swiprefreshLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?colorPrimary"
+    android:descendantFocusability="blocksDescendants"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imageDelete"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    app:tint="@color/light_black"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/standardMargin"
+                    android:layout_marginEnd="@dimen/standardMargin"
+                    android:src="@drawable/ic_baseline_delete_24"/>
+                <ImageView
+                    android:id="@+id/imageedit"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    app:tint="@color/light_black"
+                    android:layout_toStartOf="@+id/imageDelete"
+                    android:layout_marginEnd="@dimen/standardMargin0.5x"
+                    android:layout_marginTop="@dimen/standardMargin"
+                    android:src="@drawable/ic_baseline_edit_24"/>
+                <ImageView
+                    android:id="@+id/imagedescriptions"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    app:tint="@color/light_black"
+                    android:layout_toEndOf="@+id/imagehelp"
+                    android:layout_marginEnd="@dimen/standardMargin0.5x"
+                    android:layout_marginTop="@dimen/standardMargin"
+                    android:src="@drawable/ic_baseline_info"/>
+                <ImageView
+                    android:id="@+id/imagehelp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    app:tint="@color/light_black"
+                    android:layout_marginEnd="@dimen/standardMargin0.5x"
+                    android:layout_marginStart="@dimen/standardMargin"
+                    android:layout_marginTop="@dimen/standardMargin"
+                    android:src="@drawable/ic_baseline_help_outline_24"/>
+
+                <com.dust.extracker.customviews.CTextView
+                    android:id="@+id/portfolio_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="پورتفوی من"
+                    android:textColor="?android:textColor"
+                    android:layout_centerInParent="true"
+                    android:textSize="@dimen/standardMargin1.5x"
+                    />
+            </RelativeLayout>
+
+
+
+            <com.dust.extracker.customviews.CTextView
+                android:id="@+id/portfolioAsset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standardMargin"
+                android:text="-"
+                android:textColor="?android:textColor"
+                android:textSize="@dimen/standardMargin" />
+
+            <com.dust.extracker.customviews.CTextView
+                android:id="@+id/portfolioTomanAsset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standardMargin0.5x"
+                android:text="-"
+                android:textColor="?android:textColor"
+                android:textSize="@dimen/standardMargin" />
+
+            <LinearLayout
+                android:id="@+id/change_pct_linear"
+                android:layout_width="wrap_content"
+                android:layout_height="15dp"
+                android:background="@drawable/portfolio_linear_shape_red"
+                android:gravity="center"
+                android:padding="2dp"
+                android:layout_marginTop="@dimen/standardMargin0.5x"
+                android:orientation="horizontal">
+
+                <com.dust.extracker.customviews.CTextView
+                    android:id="@+id/portfolioTotalChangeToman"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-"
+                    android:textColor="?android:textColor"
+                    android:layout_marginStart="@dimen/standardMargin2x"
+                    android:textSize="8dp" />
+                <com.dust.extracker.customviews.CTextView
+                    android:id="@+id/portfolioTotalChange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-"
+                    android:layout_marginEnd="@dimen/standardMargin2x"
+                    android:layout_marginStart="@dimen/standardMargin6x"
+                    android:textColor="?android:textColor"
+                    android:textSize="8dp" />
+
+
+            </LinearLayout>
+
+            <com.dust.extracker.customviews.CTextView
+                android:id="@+id/dateAndRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standardMargin"
+                android:text="-"
+                android:textColor="?android:textColor"
+                android:textSize="@dimen/standardMargin" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/standardMargin1.5x"
+                android:layout_marginTop="@dimen/standardMargin"
+                android:orientation="horizontal">
+                <com.dust.extracker.customviews.CTextView
+                    android:id="@+id/twentyFourtime"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="?android:textColor"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/standardMargin"
+                    android:text="24H"/>
+                <com.dust.extracker.customviews.CTextView
+                    android:id="@+id/oneWeek"
+                    android:textColor="?android:textColor"
+
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/standardMargin"
+                    android:text="1W"/>
+                <com.dust.extracker.customviews.CTextView
+                    android:id="@+id/oneMonth"
+                    android:textColor="?android:textColor"
+
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/standardMargin"
+                    android:text="1M"/>
+                <com.dust.extracker.customviews.CTextView
+                    android:id="@+id/threeMonth"
+                    android:textColor="?android:textColor"
+
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/standardMargin"
+                    android:text="3M"/>
+                <com.dust.extracker.customviews.CTextView
+                    android:id="@+id/sixMonth"
+                    android:textColor="?android:textColor"
+
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/standardMargin"
+                    android:text="6M"/>
+                <com.dust.extracker.customviews.CTextView
+                    android:id="@+id/oneYear"
+                    android:textColor="?android:textColor"
+
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/standardMargin"
+                    android:text="1Y"/>
+                <com.dust.extracker.customviews.CTextView
+                    android:id="@+id/all_Time"
+                    android:layout_width="0dp"
+                    android:textColor="?android:textColor"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/standardMargin"
+                    android:text="ALL"/>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_margin="@dimen/standardMargin0.5x"
+                >
+                <lecho.lib.hellocharts.view.LineChartView
+                    android:id="@+id/lineChart"
+                    android:layout_width="match_parent"
+                    android:paddingEnd="@dimen/standardMargin1.5x"
+                    android:layout_height="match_parent"/>
+
+                <ProgressBar
+                    android:id="@+id/chartProgressBar"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:visibility="gone"
+                    android:indeterminateTint="@color/light_orange"
+                    android:layout_margin="@dimen/standardMargin0.5x"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/standardMargin0.5x"
+                android:background="@color/white_varient"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standardMargin0.5x"
+                android:layout_marginHorizontal="@dimen/standardMargin"
+                android:orientation="horizontal">
+                <com.dust.extracker.customviews.CTextView
+                    android:layout_width="0dp"
+                    android:layout_weight="10"
+                    android:layout_height="wrap_content"
+                    android:textDirection="ltr"
+                    android:gravity="center"
+                    android:textSize="8dp"
+                    android:text="@string/transaction"/>
+                <com.dust.extracker.customviews.CTextView
+                    android:layout_width="0dp"
+                    android:layout_weight="20"
+                    android:textDirection="ltr"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:textSize="8dp"
+                    android:text="@string/cryptoCount"/>
+                <com.dust.extracker.customviews.CTextView
+                    android:layout_width="0dp"
+                    android:layout_weight="35"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:textSize="8dp"
+                    android:text="@string/dollarAggregation"/>
+                <com.dust.extracker.customviews.CTextView
+                    android:layout_width="0dp"
+                    android:layout_weight="35"
+                    android:layout_height="wrap_content"
+                    android:textSize="8dp"
+                    android:gravity="center"
+                    android:textDirection="rtl"
+                    android:text="@string/tomanAggregation"/>
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/standardMargin0.5x"
+                android:background="@color/white_varient"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/portfolioCoinRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"/>
+            <Button
+                android:id="@+id/add_Transaction"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:text="@string/addNewDeal"
+                android:textColor="@color/button_textcolor_selector"
+                android:layout_marginHorizontal="@dimen/standardMargin4x"
+                android:background="@drawable/main_button_selector"
+                android:layout_marginTop="@dimen/standardMargin3x"
+                />
+            <com.dust.extracker.customviews.CTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/capitalVariationChart"
+                android:layout_marginTop="@dimen/standardMargin3x"
+                android:textStyle="bold"
+                android:textColor="?android:textColor"
+                android:textSize="13dp" />
+
+            <lecho.lib.hellocharts.view.PieChartView
+                android:id="@+id/pieChart"
+                android:layout_width="match_parent"
+                android:layout_marginVertical="@dimen/standardMargin0.5x"
+                android:layout_height="200dp"/>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

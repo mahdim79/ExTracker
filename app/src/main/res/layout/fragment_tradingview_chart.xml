@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layoutDirection="ltr"
+        android:orientation="horizontal"
+        android:paddingVertical="@dimen/standardMargin">
+
+        <ImageView
+            android:id="@+id/backImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:tint="?android:textColor"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/standardMargin"
+            android:src="@drawable/ic_baseline_arrow_back" />
+
+        <com.dust.extracker.customviews.CTextView
+            android:id="@+id/crypto_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/standardMargin"
+            android:text="@string/fullChart"
+            android:textDirection="rtl"
+            android:textSize="@dimen/standardMargin1.5x"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiprefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <WebView
+                android:id="@+id/fullChartWebView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?colorPrimary"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/img1"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="10"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:padding="@dimen/standardMargin"
+                     />
+
+                <ImageView
+                    android:id="@+id/img2"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="10"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:padding="@dimen/standardMargin"
+                     />
+
+                <ImageView
+                    android:id="@+id/img3"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="10"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:padding="@dimen/standardMargin"
+                     />
+
+                <ImageView
+                    android:id="@+id/img4"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="10"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:padding="@dimen/standardMargin"
+                     />
+
+                <ImageView
+                    android:id="@+id/img5"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="10"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:padding="@dimen/standardMargin"
+                     />
+
+                <ImageView
+                    android:id="@+id/img6"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="10"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:padding="@dimen/standardMargin"
+                     />
+
+                <ImageView
+                    android:id="@+id/img7"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="10"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:padding="@dimen/standardMargin"
+                     />
+
+                <ImageView
+                    android:id="@+id/img8"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="10"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:padding="@dimen/standardMargin"
+                     />
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</LinearLayout>

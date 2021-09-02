@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="?colorPrimary"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/add_portfolio"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:text="@string/potfolio_add_btn"
+        android:textColor="@color/button_textcolor_selector"
+        android:layout_marginHorizontal="@dimen/standardMargin4x"
+        android:background="@drawable/main_button_selector"
+        android:layout_marginTop="@dimen/standardMargin3x"
+        />
+
+</LinearLayout>

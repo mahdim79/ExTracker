@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="?colorPrimary"
+    android:layout_height="match_parent">
+
+    <com.dust.extracker.customviews.CTextView
+        android:id="@+id/notation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="?android:textColor"
+        android:textSize="@dimen/standardMargin1.5x"
+        android:layout_centerInParent="true"
+        android:text="@string/emptyBookmarkList"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layoutDirection="ltr"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.1"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/standardMargin0.5x"
+            android:paddingBottom="@dimen/standardMargin">
+
+            <ImageView
+                android:id="@+id/back_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/standardMargin"
+                android:src="@drawable/ic_baseline_arrow_back"
+                app:tint="?colorAccent" />
+            <com.dust.extracker.customviews.CTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/standardMargin"
+                android:text="@string/savedNews"
+                android:textDirection="rtl"
+                android:textSize="@dimen/standardMargin1.5x"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/bookmark_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/standardMargin0.5x"
+            android:layout_weight="0.9" />
+
+    </LinearLayout>
+</RelativeLayout>

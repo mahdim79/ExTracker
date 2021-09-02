@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?colorPrimary"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:layoutDirection="ltr"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/standardMargin0.5x"
+        android:paddingBottom="@dimen/standardMargin">
+
+        <ImageView
+            android:id="@+id/search_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/standardMargin"
+            android:src="@drawable/ic_baseline_search"
+            app:tint="?colorAccent" />
+
+        <ImageView
+            android:id="@+id/bookmark_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/standardMargin"
+            android:src="@drawable/ic_baseline_bookmarked"
+            app:tint="@color/purple_500" />
+
+        <com.dust.extracker.customviews.CTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/standardMargin"
+            android:text="@string/newContents"
+            android:textDirection="rtl"
+            android:textSize="@dimen/standardMargin1.5x"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiprefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.9">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.4">
+
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/slider_viewpager"
+                    android:layout_width="match_parent"
+                    android:layoutDirection="ltr"
+                    android:layout_height="match_parent"
+                    android:overScrollMode="never" />
+
+                <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                    android:id="@+id/dots_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:dotsColor="@color/light_orange_low_transparency"
+                    android:layout_marginBottom="@dimen/standardMargin2x"
+                    android:layout_alignParentBottom="true"
+                    android:layoutDirection="ltr"
+                    android:layout_centerInParent="true"
+                    app:selectedDotColor="@color/light_orange"
+                    app:dotsCornerRadius="8dp"
+                    app:dotsSize="10dp"
+                    app:dotsSpacing="4dp"
+                    app:dotsWidthFactor="2.5"
+                    app:progressMode="true"
+                    />
+            </RelativeLayout>
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/news_tablayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:tabIndicatorColor="@color/light_orange"
+                app:tabIndicatorHeight="4dp"
+                android:layoutDirection="ltr"
+                app:tabTextAppearance="@style/customTabLayout"
+                app:tabSelectedTextColor="@color/light_orange"
+                app:tabTextColor="?colorAccent"
+                android:layout_weight="0.1" />
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/news_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layoutDirection="ltr"
+                android:layout_weight="0.4" />
+
+        </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+
+
+</LinearLayout>

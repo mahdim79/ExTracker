@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    android:id="@+id/ex_nested"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="?colorPrimary"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:layoutDirection="ltr"
+        android:background="?colorPrimary"
+        android:orientation="vertical">
+
+        <com.dust.extracker.customviews.CTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/standardMargin3x"
+            android:text="@string/cryptoExchange" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/exchanger_header" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/standardMargin4x"
+            android:layout_marginHorizontal="@dimen/standardMargin2x"
+            android:layout_marginTop="@dimen/standardMargin3x"
+            android:background="@drawable/exchanger_input_shape"
+            android:gravity="center_vertical"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/first_crypto_linear"
+                android:layout_width="wrap_content"
+                android:foreground="?attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:tint="?android:textColor"
+                    android:src="@drawable/ic_baseline_arrow_drop_down" />
+
+                <TextView
+                    android:id="@+id/first_linear_text"
+                    android:layout_width="28dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/standardMargin"
+                    android:layout_marginHorizontal="@dimen/standardMargin"
+                    android:text="ADA" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/first_img"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginEnd="@dimen/standardMargin"
+                    android:src="@drawable/btc_icon" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="?colorAccent" />
+
+            <EditText
+                android:id="@+id/resultOne_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="?android:textColor"
+                android:inputType="numberDecimal"
+                android:layout_margin="@dimen/standardMargin0.5x"
+                android:textDirection="ltr"
+                android:background="@drawable/exchanger_edittext_shape" />
+
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_marginTop="@dimen/standardMargin"
+            app:cardElevation="@dimen/standardMargin0.5x"
+            app:cardCornerRadius="@dimen/standardMargin1.5x"
+            android:backgroundTint="?colorPrimaryVariant"
+            android:layout_height="wrap_content">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/change_linears"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:src="@drawable/ic_baseline_exchange" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/standardMargin4x"
+            android:layout_marginHorizontal="@dimen/standardMargin2x"
+            android:layout_marginTop="@dimen/standardMargin"
+            android:background="@drawable/exchanger_input_shape"
+            android:gravity="center_vertical"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/last_crypto_linear"
+                android:layout_width="wrap_content"
+                android:foreground="?attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:tint="?android:textColor"
+                    android:src="@drawable/ic_baseline_arrow_drop_down" />
+
+                <TextView
+                    android:id="@+id/last_linear_text"
+                    android:layout_width="28dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/standardMargin"
+                    android:layout_marginHorizontal="@dimen/standardMargin"
+                    android:text="ADA" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/last_img"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginEnd="@dimen/standardMargin"
+                    android:src="@drawable/btc_icon" />
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="?colorAccent" />
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <TextView
+                    android:id="@+id/resultTwo_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="1dp"
+                    android:gravity="center"
+                    android:layout_marginEnd="1dp"
+                    android:background="@drawable/exchanger_textview_shape" />
+                <ProgressBar
+                    android:id="@+id/exchanger_progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:padding="@dimen/standardMargin"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"
+            android:background="@drawable/exchanger_tablelayout_shape"
+            android:layout_margin="@dimen/standardMargin2x">
+
+            <TableRow
+                >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/standardMargin3x"
+                    >
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/dollar_img"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/standardMargin0.5x"
+                        android:src="@drawable/btc_icon" />
+                    <com.dust.extracker.customviews.CTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/standardMargin0.5x"
+                        android:layout_centerVertical="true"
+                        android:text="@string/dollarEquality"
+                        android:textSize="13dp"
+                        android:layout_toStartOf="@+id/dollar_img"/>
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:id="@+id/dollar_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/standardMargin0.5x"
+                        android:layout_centerVertical="true"
+                        android:textSize="@dimen/standardMargin"
+                        android:layout_toEndOf="@+id/dollartxt"
+                        android:textColor="@color/green"
+                        android:text="..."
+
+                        />
+                    <com.dust.extracker.customviews.CTextView
+                        android:id="@+id/dollartxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/standardMargin0.5x"
+                        android:layout_centerVertical="true"
+                        android:textSize="@dimen/standardMargin"
+                        android:textColor="@color/green"
+                        android:text="$"
+
+                        />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?colorAccent"
+                        android:layout_alignParentBottom="true"
+                        />
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/standardMargin3x">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/iran_image"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/standardMargin0.5x"
+
+                        android:src="@drawable/btc_icon"/>
+                    <com.dust.extracker.customviews.CTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/standardMargin0.5x"
+                        android:layout_centerVertical="true"
+                        android:text="@string/tomanPrice"
+                        android:textSize="13dp"
+                        android:layout_toStartOf="@+id/iran_image"/>
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:id="@+id/text_total_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/standardMargin0.5x"
+                        android:layout_centerVertical="true"
+                        android:textSize="@dimen/standardMargin"
+                        android:text="..."
+                        android:layout_toEndOf="@+id/tooman2"
+                        android:textColor="?android:textColor"
+
+                        />
+                    <com.dust.extracker.customviews.CTextView
+                        android:id="@+id/tooman2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/standardMargin0.5x"
+                        android:layout_centerVertical="true"
+                        android:textSize="@dimen/standardMargin"
+                        android:text="@string/toman"
+                        android:textColor="?android:textColor"
+
+                        />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?colorAccent"
+                        android:layout_alignParentBottom="true"
+                        />
+                </RelativeLayout>
+            </TableRow>
+            <TableRow
+                >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/standardMargin3x">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/theter_image"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/standardMargin0.5x"
+
+                        android:src="@drawable/btc_icon"/>
+                    <com.dust.extracker.customviews.CTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/standardMargin0.5x"
+                        android:layout_centerVertical="true"
+                        android:text="@string/tetherCaculation"
+                        android:textSize="13dp"
+                        android:layout_toStartOf="@+id/theter_image"/>
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:id="@+id/dollarPricetxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/standardMargin0.5x"
+                        android:layout_centerVertical="true"
+                        android:textSize="@dimen/standardMargin"
+                        android:text="..."
+                        android:layout_toEndOf="@+id/tooman"
+                        android:textColor="?android:textColor"
+
+                        />
+                    <com.dust.extracker.customviews.CTextView
+                        android:id="@+id/tooman"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/standardMargin0.5x"
+                        android:layout_centerVertical="true"
+                        android:textSize="@dimen/standardMargin"
+                        android:text="@string/toman"
+                        android:textColor="?android:textColor"
+
+                        />
+
+
+                </RelativeLayout>
+            </TableRow>
+        </TableLayout>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
