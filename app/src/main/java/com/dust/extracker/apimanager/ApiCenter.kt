@@ -62,7 +62,15 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
     }
 
     fun getDollarPrice(onGetDollarPrice: OnGetDollarPrice) {
-        val request = JsonObjectRequest(Request.Method.GET,
+
+        onGetDollarPrice.onGet(
+            DollarInfoDataClass(
+                "29000",
+                "1400-03-02"
+            )
+        )
+
+        /*val request = JsonObjectRequest(Request.Method.GET,
             "http://api.navasan.tech/latest/?api_key=$dollarApiKey",
             null,
             {
@@ -82,7 +90,7 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
-        Volley.newRequestQueue(context).add(request)
+        Volley.newRequestQueue(context).add(request)*/
     }
 
     fun getMainPrices(coins: String, onGetMainPrices: OnGetMainPrices) {
@@ -232,14 +240,14 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
             val list = arrayListOf<CryptoMainData>()
 
             val gson = Gson()
-            mainObject?.keys()!!.forEach {
+            mainObject?.keys()?.forEach {
                 val data = gson.fromJson(
                     mainObject.getJSONObject(it).toString(),
                     CryptoMainData::class.java
                 )
                 data.SortOrder = "111"
-                data.BaseImageUrl = obj[0]?.getString("BaseImageUrl")!!
-                data.BaseLinkUrl = obj[0]?.getString("BaseLinkUrl")!!
+                data.BaseImageUrl = "https://www.cryptocompare.com"
+                data.BaseLinkUrl = "https://www.cryptocompare.com"
                 list.add(data)
 
             }

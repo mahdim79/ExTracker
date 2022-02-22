@@ -110,7 +110,7 @@ class PortfolioBaseFragment(
 
     private fun checkNetworkConnectivity(): Boolean {
         val connectivityManager =
-            activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connectivityManager.activeNetworkInfo
         return networkInfo != null && networkInfo.isConnectedOrConnecting
     }
@@ -134,7 +134,7 @@ class PortfolioBaseFragment(
         }
         val dollarResult = realmDB.getDollarPrice()
         dateAndRate.text =
-            activity!!.resources.getString(
+            requireActivity().resources.getString(
                 R.string.DateAndRateText,
                 dollarResult.date,
                 dollarResult.price
@@ -148,7 +148,7 @@ class PortfolioBaseFragment(
                 portfolioTotalChange.text =
                     "+${String.format("%.3f", (portfolioDataClass.changePct.toDouble()))}"
                 change_pct_linear.background = ResourcesCompat.getDrawable(
-                    activity!!.resources,
+                    requireActivity().resources,
                     R.drawable.portfolio_linear_shape_green,
                     null
                 )
@@ -156,13 +156,13 @@ class PortfolioBaseFragment(
                 val diff =
                     (portfolioDataClass.totalCapital * dollarResult.price.toDouble()) - calculateTomanLastAmount()
                 portfolioTotalChangeToman.text =
-                    "${String.format("%.2f", diff)} ${activity!!.resources.getString(R.string.toman)} "
+                    "${String.format("%.2f", diff)} ${requireActivity().resources.getString(R.string.toman)} "
 
             } else {
                 portfolioTotalChange.text =
                     "${String.format("%.3f", (portfolioDataClass.changePct.toDouble()))}"
                 change_pct_linear.background = ResourcesCompat.getDrawable(
-                    activity!!.resources,
+                    requireActivity().resources,
                     R.drawable.portfolio_linear_shape_red,
                     null
                 )
@@ -170,7 +170,7 @@ class PortfolioBaseFragment(
                 val diff =
                     calculateTomanLastAmount() - (portfolioDataClass.totalCapital * dollarResult.price.toDouble())
                 portfolioTotalChangeToman.text =
-                    "${String.format("%.2f", diff)} ${activity!!.resources.getString(R.string.toman)} "
+                    "${String.format("%.2f", diff)} ${requireActivity().resources.getString(R.string.toman)} "
             }
         }
         if (checkNetworkConnectivity()) {
@@ -190,7 +190,7 @@ class PortfolioBaseFragment(
         }
         setRecyclerViewAdapter()
         setUpPieChartView()
-        activity!!.sendBroadcast(Intent("com.dust.extracker.OnUpdateTotalFund"))
+        requireActivity().sendBroadcast(Intent("com.dust.extracker.OnUpdateTotalFund"))
 
     }
 
@@ -211,7 +211,7 @@ class PortfolioBaseFragment(
             realmDB.getDollarPrice(),
             list,
             portfolioDataClass,
-            activity!!,
+            requireActivity(),
             object : OnTransactionRemoveListener {
                 override fun onRemove(transactionId: Int) {
                     val newList = arrayListOf<TransactionDataClass>()
@@ -223,7 +223,7 @@ class PortfolioBaseFragment(
                     if (newList.isNullOrEmpty()) {
                         if (realmDB.getHistoryDataCount() == 1) {
                             realmDB.deleteHistoryData(portfolioDataClass.id)
-                            activity!!.sendBroadcast(Intent("com.dust.extracker.DeleteFragment"))
+                            requireActivity().sendBroadcast(Intent("com.dust.extracker.DeleteFragment"))
                         } else {
                             realmDB.deleteHistoryData(portfolioDataClass.id)
                             onHistoryFragmentUpdate.onHistoryFragmentUpdate()
@@ -246,7 +246,7 @@ class PortfolioBaseFragment(
     }
 
     private fun setUpApiService() {
-        apiService = ApiCenter(activity!!, object : OnGetAllCryptoList {
+        apiService = ApiCenter(requireActivity(), object : OnGetAllCryptoList {
             override fun onGet(cryptoList: List<CryptoMainData>) {}
 
             override fun onGetByName(price: Double, dataNum: Int) {
@@ -401,7 +401,7 @@ class PortfolioBaseFragment(
         lineChart.isValueSelectionEnabled = true
         val line = Line(list)
         line.color = Color.LTGRAY
-        line.pointColor = ContextCompat.getColor(activity!!, R.color.light_orange)
+        line.pointColor = ContextCompat.getColor(requireActivity(), R.color.light_orange)
         line.isCubic = true
         line.strokeWidth = 2
         line.areaTransparency = 60
@@ -467,9 +467,9 @@ class PortfolioBaseFragment(
         add_Transaction = view.findViewById(R.id.add_Transaction)
         portfolioCoinRecyclerView = view.findViewById(R.id.portfolioCoinRecyclerView)
         portfolioCoinRecyclerView.layoutManager =
-            LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
 
-        twentyFourtime.setTextColor(ContextCompat.getColor(activity!!, R.color.light_orange))
+        twentyFourtime.setTextColor(ContextCompat.getColor(requireActivity(), R.color.light_orange))
 
         twentyFourtime.setOnClickListener(this)
         oneWeek.setOnClickListener(this)
@@ -492,12 +492,12 @@ class PortfolioBaseFragment(
                 UpdateChartData()
             } else {
                 chartProgressBar.visibility = View.GONE
-                showErrorSnack(activity!!.resources.getString(R.string.connectionFailure))
+                showErrorSnack(requireActivity().resources.getString(R.string.connectionFailure))
                 portfolio_swiprefreshLayout.isRefreshing = false
             }
         }
         imageDelete.setOnClickListener {
-            val dialog = Dialog(activity!!)
+            val dialog = Dialog(requireActivity())
             dialog.setContentView(R.layout.dialog_remove_transaction)
             dialog.setCancelable(false)
             dialog.findViewById<Button>(R.id.btnCancel).setOnClickListener {
@@ -509,24 +509,24 @@ class PortfolioBaseFragment(
                 onHistoryFragmentUpdate.onHistoryFragmentUpdate()
             }
             dialog.findViewById<CTextView>(R.id.txt_remove_question).text =
-                activity!!.resources.getString(R.string.deletePortfolio)
+                requireActivity().resources.getString(R.string.deletePortfolio)
             dialog.show()
         }
         add_Transaction.setOnClickListener {
             val intent = Intent("com.dust.extracker.addMoreHistory")
             intent.putExtra("IS_TRANSACTION", true)
             intent.putExtra("PortfolioName", portfolioDataClass.portfolioName)
-            activity!!.sendBroadcast(intent)
+            requireActivity().sendBroadcast(intent)
         }
 
         imageedit.setOnClickListener {
             val intent = Intent("com.dust.extracker.OnClickTransactionData")
             intent.putExtra("PORTFOLIO_NAME_EDIT", portfolioDataClass.portfolioName)
-            activity!!.sendBroadcast(intent)
+            requireActivity().sendBroadcast(intent)
         }
 
         imagedescriptions.setOnClickListener {
-            val dialog = Dialog(activity!!)
+            val dialog = Dialog(requireActivity())
             dialog.setContentView(R.layout.dialog_description)
             dialog.setCancelable(true)
             dialog.findViewById<Button>(R.id.btnClose).setOnClickListener {
@@ -539,7 +539,7 @@ class PortfolioBaseFragment(
 
         imagehelp.setOnClickListener {
 
-            val dialog = Dialog(activity!!)
+            val dialog = Dialog(requireActivity())
             dialog.setContentView(R.layout.dialog_help)
             dialog.setCancelable(true)
             dialog.findViewById<Button>(R.id.btnClose).setOnClickListener {
@@ -556,11 +556,11 @@ class PortfolioBaseFragment(
             txt,
             Snackbar.LENGTH_LONG
         ).setAction(
-            activity!!.resources.getString(R.string.connect)
+            requireActivity().resources.getString(R.string.connect)
         ) {
             val intent = Intent(Intent.ACTION_MAIN)
             intent.setClassName("com.android.phone", "com.android.phone.NetworkSetting")
-            activity!!.startActivity(intent)
+            requireActivity().startActivity(intent)
 
         }
         snackBar.setTextColor(Color.BLACK)
@@ -679,7 +679,7 @@ class PortfolioBaseFragment(
     }
 
     override fun onFailureChartData() {
-        Toast.makeText(activity!!, activity!!.resources.getString(R.string.errorLog), Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.errorLog), Toast.LENGTH_SHORT).show()
     }
 
     override fun onClick(p0: View?) {
@@ -740,20 +740,20 @@ class PortfolioBaseFragment(
     }
 
     fun setCurrentItemTextColor(views: List<View>, view: View) {
-        (view as CTextView).setTextColor(ContextCompat.getColor(activity!!, R.color.light_orange))
+        (view as CTextView).setTextColor(ContextCompat.getColor(requireActivity(), R.color.light_orange))
         views.forEach {
             if (it.id != view.id)
-                if (SharedPreferencesCenter(activity!!).getNightMode())
+                if (SharedPreferencesCenter(requireActivity()).getNightMode())
                     (it as CTextView).setTextColor(
                         ContextCompat.getColor(
-                            activity!!,
+                            requireActivity(),
                             R.color.white
                         )
                     )
                 else
                     (it as CTextView).setTextColor(
                         ContextCompat.getColor(
-                            activity!!,
+                            requireActivity(),
                             R.color.black
                         )
                     )
@@ -771,7 +771,7 @@ class PortfolioBaseFragment(
     override fun onStart() {
         super.onStart()
         ondollarpriceRecieve = onDollarPriceRecieve()
-        activity!!.registerReceiver(
+        requireActivity().registerReceiver(
             ondollarpriceRecieve,
             IntentFilter("com.dust.extracker.onDollarPriceRecieve")
         )
@@ -779,6 +779,6 @@ class PortfolioBaseFragment(
 
     override fun onStop() {
         super.onStop()
-        activity!!.unregisterReceiver(ondollarpriceRecieve)
+        requireActivity().unregisterReceiver(ondollarpriceRecieve)
     }
 }
