@@ -2,6 +2,11 @@
 
 a professional application for tracking cryptoCurrencies developed with kotlin
 
+
+## ScreenShots
+
+![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134047.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134054.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134105.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134109.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134119.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134135.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134158.png)
+
 ## About This Project
 
 ExTracker is a cryptocurrency Application.In this application users can track cryptoCurrencies market. track prices, charts, marketcap and etc... . also users can create their own portfolio and see their capital value changes.
