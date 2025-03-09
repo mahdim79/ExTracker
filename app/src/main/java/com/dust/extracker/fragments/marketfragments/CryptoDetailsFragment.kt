@@ -120,7 +120,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
     private fun hideKeyBoard() {
         val softInputManager =
-            activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         softInputManager.hideSoftInputFromWindow(
             total_frame.windowToken,
             InputMethodManager.HIDE_NOT_ALWAYS
@@ -129,7 +129,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
 
     private fun setUpApiService() {
-        apiService = ApiCenter(activity!!, object : OnGetAllCryptoList {
+        apiService = ApiCenter(requireActivity(), object : OnGetAllCryptoList {
             override fun onGet(cryptoList: List<CryptoMainData>) {}
 
             override fun onGetByName(price: Double, dataNum: Int) {}
@@ -138,7 +138,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
     private fun checkNetworkConnectivity(): Boolean {
         val connectivityManager =
-            activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connectivityManager.activeNetworkInfo
         return networkInfo != null && networkInfo.isConnectedOrConnecting
     }
@@ -204,7 +204,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         oneYear = view.findViewById(R.id.oneYear)
         threeMonth = view.findViewById(R.id.threeMonth)
         all_Time = view.findViewById(R.id.all_Time)
-        twentyFourtime.setTextColor(ContextCompat.getColor(activity!!, R.color.light_orange))
+        twentyFourtime.setTextColor(ContextCompat.getColor(requireActivity(), R.color.light_orange))
 
         twentyFourtime.setOnClickListener(this)
         oneWeek.setOnClickListener(this)
@@ -227,7 +227,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
                 requestChartData()
             } else {
                 chartProgressBar.visibility = View.GONE
-                showErrorSnack(activity!!.resources.getString(R.string.connectionFailure))
+                showErrorSnack(requireActivity().resources.getString(R.string.connectionFailure))
                 swiprefreshLayout.isRefreshing = false
             }
         }
@@ -238,32 +238,32 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "text/plain"
             intent.putExtra(Intent.EXTRA_TEXT, txtBody)
-            activity!!.startActivity(Intent.createChooser(intent, "ارسال با ..."))
+            requireActivity().startActivity(Intent.createChooser(intent, "ارسال با ..."))
         }
 
         addToeWatchListbtn.setTextColor(Color.WHITE)
         addTransactionbtn.setTextColor(Color.WHITE)
         fullChart.setTextColor(Color.WHITE)
 
-        val sharedPreferences1 = activity!!.getSharedPreferences("FAV", Context.MODE_PRIVATE)
+        val sharedPreferences1 = requireActivity().getSharedPreferences("FAV", Context.MODE_PRIVATE)
         if (sharedPreferences1.getString("fav", "")!!.indexOf(mainObject.ID!!) != -1) {
-            addToeWatchListbtn.text = activity!!.resources.getString(R.string.deleteFromWatchlist)
+            addToeWatchListbtn.text = requireActivity().resources.getString(R.string.deleteFromWatchlist)
             addToeWatchListbtn.background = ResourcesCompat.getDrawable(
-                activity!!.resources,
+                requireActivity().resources,
                 R.drawable.details_addtowatch_added,
                 null
             )
         } else {
-            addToeWatchListbtn.text = activity!!.resources.getString(R.string.addToWatchlist)
+            addToeWatchListbtn.text = requireActivity().resources.getString(R.string.addToWatchlist)
             addToeWatchListbtn.background = ResourcesCompat.getDrawable(
-                activity!!.resources,
+                requireActivity().resources,
                 R.drawable.details_addtowatch_not_added,
                 null
             )
         }
 
         addToeWatchListbtn.setOnClickListener {
-            val sharedPreferences = activity!!.getSharedPreferences("FAV", Context.MODE_PRIVATE)
+            val sharedPreferences = requireActivity().getSharedPreferences("FAV", Context.MODE_PRIVATE)
             val rawData = sharedPreferences.getString("fav", "")
             val resultList = arrayListOf<String>()
             var listRawData = listOf<String>()
@@ -273,31 +273,31 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
             }
             if (rawData.indexOf("${mainObject.ID!!}") != -1) {
                 resultList.remove(mainObject.ID!!)
-                addToeWatchListbtn.text = activity!!.resources.getString(R.string.addToWatchlist)
+                addToeWatchListbtn.text = requireActivity().resources.getString(R.string.addToWatchlist)
                 addToeWatchListbtn.background = ResourcesCompat.getDrawable(
-                    activity!!.resources,
+                    requireActivity().resources,
                     R.drawable.details_addtowatch_not_added,
                     null
                 )
 
             } else {
                 resultList.add(mainObject.ID!!)
-                addToeWatchListbtn.text = activity!!.resources.getString(R.string.deleteFromWatchlist)
+                addToeWatchListbtn.text = requireActivity().resources.getString(R.string.deleteFromWatchlist)
                 addToeWatchListbtn.background = ResourcesCompat.getDrawable(
-                    activity!!.resources,
+                    requireActivity().resources,
                     R.drawable.details_addtowatch_added,
                     null
                 )
 
             }
             sharedPreferences.edit().putString("fav", resultList.joinToString(",")).apply()
-            activity!!.sendBroadcast(Intent("com.dust.extracker.notifyDataSetChanged"))
+            requireActivity().sendBroadcast(Intent("com.dust.extracker.notifyDataSetChanged"))
         }
 
         addTransactionbtn.setOnClickListener {
             var intent = Intent("com.dust.extracker.OnPageChange")
             intent.putExtra("PAGE", 1)
-            activity!!.sendBroadcast(intent)
+            requireActivity().sendBroadcast(intent)
             val coinName = mainObject.Name!!
             var IS_TRANSACTION = false
             var portfolioName = ""
@@ -325,11 +325,11 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         fullChart.setOnClickListener {
             val intent1 = Intent("com.dust.extracker.OnPageChange")
             intent1.putExtra("PAGE", 2)
-            activity!!.sendBroadcast(intent1)
+            requireActivity().sendBroadcast(intent1)
 
             val intent = Intent("com.dust.extracker.OnClickMainData")
             intent.putExtra("COIN", mainObject.Name)
-            activity!!.sendBroadcast(intent)
+            requireActivity().sendBroadcast(intent)
 
         }
     }
@@ -340,11 +340,11 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
             txt,
             Snackbar.LENGTH_LONG
         ).setAction(
-            activity!!.resources.getString(R.string.connect)
+            requireActivity().resources.getString(R.string.connect)
         ) {
             val intent = Intent(Intent.ACTION_MAIN)
             intent.setClassName("com.android.phone", "com.android.phone.NetworkSetting")
-            activity!!.startActivity(intent)
+            requireActivity().startActivity(intent)
 
         }
         snackBar.setTextColor(Color.BLACK)
@@ -384,13 +384,13 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         TotalCoinDailyChange.text = changeStr
         if (color == Color.RED)
             total_frame.background = ResourcesCompat.getDrawable(
-                activity!!.resources,
+                requireActivity().resources,
                 R.drawable.cryptodetails_frame_shape_red,
                 null
             )
         else
             total_frame.background = ResourcesCompat.getDrawable(
-                activity!!.resources,
+                requireActivity().resources,
                 R.drawable.cryptodetails_frame_shape_green,
                 null
             )
@@ -415,7 +415,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         line.setHasPoints(true)
         line.color = Color.LTGRAY
 
-        line.pointColor = ContextCompat.getColor(activity!!, R.color.light_orange)
+        line.pointColor = ContextCompat.getColor(requireActivity(), R.color.light_orange)
         val lineList = arrayListOf<Line>(line)
         val cList = arrayListOf<Double>()
         list.forEach {
@@ -508,14 +508,14 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
         coinPrice.text = "$${String.format("%.6f", mainObject.LastPrice!!)}"
 
-        date.text = "${activity!!.resources.getString(R.string.time)} ${freshDollarPrice.date}"
+        date.text = "${requireActivity().resources.getString(R.string.time)} ${freshDollarPrice.date}"
 
-        dollarPrice.text = "${activity!!.resources.getString(R.string.dollarPrice)} ${freshDollarPrice.price}"
+        dollarPrice.text = "${requireActivity().resources.getString(R.string.dollarPrice)} ${freshDollarPrice.price}"
 
         tomanPrice.text = "${String.format(
             "%.2f",
             (mainObject.LastPrice!!.toDouble() * freshDollarPrice.price.toDouble())
-        )} ${activity!!.resources.getString(R.string.toman)}"
+        )} ${requireActivity().resources.getString(R.string.toman)}"
 
         rank.text = "#${mainObject.SortOrder}"
 
@@ -525,7 +525,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
         totalSupply.text = "${String.format("%.2f", mainObject.MaxSupply)} ${mainObject.Name}"
 
-        details_text.text = activity!!.getString(R.string.details, mainObject.Name)
+        details_text.text = requireActivity().getString(R.string.details, mainObject.Name)
 
         details_fullName.text = mainObject.FullName
 
@@ -554,7 +554,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
             )
         }
 
-        details_title.text = activity!!.resources.getString(
+        details_title.text = requireActivity().resources.getString(
             R.string.priceAndChart,
             mainObject.Name
         )
@@ -585,7 +585,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
     override fun onFailureChartData() {
         try {
-            showErrorSnack(activity!!.resources.getString(R.string.errorLog))
+            showErrorSnack(requireActivity().resources.getString(R.string.errorLog))
             chartProgressBar.visibility = View.GONE
         }catch (e:Exception){}
     }
@@ -648,20 +648,20 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     }
 
     fun setCurrentItemTextColor(views: List<View>, view: View) {
-        (view as CTextView).setTextColor(ContextCompat.getColor(activity!!, R.color.light_orange))
+        (view as CTextView).setTextColor(ContextCompat.getColor(requireActivity(), R.color.light_orange))
         views.forEach {
             if (it.id != view.id) {
-                if (SharedPreferencesCenter(activity!!).getNightMode())
+                if (SharedPreferencesCenter(requireActivity()).getNightMode())
                     (it as CTextView).setTextColor(
                         ContextCompat.getColor(
-                            activity!!,
+                            requireActivity(),
                             R.color.white
                         )
                     )
                 else
                     (it as CTextView).setTextColor(
                         ContextCompat.getColor(
-                            activity!!,
+                            requireActivity(),
                             R.color.black
                         )
                     )

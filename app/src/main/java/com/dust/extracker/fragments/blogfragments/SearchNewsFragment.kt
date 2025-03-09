@@ -56,7 +56,7 @@ class SearchNewsFragment() : Fragment() {
     }
 
     private fun setUpApiService() {
-        apiService = ApiCenter(activity!!, object : OnGetAllCryptoList {
+        apiService = ApiCenter(requireActivity(), object : OnGetAllCryptoList {
             override fun onGet(cryptoList: List<CryptoMainData>) {
             }
 
@@ -75,7 +75,7 @@ class SearchNewsFragment() : Fragment() {
     private fun setUpSearchViews() {
 
         news_recycler_view.layoutManager =
-            LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
 
         news_name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
@@ -85,7 +85,7 @@ class SearchNewsFragment() : Fragment() {
                     news_recycler_view.adapter =
                         NewsRecyclerViewAdapter(
                             arrayListOf(),
-                            activity!!.supportFragmentManager, realmDB
+                            requireActivity().supportFragmentManager, realmDB
                         )
                 } else {
                     news_progressBar.visibility = View.VISIBLE
@@ -130,13 +130,13 @@ class SearchNewsFragment() : Fragment() {
         news_recycler_view.adapter =
             NewsRecyclerViewAdapter(
                 data,
-                activity!!.supportFragmentManager, realmDB
+                requireActivity().supportFragmentManager, realmDB
             )
     }
 
     private fun checkConnection(): Boolean {
         val connectivityManager =
-            activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = connectivityManager.activeNetworkInfo
         return info != null && info.isConnectedOrConnecting
     }

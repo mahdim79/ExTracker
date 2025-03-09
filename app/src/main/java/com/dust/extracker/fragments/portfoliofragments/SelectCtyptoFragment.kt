@@ -92,7 +92,7 @@ class SelectCtyptoFragment : Fragment() {
         search_nested = view.findViewById(R.id.search_nested)
 
         crypto_recycler_view.layoutManager =
-            LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
     }
 
     private fun setUpPagination() {
@@ -139,7 +139,7 @@ class SelectCtyptoFragment : Fragment() {
             SearchRecyclerViewAdapter(
                 PortfolioName,
                 bool,
-                activity!!,
+                requireActivity(),
                 datalist,
                 object :
                     SearchRecyclerViewAdapter.OnSelectItem {

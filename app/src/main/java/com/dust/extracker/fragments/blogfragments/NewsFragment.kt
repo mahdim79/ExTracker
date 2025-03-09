@@ -43,13 +43,13 @@ class NewsFragment : Fragment() {
 
     private fun setUpRecyclerView() {
         newsRecyclerView.layoutManager =
-            LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
         newsRecyclerView.adapter = when (arguments?.getInt("position")) {
             0 -> {
                 val data = realmDB.getNews("ALL")
                 NewsRecyclerViewAdapter(
                     data,
-                    activity!!.supportFragmentManager, realmDB
+                    requireActivity().supportFragmentManager, realmDB
                 )
             }
 
@@ -57,7 +57,7 @@ class NewsFragment : Fragment() {
                 val data = realmDB.getNews("BTC")
                 NewsRecyclerViewAdapter(
                     data,
-                    activity!!.supportFragmentManager, realmDB
+                    requireActivity().supportFragmentManager, realmDB
                 )
             }
 
@@ -65,7 +65,7 @@ class NewsFragment : Fragment() {
                 val data = realmDB.getNews("ETH")
                 NewsRecyclerViewAdapter(
                     data,
-                    activity!!.supportFragmentManager, realmDB
+                    requireActivity().supportFragmentManager, realmDB
                 )
             }
 
@@ -73,7 +73,7 @@ class NewsFragment : Fragment() {
                 val data = realmDB.getNews("Trading")
                 NewsRecyclerViewAdapter(
                     data,
-                    activity!!.supportFragmentManager, realmDB
+                    requireActivity().supportFragmentManager, realmDB
                 )
             }
 
@@ -81,7 +81,7 @@ class NewsFragment : Fragment() {
                 val data = realmDB.getNews("Altcoin")
                 NewsRecyclerViewAdapter(
                     data,
-                    activity!!.supportFragmentManager, realmDB
+                    requireActivity().supportFragmentManager, realmDB
                 )
             }
         }
@@ -102,12 +102,12 @@ class NewsFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         updateNewsViewPagerRecycler = UpdateNewsViewPagerRecycler()
-        activity!!.registerReceiver(updateNewsViewPagerRecycler , IntentFilter("com.dust.extracker.UpdateNewsViewPagerRecycler"))
+        requireActivity().registerReceiver(updateNewsViewPagerRecycler , IntentFilter("com.dust.extracker.UpdateNewsViewPagerRecycler"))
     }
 
     override fun onStop() {
         super.onStop()
-        activity!!.unregisterReceiver(updateNewsViewPagerRecycler)
+        requireActivity().unregisterReceiver(updateNewsViewPagerRecycler)
     }
 
     inner class UpdateNewsViewPagerRecycler:BroadcastReceiver(){

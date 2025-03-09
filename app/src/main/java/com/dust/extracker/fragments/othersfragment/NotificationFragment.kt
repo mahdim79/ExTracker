@@ -127,7 +127,7 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                 notification_tick_seekBar.visibility = View.GONE
                 intent.putExtra("PriceData", false)
             }
-            activity!!.sendBroadcast(intent)
+            requireActivity().sendBroadcast(intent)
         }
 
         notification_tick_seekBar.onSeekChangeListener = object : OnSeekChangeListener {
@@ -166,9 +166,9 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                     if (checkServiceRunning()) {
                         val intent = Intent("com.dust.extracker.Update_NotificationData")
                         intent.putExtra("updateData", "")
-                        activity!!.sendBroadcast(intent)
+                        requireActivity().sendBroadcast(intent)
                     } else {
-                        activity!!.startService(Intent(activity!!, NotificationService::class.java))
+                        requireActivity().startService(Intent(requireActivity(), NotificationService::class.java))
                     }
                 }
             }, requireActivity())

@@ -71,12 +71,12 @@ class ReadNewsFragment(var data: NewsObject) : Fragment() {
     }
 
     private fun setUpSharedPreferencesService() {
-        shared = SharedPreferencesCenter(activity!!)
+        shared = SharedPreferencesCenter(requireActivity())
     }
 
     private fun setUpComments() {
         comment_recyclerview.layoutManager =
-            LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
         // TODO: 5/30/2021 get comments from server
         doApiCallAndSync(COMMENT_PAGINATION_COUNTER)
 
@@ -112,11 +112,11 @@ class ReadNewsFragment(var data: NewsObject) : Fragment() {
         Picasso.get().load(data.imageUrl).into(new_img)
         send_comment.setTextColor(Color.BLACK)
         news_view_count.text =
-            activity!!.resources.getString(R.string.view_count_news, data.likeCount, data.seenCount)
+            requireActivity().resources.getString(R.string.view_count_news, data.likeCount, data.seenCount)
         news_tag.text = "#${data.tags.replace(" ", "").replace("|", " #")}"
         news_main_source.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(data.url))
-            activity!!.startActivity(Intent.createChooser(intent, activity!!.resources.getString(R.string.openUrlWith)))
+            requireActivity().startActivity(Intent.createChooser(intent, requireActivity().resources.getString(R.string.openUrlWith)))
         }
 
         val availability = realm.checkBookmarkAvailability(data.url)

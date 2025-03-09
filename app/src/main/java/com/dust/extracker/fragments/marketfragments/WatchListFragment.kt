@@ -72,7 +72,7 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
     }
 
     private fun setUpApiCenter() {
-        apiCenter = ApiCenter(activity!! , object :OnGetAllCryptoList{
+        apiCenter = ApiCenter(requireActivity() , object :OnGetAllCryptoList{
             override fun onGet(cryptoList: List<CryptoMainData>) {
 
             }
@@ -93,7 +93,7 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
 
     private fun getSharedPreferencesData() {
         val rawData =
-            activity!!.getSharedPreferences("FAV", Context.MODE_PRIVATE).getString("fav", "")
+            requireActivity().getSharedPreferences("FAV", Context.MODE_PRIVATE).getString("fav", "")
         if (rawData != "")
             favlist = rawData!!.split(',')
         else
@@ -108,7 +108,7 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
 
     private fun setRecyclerAdapter(list:List<MainRealmObject>){
         market_watchlist_recyclerView.adapter =
-            WatchListRecyclerViewAdapter(list, activity!! , alphaAnimation , dollarPrice)
+            WatchListRecyclerViewAdapter(list, requireActivity() , alphaAnimation , dollarPrice)
     }
 
     private fun setUpAlphaAnimation() {
@@ -128,7 +128,7 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
             if (checkConnection()) {
                 updateOnline()
             } else {
-                Toast.makeText(activity!!, activity!!.resources.getString(R.string.connectionFailure), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.connectionFailure), Toast.LENGTH_SHORT).show()
             }
             swiprefreshLayout.isRefreshing = false
         }
@@ -141,7 +141,7 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
         setUpSwipeRefreshLayOut()
 
         market_watchlist_recyclerView.layoutManager =
-            LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
     }
 
     inner class NotifyDataChanged : BroadcastReceiver() {
@@ -166,10 +166,10 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
         super.onStart()
         startTimer()
         searchNotifier = SearchNotifier()
-        activity!!.registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))
+        requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))
 
         notifyDataChanged = NotifyDataChanged()
-        activity!!.registerReceiver(
+        requireActivity().registerReceiver(
             notifyDataChanged,
             IntentFilter("com.dust.extracker.notifyDataSetChanged")
         )
@@ -178,8 +178,8 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
     override fun onStop() {
         super.onStop()
         stopTimer()
-        activity!!.unregisterReceiver(searchNotifier)
-        activity!!.unregisterReceiver(notifyDataChanged)
+        requireActivity().unregisterReceiver(searchNotifier)
+        requireActivity().unregisterReceiver(notifyDataChanged)
     }
 
     fun startTimer() {
@@ -213,7 +213,7 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
 
     inner class MyTimerTask : TimerTask() {
         override fun run() {
-            activity!!.runOnUiThread {
+            requireActivity().runOnUiThread {
                 if (checkConnection()) {
                         updateOnline()
                 } else {
@@ -227,7 +227,7 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
 
     private fun checkConnection(): Boolean {
         val connectivityManager =
-            activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = connectivityManager.activeNetworkInfo
         return info != null && info.isConnectedOrConnecting
     }
@@ -291,7 +291,7 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
             intent.putExtra(prices[i].name, prices[i].price)
         }
         try {
-            activity!!.sendBroadcast(intent)
+            requireActivity().sendBroadcast(intent)
         }catch (e:Exception){}
     }
 
@@ -302,7 +302,7 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
         for (i in 0 until changes.size) {
             intent.putExtra(changes[i].CoinName, changes[i].ChangePercentage)
         }
-        activity!!.sendBroadcast(intent)
+        requireActivity().sendBroadcast(intent)
     }
 
     override fun onGetDailyChanges(list: List<LastChangeDataClass>) {

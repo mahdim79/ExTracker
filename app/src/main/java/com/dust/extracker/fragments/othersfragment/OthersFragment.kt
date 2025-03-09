@@ -91,11 +91,11 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     }
 
     private fun setUpApiCenter() {
-        apiCenter = ApiCenter(activity!!, this)
+        apiCenter = ApiCenter(requireActivity(), this)
     }
 
     private fun setUpSharedPrefCenter() {
-        sharedPreferencesCenter = SharedPreferencesCenter(activity!!)
+        sharedPreferencesCenter = SharedPreferencesCenter(requireActivity())
     }
 
 
@@ -103,7 +103,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         if (sharedPreferencesCenter.checkUserLogIn()) {
             sharedPreferencesCenter.setUserLogIn(true)
             others_logOut.visibility = View.VISIBLE
-            userLogInTxt.text = activity!!.resources.getString(R.string.userProfile)
+            userLogInTxt.text = requireActivity().resources.getString(R.string.userProfile)
             others_name.text = sharedPreferencesCenter.getUserName()
             setUserAvatar()
         }
@@ -159,7 +159,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
             val intent = Intent("com.dust.extracker.Update_NotificationData")
             intent.putExtra("EnabledNotifications", "")
-            activity!!.sendBroadcast(intent)
+            requireActivity().sendBroadcast(intent)
 
         }
         others_nightModeSwitcher.setOnCheckedChangeListener { _, b ->
@@ -174,16 +174,16 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     fun restartApp() {
         try {
-            activity!!.finishAffinity()
+            requireActivity().finishAffinity()
         } catch (e: Exception) {
 
         } finally {
-            activity!!.startActivity(Intent(activity!!, SplashActivity::class.java))
+            requireActivity().startActivity(Intent(requireActivity(), SplashActivity::class.java))
         }
     }
 
     private fun startLogInFragment() {
-        activity!!.supportFragmentManager.beginTransaction()
+        requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.others_frame_holder, UserLogInFragment())
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .addToBackStack("UserLogInFragment")
@@ -191,7 +191,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     }
 
     private fun startProfileFragment() {
-        activity!!.supportFragmentManager.beginTransaction()
+        requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.others_frame_holder, UserProfileFragment())
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .addToBackStack("UserProfileFragment")
@@ -211,7 +211,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
                 }
             }
             R.id.others_edit -> {
-                activity!!.supportFragmentManager.beginTransaction()
+                requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.others_frame_holder, NotificationFragment())
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack("NotificationFragment")
@@ -266,9 +266,9 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         userLogInTxt = view.findViewById(R.id.userLogInTxt)
 
         others_name.text =
-            activity!!.resources.getString(R.string.version, BuildConfig.VERSION_NAME)
+            requireActivity().resources.getString(R.string.version, BuildConfig.VERSION_NAME)
 
-        if (SharedPreferencesCenter(activity!!).getNightMode()) {
+        if (SharedPreferencesCenter(requireActivity()).getNightMode()) {
             others_profilePhoto.setImageResource(R.drawable.ic_launcher_black)
         }
 
@@ -276,7 +276,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         others_nightModeSwitcher.isChecked = sharedPreferencesCenter.getNightMode()
         others_languageSwitcher.isChecked = sharedPreferencesCenter.getEnglishLanguage()
 
-        if (SharedPreferencesCenter(activity!!).getNightMode())
+        if (SharedPreferencesCenter(requireActivity()).getNightMode())
             others_edit.setTextColor(Color.WHITE)
         else
             others_edit.setTextColor(Color.BLACK)
@@ -296,7 +296,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         others_fingerPrintSwitcher.setOnClickListener {
             others_fingerPrintSwitcher.isChecked = !others_fingerPrintSwitcher.isChecked
 
-            val executor = ContextCompat.getMainExecutor(activity!!)
+            val executor = ContextCompat.getMainExecutor(requireActivity())
             val prompt =
                 BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
                     override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
@@ -309,7 +309,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
                             sharedPreferencesCenter.setFingerPrintEnabled(false)
                             others_fingerPrintSwitcher.isChecked = false
                         } else {
-                            activity!!.supportFragmentManager.beginTransaction()
+                            requireActivity().supportFragmentManager.beginTransaction()
                                 .replace(R.id.others_frame_holder, SetPasswordFragment())
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                 .addToBackStack("SetPasswordFragment")
@@ -341,15 +341,15 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     override fun onDestroy() {
         super.onDestroy()
-        activity!!.finishAffinity()
+        requireActivity().finishAffinity()
     }
 
     private fun openUrl(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        activity!!.startActivity(
+        requireActivity().startActivity(
             Intent.createChooser(
                 intent,
-                activity!!.resources.getString(R.string.openUrlWith)
+                requireActivity().resources.getString(R.string.openUrlWith)
             )
         )
     }
@@ -357,7 +357,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     inner class OnUserLogIn : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
             others_logOut.visibility = View.VISIBLE
-            userLogInTxt.text = activity!!.resources.getString(R.string.userProfile)
+            userLogInTxt.text = requireActivity().resources.getString(R.string.userProfile)
             val bundle = p1!!.extras!!
             if (!bundle.isEmpty && bundle.containsKey("name") && bundle.containsKey("avatarUrl")) {
                 others_name.text = bundle.getString("name")
@@ -370,7 +370,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     override fun onStart() {
         onUserLogIn = OnUserLogIn()
-        activity!!.registerReceiver(onUserLogIn, IntentFilter("com.dust.extracker.USER_DATA"))
+        requireActivity().registerReceiver(onUserLogIn, IntentFilter("com.dust.extracker.USER_DATA"))
         super.onStart()
         try {
             others_fingerPrintSwitcher.isChecked = sharedPreferencesCenter.getFingerPrintEnabled()
@@ -379,7 +379,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     }
 
     override fun onStop() {
-        activity!!.unregisterReceiver(onUserLogIn)
+        requireActivity().unregisterReceiver(onUserLogIn)
         super.onStop()
     }
 

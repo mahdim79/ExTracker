@@ -88,7 +88,7 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
 
     private fun hideKeyBoard() {
         val softInputManager =
-            activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         softInputManager.hideSoftInputFromWindow(
             edt_search.windowToken,
             InputMethodManager.HIDE_NOT_ALWAYS
@@ -181,11 +181,11 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
         val intent = Intent("com.dust.extracker.OnSearchData")
         intent.putExtra("EXTRA_DATA", data)
         intent.putExtra("EXTRA_DATA_EXCHANGER", exchanger)
-        activity!!.sendBroadcast(intent)
+        requireActivity().sendBroadcast(intent)
     }
 
     private fun setUpSharedPreferencesCenter() {
-        shared = SharedPreferencesCenter(activity!!)
+        shared = SharedPreferencesCenter(requireActivity())
     }
 
     private fun setTotalMarketCap() {
@@ -198,14 +198,14 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
     }
 
     private fun setUpApiCenter() {
-        apiCenter = ApiCenter(activity!!, this)
+        apiCenter = ApiCenter(requireActivity(), this)
     }
 
     private fun setUpViewPager() {
         viewPager.adapter =
             MarketViewPagerAdapter(
                 childFragmentManager,
-                activity!!
+                requireActivity()
             )
         viewPager.offscreenPageLimit = 6
         tabLayout.setupWithViewPager(viewPager)
@@ -217,7 +217,7 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
                     if (viewGroup2.getChildAt(k) is TextView) {
                         (viewGroup2.getChildAt(k) as TextView).textSize = 8.5f
                         (viewGroup2.getChildAt(k) as TextView).typeface =
-                            (activity!!.applicationContext as MyApplication).initializeTypeFace()
+                            (requireActivity().applicationContext as MyApplication).initializeTypeFace()
                     }
                 }
             }
@@ -275,7 +275,7 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
             if (shared.getNotificationEnabled())
                 runNotificationFragment()
             else
-                Toast.makeText(activity!!, activity!!.resources.getString(R.string.notificationDisabled), Toast.LENGTH_LONG).show()
+                Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.notificationDisabled), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -293,7 +293,7 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
 
     private fun loadDollarPrice() {
         val connectivityManager =
-            activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connectivityManager.activeNetworkInfo
         val res = networkInfo != null && networkInfo.isConnectedOrConnecting
         if (res) {
@@ -313,7 +313,7 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
         realmDB.insertDollarPrice(price)
         val intent = Intent("com.dust.extracker.onDollarPriceRecieve")
         intent.putExtra("PRICE", price.price)
-        activity!!.sendBroadcast(intent)
+        requireActivity().sendBroadcast(intent)
         setDollarPrice()
     }
 
@@ -325,12 +325,12 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
         super.onStart()
         startMarketCapTimer()
         onNetworkConnected = OnNetworkConnected()
-        activity!!.registerReceiver(
+        requireActivity().registerReceiver(
             onNetworkConnected,
             IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
         )
         onClickMainData = OnClickMainData()
-        activity!!.registerReceiver(
+        requireActivity().registerReceiver(
             onClickMainData,
             IntentFilter("com.dust.extracker.OnClickMainData")
         )
@@ -353,8 +353,8 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
 
     override fun onStop() {
         stopMarketCapTimer()
-        activity!!.unregisterReceiver(onClickMainData)
-        activity!!.unregisterReceiver(onNetworkConnected)
+        requireActivity().unregisterReceiver(onClickMainData)
+        requireActivity().unregisterReceiver(onNetworkConnected)
         super.onStop()
     }
 
@@ -379,7 +379,7 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
         var netInfo: NetworkInfo? = null
         try {
             val connectivityManager =
-                activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             netInfo = connectivityManager.activeNetworkInfo
         } catch (e: Exception) {
             return false

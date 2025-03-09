@@ -75,9 +75,9 @@ class EditHistoryNameFragment : Fragment() {
         }
 
         if (portfolioName.editText!!.text.toString() == arguments!!.getString("NAME"))
-            portfolioName.editText!!.error = activity!!.resources.getString(R.string.enterNewParameter)
+            portfolioName.editText!!.error = requireActivity().resources.getString(R.string.enterNewParameter)
         else
-            portfolioName.editText!!.error = activity!!.resources.getString(R.string.requireField)
+            portfolioName.editText!!.error = requireActivity().resources.getString(R.string.requireField)
     }
 
     fun newInstance(name: String): EditHistoryNameFragment {

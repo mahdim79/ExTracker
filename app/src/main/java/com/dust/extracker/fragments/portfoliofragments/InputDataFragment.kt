@@ -95,7 +95,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
         dollarPrice = view.findViewById(R.id.dollarPrice)
         descriptions = view.findViewById(R.id.descriptions)
 
-        var color = if (SharedPreferencesCenter(activity!!).getNightMode())
+        var color = if (SharedPreferencesCenter(requireActivity()).getNightMode())
             Color.WHITE
         else
             Color.BLACK
@@ -120,7 +120,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
                 )
                     index = i
             portfolio_spinner.adapter = ArrayAdapter<String>(
-                activity!!,
+                requireActivity(),
                 R.layout.custom_spinner_item,
                 R.id.textview1,
                 spinnerList
@@ -129,8 +129,8 @@ class InputDataFragment : Fragment(), View.OnClickListener {
 
             nameRelativeLayout.visibility = View.GONE
             descRelativeLayout.visibility = View.GONE
-            crypto_name.text = activity!!.resources.getString(R.string.addDeal)
-            btnAdd.text = activity!!.resources.getString(R.string.addDeal)
+            crypto_name.text = requireActivity().resources.getString(R.string.addDeal)
+            btnAdd.text = requireActivity().resources.getString(R.string.addDeal)
         } else {
             spinnerRelativeLayout.visibility = View.GONE
         }
@@ -235,12 +235,12 @@ class InputDataFragment : Fragment(), View.OnClickListener {
             }
             realmDB.getAllHistoryData().forEach {
                 if (portfolioName.editText!!.text.toString() == it.portfolioName){
-                    portfolioName.error = activity!!.resources.getString(R.string.nameUsed)
+                    portfolioName.error = requireActivity().resources.getString(R.string.nameUsed)
                     return
                 }
             }
             val historyData = createHistoryData()
-            realmDB.insertHistoryData(historyData, fragmentManager!!, activity!!)
+            realmDB.insertHistoryData(historyData, fragmentManager!!, requireActivity())
         }
     }
 
@@ -266,7 +266,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
         )
         var desc = ""
         if (descriptions.editText!!.text.toString() == "")
-            desc = activity!!.resources.getString(R.string.noDescription)
+            desc = requireActivity().resources.getString(R.string.noDescription)
         else
             desc = descriptions.editText!!.text.toString()
 
@@ -289,7 +289,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
         if (!arguments!!.getBoolean("IS_TRANSACTION", false)) {
             val pName = portfolioName.editText!!.text.toString()
             if (pName == "") {
-                portfolioName.error = activity!!.resources.getString(R.string.requireField)
+                portfolioName.error = requireActivity().resources.getString(R.string.requireField)
                 return result
             } else {
                 portfolioName.error = ""
@@ -308,19 +308,19 @@ class InputDataFragment : Fragment(), View.OnClickListener {
                     dollarPrice.error = ""
                     result = "RESULT_OK"
                 } else {
-                    dollarPrice.error = activity!!.resources.getString(R.string.requireField)
+                    dollarPrice.error = requireActivity().resources.getString(R.string.requireField)
                 }
             } else {
                 if (price == "")
-                    mainPrice.error = activity!!.resources.getString(R.string.requireField)
+                    mainPrice.error = requireActivity().resources.getString(R.string.requireField)
                 else
-                    mainPrice.error = activity!!.resources.getString(R.string.enterCorrectAmount)
+                    mainPrice.error = requireActivity().resources.getString(R.string.enterCorrectAmount)
             }
         } else {
             if (count1 == "")
-                count.error = activity!!.resources.getString(R.string.requireField)
+                count.error = requireActivity().resources.getString(R.string.requireField)
             else
-                count.error = activity!!.resources.getString(R.string.enterCorrectAmount)
+                count.error = requireActivity().resources.getString(R.string.enterCorrectAmount)
         }
 
 

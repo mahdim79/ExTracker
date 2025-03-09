@@ -97,7 +97,7 @@ class NotificationChooseCryptoFragment:Fragment() {
         imageView = view.findViewById(R.id.imageView)
 
         crypto_recycler_view.layoutManager =
-            LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
     }
 
     private fun setUpPagination() {
@@ -140,7 +140,7 @@ class NotificationChooseCryptoFragment:Fragment() {
             index = 0
         }
 
-        crypto_recycler_view.adapter = NotificationChooseRecyclerViewAdapter(datalist , activity!!.supportFragmentManager , index)
+        crypto_recycler_view.adapter = NotificationChooseRecyclerViewAdapter(datalist , requireActivity().supportFragmentManager , index)
     }
 
     private fun setUpBackImage() {

@@ -50,7 +50,7 @@ class TradingViewChartFragment : Fragment(), View.OnClickListener {
         if (checkNetworkConnectivity()) {
             setUpWebView(arguments!!.getString("COIN_NAME")!!)
         } else {
-            Toast.makeText(activity!!, activity!!.resources.getString(R.string.connectionFailure), Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.connectionFailure), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -66,7 +66,7 @@ class TradingViewChartFragment : Fragment(), View.OnClickListener {
 
     private fun checkNetworkConnectivity(): Boolean {
         val connectivityManager =
-            activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connectivityManager.activeNetworkInfo
         return networkInfo != null && networkInfo.isConnectedOrConnecting
     }
@@ -84,11 +84,11 @@ class TradingViewChartFragment : Fragment(), View.OnClickListener {
             txt,
             Snackbar.LENGTH_LONG
         ).setAction(
-            activity!!.resources.getString(R.string.connect)
+            requireActivity().resources.getString(R.string.connect)
         ) {
             val intent = Intent(Intent.ACTION_MAIN)
             intent.setClassName("com.android.phone", "com.android.phone.NetworkSetting")
-            activity!!.startActivity(intent)
+            requireActivity().startActivity(intent)
 
         }
         snackBar.setTextColor(Color.BLACK)
@@ -127,7 +127,7 @@ class TradingViewChartFragment : Fragment(), View.OnClickListener {
                 fullChartWebView.reload()
             } else {
                 swiprefreshLayout.isRefreshing = false
-                showErrorSnack(activity!!.resources.getString(R.string.connectionFailure))
+                showErrorSnack(requireActivity().resources.getString(R.string.connectionFailure))
             }
         }
 
@@ -178,7 +178,7 @@ class TradingViewChartFragment : Fragment(), View.OnClickListener {
                 R.id.img8 -> setUpWebView("BNB")
             }
         } else {
-            Toast.makeText(activity!!, activity!!.resources.getString(R.string.connectionFailure), Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.connectionFailure), Toast.LENGTH_SHORT).show()
         }
     }
 

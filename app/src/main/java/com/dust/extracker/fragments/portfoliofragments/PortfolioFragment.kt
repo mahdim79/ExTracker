@@ -99,7 +99,7 @@ class PortfolioFragment:Fragment() {
         realmDB.getAllHistoryData().forEach {
             money += it.totalCapital
         }
-        totalFund.text = "${activity!!.resources.getString(R.string.total_fund)} ${String.format("%.2f" , money)} $"
+        totalFund.text = "${requireActivity().resources.getString(R.string.total_fund)} ${String.format("%.2f" , money)} $"
     }
 
     fun newInstance(): PortfolioFragment {
@@ -116,18 +116,18 @@ class PortfolioFragment:Fragment() {
         onClickTransactionData = OnClickTransactionData()
         addmoreFragments = AddMoreFragments()
         onUpdateTotalFund = OnUpdateTotalFund()
-        activity!!.registerReceiver(addmoreFragments , IntentFilter("com.dust.extracker.addMoreHistory"))
-        activity!!.registerReceiver(deleteFragment , IntentFilter("com.dust.extracker.DeleteFragment"))
-        activity!!.registerReceiver(onClickTransactionData , IntentFilter("com.dust.extracker.OnClickTransactionData"))
-        activity!!.registerReceiver(onUpdateTotalFund , IntentFilter("com.dust.extracker.OnUpdateTotalFund"))
+        requireActivity().registerReceiver(addmoreFragments , IntentFilter("com.dust.extracker.addMoreHistory"))
+        requireActivity().registerReceiver(deleteFragment , IntentFilter("com.dust.extracker.DeleteFragment"))
+        requireActivity().registerReceiver(onClickTransactionData , IntentFilter("com.dust.extracker.OnClickTransactionData"))
+        requireActivity().registerReceiver(onUpdateTotalFund , IntentFilter("com.dust.extracker.OnUpdateTotalFund"))
     }
 
     override fun onStop() {
         super.onStop()
-        activity!!.unregisterReceiver(addmoreFragments)
-        activity!!.unregisterReceiver(deleteFragment)
-        activity!!.unregisterReceiver(onClickTransactionData)
-        activity!!.unregisterReceiver(onUpdateTotalFund)
+        requireActivity().unregisterReceiver(addmoreFragments)
+        requireActivity().unregisterReceiver(deleteFragment)
+        requireActivity().unregisterReceiver(onClickTransactionData)
+        requireActivity().unregisterReceiver(onUpdateTotalFund)
     }
 
     inner class AddMoreFragments:BroadcastReceiver(){

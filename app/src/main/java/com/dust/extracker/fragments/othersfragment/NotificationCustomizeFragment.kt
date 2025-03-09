@@ -64,14 +64,14 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
     }
 
     private fun setUpApiService() {
-        apiService = ApiCenter(activity!!, this)
+        apiService = ApiCenter(requireActivity(), this)
     }
 
     private fun setUpSpinner() {
-        val data = listOf(activity!!.resources.getString(R.string.once), activity!!.resources.getString(R.string.always))
+        val data = listOf(requireActivity().resources.getString(R.string.once), requireActivity().resources.getString(R.string.always))
 
         timeingNotificationSpinner.adapter = ArrayAdapter<String>(
-            activity!!,
+            requireActivity(),
             R.layout.custom_spinner_item,
             R.id.textview1,
             data
@@ -95,7 +95,7 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
 
     private fun setUpBackImage() {
         image_back.setOnClickListener {
-            activity!!.supportFragmentManager.popBackStack(
+            requireActivity().supportFragmentManager.popBackStack(
                 "NotificationCustomizeFragment",
                 FragmentManager.POP_BACK_STACK_INCLUSIVE
             )
@@ -112,7 +112,7 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
         timeingNotificationSpinner = view.findViewById(R.id.timeingNotificationSpinner)
         HigherThanButton = view.findViewById(R.id.HigherThanButton)
         lowerThanButton = view.findViewById(R.id.lowerThanButton)
-        val color = if (SharedPreferencesCenter(activity!!).getNightMode())
+        val color = if (SharedPreferencesCenter(requireActivity()).getNightMode())
             Color.WHITE
         else
             Color.BLACK
@@ -173,7 +173,7 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
         })
         notif_save.setOnClickListener {
             if (!lowerThanButton.isEnabled || !HigherThanButton.isEnabled) {
-                SharedPreferencesCenter(activity!!).setNotificationData(
+                SharedPreferencesCenter(requireActivity()).setNotificationData(
                     NotificationDataClass(
                         0,
                         data.Name!!,
@@ -186,13 +186,13 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
                 if (checkServiceRunning()){
                     val intent = Intent("com.dust.extracker.Update_NotificationData")
                     intent.putExtra("updateData", "")
-                    activity!!.sendBroadcast(intent)
+                    requireActivity().sendBroadcast(intent)
                 }else{
-                    activity!!.startService(Intent(activity!!, NotificationService::class.java))
+                    requireActivity().startService(Intent(requireActivity(), NotificationService::class.java))
                 }
             }
 
-            activity!!.supportFragmentManager.popBackStack(
+            requireActivity().supportFragmentManager.popBackStack(
                 "NotificationChooseCryptoFragment",
                 FragmentManager.POP_BACK_STACK_INCLUSIVE
             )
@@ -201,7 +201,7 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
 
     fun checkServiceRunning(): Boolean {
         val activityManager =
-            activity!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            requireActivity().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         activityManager.getRunningServices(Integer.MAX_VALUE).forEach {
             if (it.service.className == NotificationService::class.java.name)
                 return true

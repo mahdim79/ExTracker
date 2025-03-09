@@ -104,7 +104,7 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     }
 
     private fun setUpApiCenter() {
-        apiCenter = ApiCenter(activity!!, this)
+        apiCenter = ApiCenter(requireActivity(), this)
     }
 
     private fun setUpDataBase() {
@@ -146,9 +146,9 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         var tempText = CRYPTO_ONE
         CRYPTO_ONE = CRYPTO_TWO
         CRYPTO_TWO = tempText
-        activity!!.getSharedPreferences("CRS", Context.MODE_PRIVATE).edit()
+        requireActivity().getSharedPreferences("CRS", Context.MODE_PRIVATE).edit()
             .putString("CR1", CRYPTO_ONE).apply()
-        activity!!.getSharedPreferences("CRS", Context.MODE_PRIVATE).edit()
+        requireActivity().getSharedPreferences("CRS", Context.MODE_PRIVATE).edit()
             .putString("CR2", CRYPTO_TWO).apply()
         first_linear_text.text = CRYPTO_ONE
         last_linear_text.text = CRYPTO_TWO
@@ -182,9 +182,9 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
         resultTwo_textview.setOnLongClickListener {
             if (resultTwo_textview.text.toString() != ""){
-                val clipboardManager = activity!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clipboardManager = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 clipboardManager.setPrimaryClip(ClipData.newPlainText("Price" , resultTwo_textview.text.toString()))
-                Toast.makeText(activity!!, activity!!.resources.getString(R.string.Copied), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.Copied), Toast.LENGTH_SHORT).show()
             }
             true
         }
@@ -222,7 +222,7 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     private fun checkNetworkConnection():Boolean{
         val connectivityManager =
-            activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = connectivityManager.activeNetworkInfo
         return info != null && info.isConnectedOrConnecting
     }
@@ -236,14 +236,14 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         } else {
             val snackBar = Snackbar.make(
                 ex_nested,
-                activity!!.resources.getString(R.string.connectionFailure),
+                requireActivity().resources.getString(R.string.connectionFailure),
                 Snackbar.LENGTH_LONG
             ).setAction(
-                activity!!.resources.getString(R.string.connect)
+                requireActivity().resources.getString(R.string.connect)
             ) {
                 val intent = Intent(Intent.ACTION_MAIN)
                 intent.setClassName("com.android.phone", "com.android.phone.NetworkSetting")
-                activity!!.startActivity(intent)
+                requireActivity().startActivity(intent)
 
             }
             snackBar.setTextColor(Color.BLACK)
@@ -284,7 +284,7 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     override fun onDestroy() {
         super.onDestroy()
-        activity!!.finishAffinity()
+        requireActivity().finishAffinity()
     }
 
     override fun onGet(cryptoList: List<CryptoMainData>) {}
@@ -315,8 +315,8 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         super.onStart()
         ondataRecieve = onDataRecieve()
         ondollarpriceRecieve = onDollarPriceRecieve()
-        activity!!.registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"))
-        activity!!.registerReceiver(
+        requireActivity().registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"))
+        requireActivity().registerReceiver(
             ondollarpriceRecieve,
             IntentFilter("com.dust.extracker.onDollarPriceRecieve")
         )
@@ -324,8 +324,8 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     override fun onStop() {
         super.onStop()
-        activity!!.unregisterReceiver(ondataRecieve)
-        activity!!.unregisterReceiver(ondollarpriceRecieve)
+        requireActivity().unregisterReceiver(ondataRecieve)
+        requireActivity().unregisterReceiver(ondollarpriceRecieve)
     }
 
 }

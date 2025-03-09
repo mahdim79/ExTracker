@@ -68,12 +68,12 @@ class UserProfileFragment : Fragment() , OnGetAllCryptoList , OnUpdateUserData ,
     override fun onStart() {
         super.onStart()
         val onUpdatePhoneNumber = OnUpdatePhoneNumber()
-        activity!!.registerReceiver(onUpdatePhoneNumber , IntentFilter("com.dust.extracker.UPDATE_PHONE_NUMBER"))
+        requireActivity().registerReceiver(onUpdatePhoneNumber , IntentFilter("com.dust.extracker.UPDATE_PHONE_NUMBER"))
     }
 
     override fun onStop() {
         super.onStop()
-        activity!!.unregisterReceiver(onUpdatePhoneNumber)
+        requireActivity().unregisterReceiver(onUpdatePhoneNumber)
     }
 
     inner class OnUpdatePhoneNumber:BroadcastReceiver()
@@ -85,23 +85,23 @@ class UserProfileFragment : Fragment() , OnGetAllCryptoList , OnUpdateUserData ,
 
     private fun setUpBackButton() {
         image_back.setOnClickListener {
-            activity!!.supportFragmentManager.popBackStack("UserProfileFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            requireActivity().supportFragmentManager.popBackStack("UserProfileFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
     }
 
     private fun setUpApiService() {
-        apiCenter = ApiCenter(activity!! , this)
+        apiCenter = ApiCenter(requireActivity() , this)
     }
 
     private fun setUpButtons() {
         submit_save.setOnClickListener {
             val userObject = realmDB.getUserData()
             if (IS_PHOTO_CHANGED || name_text.text.toString() != userObject.name || email_text.text.toString() != userObject.Email){
-                dialog = Dialog(activity!!)
+                dialog = Dialog(requireActivity())
                 dialog.setCancelable(false)
                 dialog.setContentView(R.layout.dialog_login_wait)
                 val message = dialog.findViewById<CTextView>(R.id.dialog_message)
-                message.text = activity!!.resources.getString(R.string.sendingInformation)
+                message.text = requireActivity().resources.getString(R.string.sendingInformation)
                 dialog.show()
                 if (IS_PHOTO_CHANGED){
                     // TODO: 6/7/2021 upload new photo to server
@@ -171,18 +171,18 @@ class UserProfileFragment : Fragment() , OnGetAllCryptoList , OnUpdateUserData ,
         realmDB.updateUserData(userData)
         setDefaultData()
         dialog.dismiss()
-        showSnackBar(activity!!.resources.getString(R.string.updateInfoSucces) , coordinatorlayout)
+        showSnackBar(requireActivity().resources.getString(R.string.updateInfoSucces) , coordinatorlayout)
     }
 
     override fun onFailure() {
         dialog.dismiss()
-        showErrorSnackBar(activity!!.resources.getString(R.string.loadingError)  , coordinatorlayout)
+        showErrorSnackBar(requireActivity().resources.getString(R.string.loadingError)  , coordinatorlayout)
     }
 
     override fun onClick(p0: View?) {
         when(p0!!.id){
             R.id.change_phoneNumber ->{
-                activity!!.supportFragmentManager.beginTransaction()
+                requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.others_frame_holder , ChangePhoneNumberFragment())
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack("ChangePhoneNumberFragment")

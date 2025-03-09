@@ -136,14 +136,14 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
             if (checkConnection()) {
                 updateOnline()
             } else {
-                Toast.makeText(activity!!, "No Connection!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), "No Connection!", Toast.LENGTH_SHORT).show()
             }
             crypto_swipe.isRefreshing = false
         }
     }
 
     private fun setUpApiCenter() {
-        apiCenter = ApiCenter(activity!!, this)
+        apiCenter = ApiCenter(requireActivity(), this)
     }
 
     inner class onDataRecieve : BroadcastReceiver() {
@@ -163,7 +163,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
 
     inner class MyTimerTask : TimerTask() {
         override fun run() {
-            activity!!.runOnUiThread {
+            requireActivity().runOnUiThread {
                 if (checkConnection()) {
                     if (INDEX != 0) {
                         Log.i("Update", "xtask")
@@ -181,9 +181,9 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
         searchNotifier = SearchNotifier()
         ondataRecieve = onDataRecieve()
         connectionReceiver = ConnectionReceiver()
-        activity!!.registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"))
-        activity!!.registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))
-        activity!!.registerReceiver(
+        requireActivity().registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"))
+        requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))
+        requireActivity().registerReceiver(
             connectionReceiver,
             IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
         )
@@ -193,9 +193,9 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
 
     override fun onStop() {
         super.onStop()
-        activity!!.unregisterReceiver(ondataRecieve)
-        activity!!.unregisterReceiver(connectionReceiver)
-        activity!!.unregisterReceiver(searchNotifier)
+        requireActivity().unregisterReceiver(ondataRecieve)
+        requireActivity().unregisterReceiver(connectionReceiver)
+        requireActivity().unregisterReceiver(searchNotifier)
         stopTimer()
     }
 
@@ -208,13 +208,13 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
             loadData()
             return
         }
-        val api = ApiCenter(activity!!, this)
+        val api = ApiCenter(requireActivity(), this)
         api.getAllCryptoList()
     }
 
     private fun checkConnection(): Boolean {
         val connectivityManager =
-            activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = connectivityManager.activeNetworkInfo
         return info != null && info.isConnectedOrConnecting
     }
@@ -257,7 +257,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
         sort_by_comments = view.findViewById(R.id.sort_by_comments)
 
         market_recyclerView.layoutManager =
-            LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
 
     }
 
@@ -277,7 +277,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     }
 
     override fun onAddComplete(list: List<MainRealmObject>) {
-        activity!!.sendBroadcast(Intent("com.dust.extracker.onGetMainData"))
+        requireActivity().sendBroadcast(Intent("com.dust.extracker.onGetMainData"))
         loadData()
     }
 
@@ -299,7 +299,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
             intent.putExtra(prices[i].name, prices[i].price)
         }
 
-        activity!!.sendBroadcast(intent)
+        requireActivity().sendBroadcast(intent)
 
     }
 
@@ -311,7 +311,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
             intent.putExtra(changes[i].CoinName, changes[i].ChangePercentage)
         }
 
-        activity!!.sendBroadcast(intent)
+        requireActivity().sendBroadcast(intent)
 
     }
 
@@ -337,7 +337,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
         market_recyclerView.adapter =
             MarketRecyclerViewAdapter(
                 datalist,
-                activity!!,
+                requireActivity(),
                 alphaAnimation,
                 dollarPrice
             )
@@ -349,7 +349,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
         val price = realmDB.getDollarPrice()
         val intent = Intent("com.dust.extracker.onDollarPriceRecieve")
         intent.putExtra("PRICE", price.price)
-        activity!!.sendBroadcast(intent)
+        requireActivity().sendBroadcast(intent)
     }
 
     private fun updateSortOrders(list1: List<CryptoMainData>) {
@@ -361,7 +361,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
                             it.SortOrder = pair.second.toString()
                     }
                 }
-                realmDB.insertAllCryptoData(list1, this@CryptoFragment, activity!!)
+                realmDB.insertAllCryptoData(list1, this@CryptoFragment, requireActivity())
             }
         })
     }
@@ -376,7 +376,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
                     market_recyclerView.adapter =
                         MarketRecyclerViewAdapter(
                             arrayListOf(),
-                            activity!!,
+                            requireActivity(),
                             alphaAnimation,
                             dollarPrice
                         )
@@ -386,7 +386,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
                     market_recyclerView.adapter =
                         MarketRecyclerViewAdapter(
                             datalist,
-                            activity!!,
+                            requireActivity(),
                             alphaAnimation,
                             dollarPrice
                         )
@@ -395,7 +395,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
                         market_recyclerView.adapter =
                             MarketRecyclerViewAdapter(
                                 arrayListOf(),
-                                activity!!,
+                                requireActivity(),
                                 alphaAnimation,
                                 dollarPrice
                             )
@@ -413,7 +413,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
                         market_recyclerView.adapter =
                             MarketRecyclerViewAdapter(
                                 pList,
-                                activity!!,
+                                requireActivity(),
                                 alphaAnimation,
                                 dollarPrice
                             )
@@ -422,7 +422,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
                         market_recyclerView.adapter =
                             MarketRecyclerViewAdapter(
                                 results,
-                                activity!!,
+                                requireActivity(),
                                 alphaAnimation,
                                 dollarPrice
                             )

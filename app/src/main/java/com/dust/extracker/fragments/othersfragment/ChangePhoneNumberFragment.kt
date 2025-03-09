@@ -60,7 +60,7 @@ class ChangePhoneNumberFragment:Fragment() , View.OnClickListener , OnGetAllCryp
     }
 
     private fun setUpApiService() {
-        apiCenter = ApiCenter(activity!! , this)
+        apiCenter = ApiCenter(requireActivity() , this)
     }
     private fun setUpRealmDB() {
         realmDB = RealmDataBaseCenter()
@@ -91,7 +91,7 @@ class ChangePhoneNumberFragment:Fragment() , View.OnClickListener , OnGetAllCryp
             R.id.edit_number -> {
                 phone_number.isEnabled = true
                 countDownTimer.cancel()
-                timer_txt.text = activity!!.resources.getString(R.string.sendAgain)
+                timer_txt.text = requireActivity().resources.getString(R.string.sendAgain)
                 timer_txt.isEnabled = true
 
             }
@@ -100,13 +100,13 @@ class ChangePhoneNumberFragment:Fragment() , View.OnClickListener , OnGetAllCryp
                     if (checkValidNumber(phone_number.text.toString())) {
                         startSendCode()
                     } else {
-                        showErrorSnackBar(activity!!.resources.getString(R.string.invalidNumber), coordinatorlayout)
+                        showErrorSnackBar(requireActivity().resources.getString(R.string.invalidNumber), coordinatorlayout)
                     }
                 } else {
 
                     if (VERIFICATION_CODE == verification_code.text.toString().toInt()) {
                         VERIFICATION_CODE = 0
-                        dialog = Dialog(activity!!)
+                        dialog = Dialog(requireActivity())
                         dialog.setCancelable(false)
                         dialog.setContentView(R.layout.dialog_login_wait)
                         dialog.show()
@@ -115,7 +115,7 @@ class ChangePhoneNumberFragment:Fragment() , View.OnClickListener , OnGetAllCryp
                             obj.phoneNumber!! , this)
 
                     } else {
-                        showErrorSnackBar(activity!!.resources.getString(R.string.invalidCode), coordinatorlayout)
+                        showErrorSnackBar(requireActivity().resources.getString(R.string.invalidCode), coordinatorlayout)
                     }
                 }
             }
@@ -124,7 +124,7 @@ class ChangePhoneNumberFragment:Fragment() , View.OnClickListener , OnGetAllCryp
             R.id.phone_number -> {
             }
             R.id.image_back ->{
-                activity!!.supportFragmentManager.popBackStack("ChangePhoneNumberFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                requireActivity().supportFragmentManager.popBackStack("ChangePhoneNumberFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
         }
     }
@@ -160,7 +160,7 @@ class ChangePhoneNumberFragment:Fragment() , View.OnClickListener , OnGetAllCryp
         timer_txt.isEnabled = false
         phone_number.isEnabled = false
         phoneChangeLinear.visibility = View.VISIBLE
-        submit_login.text = activity!!.resources.getString(R.string.confirm)
+        submit_login.text = requireActivity().resources.getString(R.string.confirm)
         verification_code.visibility = View.VISIBLE
         VERIFICATION_CODE = generateRandomVerificationCode()
         apiCenter.sendVerificationCodeByMessage(
@@ -170,7 +170,7 @@ class ChangePhoneNumberFragment:Fragment() , View.OnClickListener , OnGetAllCryp
         )
         countDownTimer = object : CountDownTimer(120000, 1000) {
             override fun onFinish() {
-                timer_txt.text = activity!!.resources.getString(R.string.sendAgain)
+                timer_txt.text = requireActivity().resources.getString(R.string.sendAgain)
                 timer_txt.isEnabled = true
             }
 
@@ -198,20 +198,20 @@ class ChangePhoneNumberFragment:Fragment() , View.OnClickListener , OnGetAllCryp
 
     override fun onSuccess() {
         dialog.dismiss()
-        showSnackBar(activity!!.resources.getString(R.string.sendingSuccess), coordinatorlayout)
+        showSnackBar(requireActivity().resources.getString(R.string.sendingSuccess), coordinatorlayout)
     }
 
 
     override fun onUpdateUserData(userData: UserDataClass) {
         realmDB.updateUserData(userData)
         dialog.dismiss()
-        activity!!.sendBroadcast(Intent("com.dust.extracker.UPDATE_PHONE_NUMBER"))
-        showSnackBar(activity!!.resources.getString(R.string.updateComplete) , coordinatorlayout)
-        activity!!.supportFragmentManager.popBackStack("ChangePhoneNumberFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        requireActivity().sendBroadcast(Intent("com.dust.extracker.UPDATE_PHONE_NUMBER"))
+        showSnackBar(requireActivity().resources.getString(R.string.updateComplete) , coordinatorlayout)
+        requireActivity().supportFragmentManager.popBackStack("ChangePhoneNumberFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     override fun onFailure() {
         dialog.dismiss()
-        showErrorSnackBar(activity!!.resources.getString(R.string.errorOrder), coordinatorlayout)
+        showErrorSnackBar(requireActivity().resources.getString(R.string.errorOrder), coordinatorlayout)
     }
 }

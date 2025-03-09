@@ -60,7 +60,7 @@ class SliderFragment(var list: List<SliderDataClass> , var position:Int):Fragmen
     override fun onClick(p0: View?) {
         val data = RealmDataBaseCenter().getNewsDataById(list[position].id)
 
-        activity!!.supportFragmentManager.beginTransaction()
+        requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.news_frame_holder, ReadNewsFragment(data))
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .addToBackStack("ReadNewsFragment")

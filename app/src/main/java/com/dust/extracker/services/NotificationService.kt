@@ -416,8 +416,10 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
 
     override fun onDestroy() {
         Log.i(tag, "stoped")
-        timer.purge()
-        timer.cancel()
+        if (::timer.isInitialized){
+            timer.purge()
+            timer.cancel()
+        }
         unregisterReceiver(updateData)
         super.onDestroy()
     }
