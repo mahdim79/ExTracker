@@ -98,11 +98,11 @@ class SplashActivity : AppCompatActivity() {
                 lunchMainActivity()
 
 
-        }, 3000)
+        }, 1500)
     }
 
     private fun setUpAnimations() {
-        var alphaAnimation = AlphaAnimation(0f, 1.0f)
+        val alphaAnimation = AlphaAnimation(0f, 1.0f)
         alphaAnimation.fillAfter = true
         alphaAnimation.duration = 1000
         imageView.startAnimation(alphaAnimation)
@@ -110,7 +110,5 @@ class SplashActivity : AppCompatActivity() {
 
     private fun setUpViews() {
         imageView = findViewById(R.id.img_splash)
-        if (SharedPreferencesCenter(this).getNightMode())
-            imageView.setImageResource(R.drawable.ic_launcher_black)
     }
 }

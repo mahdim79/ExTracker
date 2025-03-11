@@ -224,22 +224,19 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
 
         datalist.addAll(realmDB.getPopularCoins())
 
+        updateOffline()
         if (checkConnection()) {
-            market_progressBar.visibility = View.VISIBLE
             apiCenter.getMarketCapSortOrder(object : OnUpdateSortOrder {
                 override fun onUpdateSortOrder(list: List<Pair<String, Int>>) {
                     realmDB.updateSortOrders(list, object : OnRealmDataSorted {
                         override fun onSortFinished() {
                             datalist.clear()
                             datalist.addAll(realmDB.getPopularCoins())
-                            updateOffline()
                             updateOnline()
                         }
                     })
                 }
             })
-        } else {
-            updateOffline()
         }
     }
 

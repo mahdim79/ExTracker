@@ -679,7 +679,7 @@ class PortfolioBaseFragment(
     }
 
     override fun onFailureChartData() {
-        Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.errorLog), Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), requireContext().resources.getString(R.string.errorLog), Toast.LENGTH_SHORT).show()
     }
 
     override fun onClick(p0: View?) {

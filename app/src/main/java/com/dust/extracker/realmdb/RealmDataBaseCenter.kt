@@ -88,7 +88,9 @@ class RealmDataBaseCenter() {
         val stop = 50 * PaginationCount
         for (i in start.rangeTo(stop)) {
             val data1 = realmDB.where(MainRealmObject::class.java).equalTo("id", i).findFirst()
-            list.add(data1!!)
+            data1?.let { d ->
+                list.add(d)
+            }
         }
         return list
     }

@@ -18,11 +18,10 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
 
     val cryptoCompareApiKey = "45719568c9ac5d836ebe26a7067647e37b7194a8864d8656372156ea3cb5c7c4"
     val cryptoCompareApiKey2 = "1ee7d718b849a41ecb9a844ae4d9b8167837294ac46ceeb04538125533bc5982"
-    val dollarApiKey = "1fzJvVySNMklXjxwrvpVGl47Mpa3u96a"
 
     fun getAllCryptoList() {
-
-        var request = JsonObjectRequest(Request.Method.GET,
+        Log.i("cryptocompareError","call")
+        val request = JsonObjectRequest(Request.Method.GET,
             "https://min-api.cryptocompare.com/data/all/coinlist?$cryptoCompareApiKey",
             null,
             {
@@ -32,9 +31,10 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
                 }
             },
             {
+                Log.i("cryptocompareError",it.message.toString())
             })
         request.retryPolicy = DefaultRetryPolicy(
-            10000,
+            20000,
             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
@@ -65,19 +65,20 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
 
         onGetDollarPrice.onGet(
             DollarInfoDataClass(
-                "29000",
+                "90000",
                 "1400-03-02"
             )
         )
 
-        /*val request = JsonObjectRequest(Request.Method.GET,
-            "http://api.navasan.tech/latest/?api_key=$dollarApiKey",
+        val request = JsonObjectRequest(Request.Method.GET,
+            "https://brsapi.ir/FreeTsetmcBourseApi/Api_Free_Gold_Currency_v2.json",
             null,
             {
-                val res = it!!.getJSONObject("usd_buy")
+                val currencies = it!!.getJSONArray("currency")
+                val res = currencies.getJSONObject(0)
                 onGetDollarPrice.onGet(
                     DollarInfoDataClass(
-                        res.getString("value"),
+                        res.getDouble("price").toString(),
                         res.getString("date")
                     )
                 )
@@ -90,7 +91,7 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
-        Volley.newRequestQueue(context).add(request)*/
+        Volley.newRequestQueue(context).add(request)
     }
 
     fun getMainPrices(coins: String, onGetMainPrices: OnGetMainPrices) {
@@ -387,6 +388,7 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
     }
 
     fun getTotalMarketCap(onGetTotalMarketCap: OnGetTotalMarketCap) {
+        Log.i("coingeckoRequest","getTotalMarketCap")
         val request = JsonObjectRequest(Request.Method.GET,
             "https://api.coingecko.com/api/v3/global",
             null,
@@ -407,6 +409,7 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
     }
 
     fun getExchangersData(onGetExchangersData: OnGetExchangersData) {
+        Log.i("coingeckoRequest","getExchangersData")
         val request = JsonArrayRequest(Request.Method.GET,
             "https://api.coingecko.com/api/v3/exchanges?per_page=249",
             null,
@@ -443,6 +446,7 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
     }
 
     fun getMarketCapSortOrder(onUpdateSortOrder: OnUpdateSortOrder) {
+        Log.i("coingeckoRequest","getMarketCapSortOrder")
         val request = JsonArrayRequest(Request.Method.GET,
             "https://api.coingecko.com/api/v3/coins/markets?vs_currency=Usd&order=market_cap_desc&per_page=110&page=1&sparkline=false",
             null,
@@ -500,7 +504,9 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
                 } catch (e: Exception) {
                 }
             },
-            {})
+            {
+                Log.i("cryptocompareNews",it.message.toString())
+            })
         request.retryPolicy = DefaultRetryPolicy(
             5000,
             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
