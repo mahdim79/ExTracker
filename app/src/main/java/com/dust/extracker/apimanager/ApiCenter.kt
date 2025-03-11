@@ -43,11 +43,14 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
 
     fun getCryptoPriceByName(name: String, dataNum: Int) {
 
-        var request = JsonObjectRequest(Request.Method.GET,
+        val request = JsonObjectRequest(Request.Method.GET,
             "https://min-api.cryptocompare.com/data/price?fsym=$name&tsyms=USD&api_key={$cryptoCompareApiKey}",
             null,
             {
-                onGetAllCryptoList.onGetByName(it!!.getDouble("USD"), dataNum)
+                it?.keys()?.forEach { key ->
+                    if (key == "USD")
+                        onGetAllCryptoList.onGetByName(it.getDouble("USD"), dataNum)
+                }
             },
             {
 

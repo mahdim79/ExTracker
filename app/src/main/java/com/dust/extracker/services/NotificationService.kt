@@ -70,8 +70,6 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
     inner class NewTimerTask : TimerTask() {
         override fun run() {
             if (checkConn()) {
-                Log.i(tag, "Request Sending Blocked")
-
                 if (notificationEnabled) {
                     Log.i(tag, "Request Sending ...")
                     for (i in 0 until data.size)

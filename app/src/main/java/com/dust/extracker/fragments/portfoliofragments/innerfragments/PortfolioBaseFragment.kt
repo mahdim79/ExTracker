@@ -400,15 +400,15 @@ class PortfolioBaseFragment(
         lineChart.isValueTouchEnabled = true
         lineChart.isValueSelectionEnabled = true
         val line = Line(list)
-        line.color = Color.LTGRAY
-        line.pointColor = ContextCompat.getColor(requireActivity(), R.color.light_orange)
+        line.color = ContextCompat.getColor(requireActivity(), R.color.dark_green)
+        line.pointColor = ContextCompat.getColor(requireActivity(), R.color.green)
+        line.pointRadius = 1
         line.isCubic = true
         line.strokeWidth = 2
         line.areaTransparency = 60
-        line.pointRadius = 2
         line.setHasLabels(false)
-        line.setHasPoints(true)
-        val lineList = arrayListOf<Line>(line)
+        line.setHasPoints(false)
+        val lineList = arrayListOf(line)
         val cList = arrayListOf<Double>()
         list.forEach {
             cList.add(it.y.toDouble())
@@ -555,17 +555,10 @@ class PortfolioBaseFragment(
             portfolio_swiprefreshLayout,
             txt,
             Snackbar.LENGTH_LONG
-        ).setAction(
-            requireActivity().resources.getString(R.string.connect)
-        ) {
-            val intent = Intent(Intent.ACTION_MAIN)
-            intent.setClassName("com.android.phone", "com.android.phone.NetworkSetting")
-            requireActivity().startActivity(intent)
-
-        }
-        snackBar.setTextColor(Color.BLACK)
-        snackBar.setActionTextColor(Color.BLACK)
-        snackBar.view.setBackgroundColor(Color.RED)
+        )
+        snackBar.setTextColor(Color.WHITE)
+        snackBar.setActionTextColor(Color.WHITE)
+        snackBar.view.setBackgroundColor(Color.BLACK)
         snackBar.show()
     }
 

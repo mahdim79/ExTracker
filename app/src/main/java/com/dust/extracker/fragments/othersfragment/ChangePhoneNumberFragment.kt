@@ -136,7 +136,7 @@ class ChangePhoneNumberFragment:Fragment() , View.OnClickListener , OnGetAllCryp
         )
             .setTextColor(Color.WHITE)
 
-        snackBar.view.setBackgroundColor(Color.RED)
+        snackBar.view.setBackgroundColor(Color.BLACK)
         snackBar.show()
     }
 
@@ -146,9 +146,9 @@ class ChangePhoneNumberFragment:Fragment() , View.OnClickListener , OnGetAllCryp
             message,
             Snackbar.LENGTH_LONG
         )
-            .setTextColor(Color.BLACK)
+            .setTextColor(Color.WHITE)
 
-        snackBar.view.setBackgroundColor(Color.BLUE)
+        snackBar.view.setBackgroundColor(Color.BLACK)
         snackBar.show()
 
     }

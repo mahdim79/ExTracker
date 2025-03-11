@@ -48,7 +48,7 @@ class TradingViewChartFragment : Fragment(), View.OnClickListener {
         setUpView(view)
         setUpWebViewSettings()
         if (checkNetworkConnectivity()) {
-            setUpWebView(arguments!!.getString("COIN_NAME")!!)
+            setUpWebView(requireArguments().getString("COIN_NAME")!!)
         } else {
             Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.connectionFailure), Toast.LENGTH_SHORT).show()
         }
@@ -83,17 +83,10 @@ class TradingViewChartFragment : Fragment(), View.OnClickListener {
             swiprefreshLayout,
             txt,
             Snackbar.LENGTH_LONG
-        ).setAction(
-            requireActivity().resources.getString(R.string.connect)
-        ) {
-            val intent = Intent(Intent.ACTION_MAIN)
-            intent.setClassName("com.android.phone", "com.android.phone.NetworkSetting")
-            requireActivity().startActivity(intent)
-
-        }
-        snackBar.setTextColor(Color.BLACK)
-        snackBar.setActionTextColor(Color.BLACK)
-        snackBar.view.setBackgroundColor(Color.RED)
+        )
+        snackBar.setTextColor(Color.WHITE)
+        snackBar.setActionTextColor(Color.WHITE)
+        snackBar.view.setBackgroundColor(Color.BLACK)
         snackBar.show()
     }
 

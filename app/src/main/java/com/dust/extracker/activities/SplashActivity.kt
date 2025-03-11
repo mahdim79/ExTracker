@@ -19,7 +19,6 @@ class SplashActivity : AppCompatActivity() {
     lateinit var imageView: CircleImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         settheme()
-        setLanguage()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         setUpViews()
@@ -65,19 +64,6 @@ class SplashActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun setLanguage() {
-        var localeStr = ""
-        if (SharedPreferencesCenter(this).getEnglishLanguage())
-            localeStr = "en"
-        else
-            localeStr = "fa"
-        val locale = Locale(localeStr)
-        Locale.setDefault(locale)
-        val config = resources.configuration
-        config.setLocale(locale)
-        resources.updateConfiguration(config, resources.displayMetrics)
-    }
-
 
     private fun settheme() {
         if (SharedPreferencesCenter(this).getNightMode()) {
@@ -98,7 +84,7 @@ class SplashActivity : AppCompatActivity() {
                 lunchMainActivity()
 
 
-        }, 1500)
+        }, 500)
     }
 
     private fun setUpAnimations() {

@@ -48,8 +48,8 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     var price1: Double? = null
     var price2: Double? = null
-    lateinit var CRYPTO_ONE: String
-    lateinit var CRYPTO_TWO: String
+    var CRYPTO_ONE = ""
+    var CRYPTO_TWO = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -113,9 +113,9 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     private fun setUpFirstExchange() {
         CRYPTO_ONE =
-            context!!.getSharedPreferences("CRS", Context.MODE_PRIVATE).getString("CR1", "BTC")!!
+            requireContext().getSharedPreferences("CRS", Context.MODE_PRIVATE).getString("CR1", "BTC")!!
         CRYPTO_TWO =
-            context!!.getSharedPreferences("CRS", Context.MODE_PRIVATE).getString("CR2", "ETH")!!
+            requireContext().getSharedPreferences("CRS", Context.MODE_PRIVATE).getString("CR2", "ETH")!!
 
         // setting texts
         first_linear_text.text = CRYPTO_ONE
@@ -210,7 +210,7 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     }
 
     private fun startSearchFragment(postition: Int) {
-        fragmentManager!!.beginTransaction()
+        requireFragmentManager().beginTransaction()
             .replace(
                 R.id.exchanger_holder,
                 ExchnagerChooseCryptoFragment(postition, CRYPTO_ONE, CRYPTO_TWO)
@@ -229,6 +229,8 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     private fun startExchange() {
 
+        if (CRYPTO_ONE.isEmpty() || CRYPTO_TWO.isEmpty())
+            return
 
         if (checkNetworkConnection()) {
             apiCenter.getCryptoPriceByName(CRYPTO_ONE, 1)
@@ -238,17 +240,10 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
                 ex_nested,
                 requireActivity().resources.getString(R.string.connectionFailure),
                 Snackbar.LENGTH_LONG
-            ).setAction(
-                requireActivity().resources.getString(R.string.connect)
-            ) {
-                val intent = Intent(Intent.ACTION_MAIN)
-                intent.setClassName("com.android.phone", "com.android.phone.NetworkSetting")
-                requireActivity().startActivity(intent)
-
-            }
-            snackBar.setTextColor(Color.BLACK)
-            snackBar.setActionTextColor(Color.BLACK)
-            snackBar.view.setBackgroundColor(Color.RED)
+            )
+            snackBar.setTextColor(Color.WHITE)
+            snackBar.setActionTextColor(Color.WHITE)
+            snackBar.view.setBackgroundColor(Color.BLACK)
             snackBar.show()
             exchanger_progressBar.visibility = View.GONE
 

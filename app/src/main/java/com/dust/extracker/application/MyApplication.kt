@@ -2,8 +2,10 @@ package com.dust.extracker.application
 
 import android.app.Application
 import android.graphics.Typeface
+import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import java.util.Locale
 
 class MyApplication:Application() {
     override fun onCreate() {

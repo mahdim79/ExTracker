@@ -55,7 +55,7 @@ class PortfolioFragment:Fragment() {
     private fun setUpViewPagerAdapter() {
         val data = realmDB.getAllHistoryData()
         if (data.isEmpty()){
-            fragmentManager?.popBackStack("PortfolioFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
+         //   fragmentManager?.popBackStack("PortfolioFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
             fragmentManager?.beginTransaction()!!
                 .replace(R.id.frame_holder,EmptyPortfolioFragment())
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -69,10 +69,10 @@ class PortfolioFragment:Fragment() {
                 childFragmentManager,
                 object : OnHistoryFragmentUpdate {
                     override fun onHistoryFragmentUpdate() {
-                        fragmentManager?.popBackStack(
+                        /*fragmentManager?.popBackStack(
                             "PortfolioFragment",
                             FragmentManager.POP_BACK_STACK_INCLUSIVE
-                        )
+                        )*/
                         fragmentManager?.beginTransaction()!!
                             .replace(R.id.frame_holder, PortfolioFragment())
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

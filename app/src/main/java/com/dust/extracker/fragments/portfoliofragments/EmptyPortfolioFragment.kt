@@ -27,7 +27,7 @@ class EmptyPortfolioFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var btn: Button = view.findViewById(R.id.add_portfolio)
+        val btn: Button = view.findViewById(R.id.add_portfolio)
         btn.setOnClickListener {
             fragmentManager?.beginTransaction()!!
                 .replace(R.id.frame_holder,

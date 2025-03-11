@@ -191,7 +191,7 @@ class BlogFragment : Fragment(), OnGetNews {
                     }
                 }
             }
-        }, 0, 2000)
+        }, 0, 5000)
 
     }
 

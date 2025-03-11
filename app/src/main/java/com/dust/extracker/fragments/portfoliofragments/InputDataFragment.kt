@@ -105,15 +105,15 @@ class InputDataFragment : Fragment(), View.OnClickListener {
         btnSell.setTextColor(color)
 
         txt_totalAmount.text =
-            resources.getString(R.string.totalAmountText, arguments!!.getString("COINNAME", "BTC2"))
+            resources.getString(R.string.totalAmountText, requireArguments().getString("COINNAME", "BTC2"))
 
-        if (arguments!!.getBoolean("IS_TRANSACTION", false)) {
+        if (requireArguments().getBoolean("IS_TRANSACTION", false)) {
             realmDB.getAllHistoryData().forEach {
                 spinnerList.add(it.portfolioName)
             }
             var index = 0
             for (i in 0 until spinnerList.size)
-                if (spinnerList[i] == arguments!!.getString(
+                if (spinnerList[i] == requireArguments().getString(
                         "PortfolioName",
                         "SecKey=sdffgvbnmsdfghjkrtyuio"
                     )
@@ -137,7 +137,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
 
         mainPrice.editText!!.setText(
             realmDB.getCryptoDataByName(
-                arguments!!.getString(
+                requireArguments().getString(
                     "COINNAME",
                     "BTC"
                 )
@@ -193,7 +193,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
     private fun calculateAndAddData() {
         val validity = checkValidity()
         if (validity == "RESULT_OK") {
-            if (arguments!!.getBoolean("IS_TRANSACTION", false)) {
+            if (requireArguments().getBoolean("IS_TRANSACTION", false)) {
                 val allData = realmDB.getAllHistoryData()
                 allData.forEach {
                     if (it.portfolioName == spinnerList[portfolio_spinner.selectedItemPosition]) {
@@ -210,7 +210,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
                         newList.add(
                             TransactionDataClass(
                                 it.transactionList.size,
-                                arguments!!.getString("COINNAME", "BTC"),
+                                requireArguments().getString("COINNAME", "BTC"),
                                 dealType,
                                 count.editText!!.text.toString().toDouble(),
                                 dollarPrice.editText!!.text.toString().toDouble(),
@@ -223,11 +223,11 @@ class InputDataFragment : Fragment(), View.OnClickListener {
                         realmDB.updateHistoryData(it)
                     }
                 }
-                fragmentManager!!.popBackStack(
+                requireFragmentManager().popBackStack(
                     "SelectCtyptoFragment",
                     FragmentManager.POP_BACK_STACK_INCLUSIVE
                 )
-                fragmentManager!!.popBackStack(
+                requireFragmentManager().popBackStack(
                     "InputDataFragment",
                     FragmentManager.POP_BACK_STACK_INCLUSIVE
                 )
@@ -240,7 +240,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
                 }
             }
             val historyData = createHistoryData()
-            realmDB.insertHistoryData(historyData, fragmentManager!!, requireActivity())
+            realmDB.insertHistoryData(historyData, requireFragmentManager(), requireActivity())
         }
     }
 
@@ -255,7 +255,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
         val transactionDataList = arrayListOf(
             TransactionDataClass(
                 0,
-                arguments!!.getString("COINNAME", "BTC"),
+                requireArguments().getString("COINNAME", "BTC"),
                 dealType,
                 count.editText!!.text.toString().toDouble(),
                 dollarPrice.editText!!.text.toString().toDouble(),
@@ -286,7 +286,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
     private fun checkValidity(): String {
         var result = "RESULT_NOT_OK"
 
-        if (!arguments!!.getBoolean("IS_TRANSACTION", false)) {
+        if (!requireArguments().getBoolean("IS_TRANSACTION", false)) {
             val pName = portfolioName.editText!!.text.toString()
             if (pName == "") {
                 portfolioName.error = requireActivity().resources.getString(R.string.requireField)

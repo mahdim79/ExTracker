@@ -63,7 +63,7 @@
             android:orientation="vertical"
             android:gravity="center_vertical">
 
-            <TextView
+            <com.dust.extracker.customviews.CTextView
                 android:id="@+id/dollarAggregation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,8 +87,8 @@
                     android:layout_height="wrap_content"
                     android:text="273 ت"
                     android:gravity="center_horizontal"
-                    android:textColor="?android:textColor"
-                    android:textSize="7dp" />
+                    android:textColor="@color/black"
+                    android:textSize="8dp" />
                 <com.dust.extracker.customviews.CTextView
                     android:id="@+id/portfolioChangeDollarPct"
                     android:layout_width="0dp"
@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:text="0%"
                     android:gravity="center_horizontal"
-                    android:textColor="?android:textColor"
+                    android:textColor="@color/black"
                     android:textSize="8dp" />
 
 
@@ -113,7 +113,7 @@
             android:orientation="vertical"
             android:gravity="center_vertical">
 
-            <TextView
+            <com.dust.extracker.customviews.CTextView
                 android:id="@+id/tomanAggregation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -136,7 +136,7 @@
                     android:layout_weight="50"
                     android:layout_height="wrap_content"
                     android:text="273 ت"
-                    android:textColor="?android:textColor"
+                    android:textColor="@color/black"
                     android:gravity="center_horizontal"
                     android:textSize="8dp" />
                 <com.dust.extracker.customviews.CTextView
@@ -146,7 +146,7 @@
                     android:layout_height="wrap_content"
                     android:text="0%"
                     android:gravity="center_horizontal"
-                    android:textColor="?android:textColor"
+                    android:textColor="@color/black"
                     android:textSize="8dp" />
 
             </LinearLayout>

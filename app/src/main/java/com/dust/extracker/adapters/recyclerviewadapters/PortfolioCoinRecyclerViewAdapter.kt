@@ -66,11 +66,11 @@ class PortfolioCoinRecyclerViewAdapter(
         var tomanChange = ""
         var tomanChangePct = ""
         if (tomanData.first.toDouble() > 0) {
-            tomanChange = "+${tomanData.first}"
-            tomanChangePct = "+${tomanData.second}"
+            tomanChange = "+${String.format("%.2f",tomanData.first.toDouble())}"
+            tomanChangePct = "+${String.format("%.2f",tomanData.second.toDouble())}"
         } else {
-            tomanChange = "${tomanData.first}"
-            tomanChangePct = "-${tomanData.second}"
+            tomanChange = "${String.format("%.2f",tomanData.first.toDouble())}"
+            tomanChangePct = "-${String.format("%.2f",tomanData.second.toDouble())}"
         }
         holder.portfolioChangeToman.text = tomanChange
         holder.portfolioChangeTomanPct.text = tomanChangePct
@@ -89,7 +89,7 @@ class PortfolioCoinRecyclerViewAdapter(
             )
         }
 
-        if (dollarResult.first.toDouble() > 0) {
+        if (dollarResult.first.contains("+")) {
             holder.dollarChangeLinear.background = ResourcesCompat.getDrawable(
                 context.resources,
                 R.drawable.portfolio_linear_shape_green,
@@ -136,18 +136,18 @@ class PortfolioCoinRecyclerViewAdapter(
         var first = ""
         var second = ""
         if (diffrence > 0) {
-            second = "+${String.format(Locale.ENGLISH ,
+            second = "+${String.format(
                 "%.2f",
                 ((diffrence) / lastRate) * 100
             )}"
-            first = "+${String.format(Locale.ENGLISH ,"%.2f", (diffrence))}"
+            first = "+${String.format("%.2f", (diffrence))}"
         } else {
-            second = "-${String.format(Locale.ENGLISH ,
+            second = "-${String.format(
                 "%.2f",
                 ((lastRate - currentRate) / lastRate) * 100
             )}"
             first =
-                "${String.format(Locale.ENGLISH ,"%.2f", (diffrence))}"
+                "${String.format("%.2f", (diffrence))}"
         }
         return Pair(first, second)
     }
@@ -167,7 +167,7 @@ class PortfolioCoinRecyclerViewAdapter(
         // first is toman change
         // second is toman Pct
         return Pair(
-            "${String.format(Locale.ENGLISH , "%.1f", (currentRate - lastRate))}",
+            "${String.format(Locale.ENGLISH , "%.2f", (currentRate - lastRate))}",
             "${String.format(Locale.ENGLISH ,"%.2f", changePct)}"
         )
     }
@@ -203,8 +203,8 @@ class PortfolioCoinRecyclerViewAdapter(
         val tomanChangeLinear = itemView.findViewById<LinearLayout>(R.id.tomanChangeLinear)
         val coin_amount = itemView.findViewById<TextView>(R.id.coin_amount)
         val coinName = itemView.findViewById<TextView>(R.id.coinName)
-        val dollarAggregation = itemView.findViewById<TextView>(R.id.dollarAggregation)
-        val tomanAggregation = itemView.findViewById<TextView>(R.id.tomanAggregation)
+        val dollarAggregation = itemView.findViewById<CTextView>(R.id.dollarAggregation)
+        val tomanAggregation = itemView.findViewById<CTextView>(R.id.tomanAggregation)
         val portfolioChangeToman = itemView.findViewById<CTextView>(R.id.portfolioChangeToman)
         val portfolioChangeDollar = itemView.findViewById<CTextView>(R.id.portfolioChangeDollar)
         val portfolioChangeDollarPct =

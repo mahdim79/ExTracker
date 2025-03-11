@@ -302,7 +302,9 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
         for (i in 0 until changes.size) {
             intent.putExtra(changes[i].CoinName, changes[i].ChangePercentage)
         }
-        requireContext().sendBroadcast(intent)
+        try {
+            requireContext().sendBroadcast(intent)
+        }catch (e:Exception){}
     }
 
     override fun onGetDailyChanges(list: List<LastChangeDataClass>) {

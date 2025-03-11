@@ -38,6 +38,11 @@ import com.dust.extracker.realmdb.MainRealmObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
 import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 
 class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
@@ -59,6 +64,8 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
     lateinit var marketCapTimer: Timer
     lateinit var shared: SharedPreferencesCenter
     var SEARCHMODE = false
+
+    private var searchJob: Job? = null
 
     private lateinit var onClickMainData: OnClickMainData
 
@@ -96,7 +103,7 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
     }
 
     private fun runNotificationFragment() {
-        fragmentManager!!.beginTransaction()
+        requireFragmentManager().beginTransaction()
             .replace(
                 R.id.main_frame,
                 NotificationChooseCryptoFragment().newInstance()
@@ -127,45 +134,50 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
         val allExchangers = realmDB.getAllExchangerData()
         edt_search.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
-                var exchanger = ""
-                var mainData = ""
-                if (edt_search.text.toString() == "") {
-                    sendSearchBroadcast(exchanger, mainData)
-                    return
-                }
 
-                //set Main Data
-                val listTemp1 = arrayListOf<String>()
-                for (i in 0 until allData.size) {
-                    if (allData[i]!!.FullName!!.indexOf(
-                            edt_search.text.toString(),
-                            ignoreCase = true
-                        ) != -1
-                    ) {
-                        try {
-                            listTemp1.add(allData[i]!!.ID!!)
-                        } catch (e: Exception) {
+                searchJob?.cancel()
+                searchJob = CoroutineScope(Dispatchers.Main).launch {
+                    delay(1000)
+                    var exchanger = ""
+                    var mainData = ""
+                    if (edt_search.text.toString() == "") {
+                        sendSearchBroadcast(exchanger, mainData)
+                    }else{
+                        //set Main Data
+                        val listTemp1 = arrayListOf<String>()
+                        for (i in 0 until allData.size) {
+                            if (allData[i]!!.FullName!!.indexOf(
+                                    edt_search.text.toString(),
+                                    ignoreCase = true
+                                ) != -1
+                            ) {
+                                try {
+                                    listTemp1.add(allData[i]!!.ID!!)
+                                } catch (e: Exception) {
+                                }
+                            }
                         }
+                        mainData = listTemp1.joinToString(",")
+
+                        // set Exchanger Data
+                        val listTemp = arrayListOf<Int>()
+                        for (i in 0 until allExchangers.size) {
+                            if (allExchangers[i]!!.name.indexOf(
+                                    edt_search.text.toString(),
+                                    ignoreCase = true
+                                ) != -1
+                            ) {
+                                try {
+                                    listTemp.add(allExchangers[i]!!.id!!)
+                                } catch (e: Exception) {
+                                }
+                            }
+                        }
+                        exchanger = listTemp.joinToString(",")
+                        sendSearchBroadcast(exchanger, mainData)
                     }
                 }
-                mainData = listTemp1.joinToString(",")
 
-                // set Exchanger Data
-                val listTemp = arrayListOf<Int>()
-                for (i in 0 until allExchangers.size) {
-                    if (allExchangers[i]!!.name.indexOf(
-                            edt_search.text.toString(),
-                            ignoreCase = true
-                        ) != -1
-                    ) {
-                        try {
-                            listTemp.add(allExchangers[i]!!.id!!)
-                        } catch (e: Exception) {
-                        }
-                    }
-                }
-                exchanger = listTemp.joinToString(",")
-                sendSearchBroadcast(exchanger, mainData)
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}

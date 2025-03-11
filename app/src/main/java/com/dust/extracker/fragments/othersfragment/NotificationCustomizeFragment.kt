@@ -85,12 +85,12 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
     }
 
     private fun setData() {
-        // val pData = realmDB.getCryptoDataByName(arguments!!.getString("CoinName", "BTC"))
+        // val pData = realmDB.getCryptoDataByName(requireArguments().getString("CoinName", "BTC"))
         doUpdateAndGetData()
     }
 
     private fun doUpdateAndGetData() {
-        apiService.getCryptoPriceByName(arguments!!.getString("CoinName", "BTC"), 0)
+        apiService.getCryptoPriceByName(requireArguments().getString("CoinName", "BTC"), 0)
     }
 
     private fun setUpBackImage() {
@@ -133,14 +133,14 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
     override fun onGet(cryptoList: List<CryptoMainData>) {}
 
     override fun onGetByName(price: Double, dataNum: Int) {
-        realmDB.updatePrice(PriceDataClass(price, arguments!!.getString("CoinName", "BTC")))
+        realmDB.updatePrice(PriceDataClass(price, requireArguments().getString("CoinName", "BTC")))
         startAction()
     }
 
     private fun startAction() {
         notif_save.isEnabled = true
         pbar.visibility = View.GONE
-        data = realmDB.getCryptoDataByName(arguments!!.getString("CoinName", "BTC"))
+        data = realmDB.getCryptoDataByName(requireArguments().getString("CoinName", "BTC"))
         Picasso.get().load("${data.BaseImageUrl}${data.ImageUrl}").into(cryptoImage)
         cryptoName.text = data.Name
         resultOne_edittext.setText(

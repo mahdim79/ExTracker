@@ -155,7 +155,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     }
 
     private fun setUpCoinList() {
-        mainObject = realmDB.getCryptoDataByName(arguments!!.getString("COIN_NAME")!!)
+        mainObject = realmDB.getCryptoDataByName(requireArguments().getString("COIN_NAME")!!)
     }
 
     private fun setUpRealmDB() {
@@ -339,17 +339,10 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
             swiprefreshLayout,
             txt,
             Snackbar.LENGTH_LONG
-        ).setAction(
-            requireActivity().resources.getString(R.string.connect)
-        ) {
-            val intent = Intent(Intent.ACTION_MAIN)
-            intent.setClassName("com.android.phone", "com.android.phone.NetworkSetting")
-            requireActivity().startActivity(intent)
-
-        }
-        snackBar.setTextColor(Color.BLACK)
-        snackBar.setActionTextColor(Color.BLACK)
-        snackBar.view.setBackgroundColor(Color.RED)
+        )
+        snackBar.setTextColor(Color.WHITE)
+        snackBar.setActionTextColor(Color.WHITE)
+        snackBar.view.setBackgroundColor(Color.BLACK)
         snackBar.show()
     }
 
@@ -406,17 +399,16 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         lineChart.isValueTouchEnabled = true
         lineChart.isValueSelectionEnabled = true
         val line = Line(list)
-        line.color = Color.DKGRAY
+        line.color = ContextCompat.getColor(requireActivity(), R.color.dark_green)
+        line.pointColor = ContextCompat.getColor(requireActivity(), R.color.green)
         line.isCubic = true
         line.strokeWidth = 2
         line.areaTransparency = 80
-        line.pointRadius = 2
+        line.pointRadius = 1
         line.setHasLabels(false)
-        line.setHasPoints(true)
-        line.color = Color.LTGRAY
+        line.setHasPoints(false)
 
-        line.pointColor = ContextCompat.getColor(requireActivity(), R.color.light_orange)
-        val lineList = arrayListOf<Line>(line)
+        val lineList = arrayListOf(line)
         val cList = arrayListOf<Double>()
         list.forEach {
             cList.add(it.y.toDouble())
@@ -541,7 +533,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         image_back.setOnClickListener {
 
             var str = "CryptoDetailsFragment"
-            if (arguments!!.getString(
+            if (requireArguments().getString(
                     "Type",
                     "CryptoDetailsFragment"
                 ) == "CryptoDetailsFragment_MAIN"

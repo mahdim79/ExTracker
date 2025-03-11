@@ -228,7 +228,7 @@ class UserLogInFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList, 
         )
             .setTextColor(Color.WHITE)
 
-        snackBar.view.setBackgroundColor(Color.RED)
+        snackBar.view.setBackgroundColor(Color.BLACK)
         snackBar.show()
     }
 
@@ -238,9 +238,9 @@ class UserLogInFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList, 
             message,
             Snackbar.LENGTH_LONG
         )
-            .setTextColor(Color.BLACK)
+            .setTextColor(Color.WHITE)
 
-        snackBar.view.setBackgroundColor(Color.BLUE)
+        snackBar.view.setBackgroundColor(Color.BLACK)
         snackBar.show()
 
     }

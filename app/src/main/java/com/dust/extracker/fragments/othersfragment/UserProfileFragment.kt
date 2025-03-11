@@ -163,7 +163,7 @@ class UserProfileFragment : Fragment() , OnGetAllCryptoList , OnUpdateUserData ,
         )
             .setTextColor(Color.WHITE)
 
-        snackBar.view.setBackgroundColor(Color.RED)
+        snackBar.view.setBackgroundColor(Color.BLACK)
         snackBar.show()
     }
 

@@ -51,11 +51,11 @@
 
                 <TextView
                     android:id="@+id/first_linear_text"
-                    android:layout_width="28dp"
+                    android:layout_width="30dp"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/standardMargin"
                     android:layout_marginHorizontal="@dimen/standardMargin"
-                    android:text="ADA" />
+                    android:text="BTC" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/first_img"
@@ -123,18 +123,18 @@
 
                 <TextView
                     android:id="@+id/last_linear_text"
-                    android:layout_width="28dp"
+                    android:layout_width="30dp"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/standardMargin"
                     android:layout_marginHorizontal="@dimen/standardMargin"
-                    android:text="ADA" />
+                    android:text="Tether" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/last_img"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
                     android:layout_marginEnd="@dimen/standardMargin"
-                    android:src="@drawable/btc_icon" />
+                    android:src="@drawable/tether" />
             </LinearLayout>
 
 
@@ -191,7 +191,8 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="@dimen/standardMargin0.5x"
-                        android:src="@drawable/btc_icon" />
+                        android:src="@drawable/dollar" />
+
                     <com.dust.extracker.customviews.CTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -247,8 +248,8 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="@dimen/standardMargin0.5x"
+                        android:src="@drawable/iran_flag"/>
 
-                        android:src="@drawable/btc_icon"/>
                     <com.dust.extracker.customviews.CTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -303,8 +304,8 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="@dimen/standardMargin0.5x"
+                        android:src="@drawable/tether"/>
 
-                        android:src="@drawable/btc_icon"/>
                     <com.dust.extracker.customviews.CTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

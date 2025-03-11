@@ -27,12 +27,26 @@ MainActivity : AppCompatActivity() {
     private lateinit var viewPager: CViewPager
     override fun onCreate(savedInstanceState: Bundle?) {
         settheme()
+        setLanguage()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setUpViews()
         setUpViewPager()
         setUpBottomNavigationView()
         checkNotificationService()
+    }
+
+    private fun setLanguage() {
+        var localeStr = "fa"
+        localeStr = if (SharedPreferencesCenter(this).getEnglishLanguage())
+            "en"
+        else
+            "fa"
+        val locale = Locale(localeStr)
+        Locale.setDefault(locale)
+        val config = resources.configuration
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
     }
 
     fun checkNotificationService() {

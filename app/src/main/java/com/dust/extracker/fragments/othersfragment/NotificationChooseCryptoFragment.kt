@@ -135,7 +135,7 @@ class NotificationChooseCryptoFragment:Fragment() {
         var index = 0
 
         try {
-            index = arguments!!.getInt("INDEX")
+            index = requireArguments().getInt("INDEX")
         }catch (e:Exception){
             index = 0
         }

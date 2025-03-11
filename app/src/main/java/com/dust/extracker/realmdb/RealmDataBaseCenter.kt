@@ -355,17 +355,12 @@ class RealmDataBaseCenter() {
                     popBackStack("SelectCtyptoFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 }
                 if (getAllHistoryData().size == 1) {
-                    fragmentManager.popBackStack(
-                        "EmptyPortfolioFragment",
-                        FragmentManager.POP_BACK_STACK_INCLUSIVE
-                    )
                     fragmentManager.beginTransaction()
                         .replace(R.id.frame_holder, PortfolioFragment())
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .addToBackStack("PortfolioFragment")
                         .commit()
                 }
-                Toast.makeText(context, context.resources.getString(R.string.done), Toast.LENGTH_SHORT).show()
             }
             ,
             {
