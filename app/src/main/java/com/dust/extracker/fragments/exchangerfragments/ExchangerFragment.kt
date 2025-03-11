@@ -3,6 +3,7 @@ package com.dust.extracker.fragments.exchangerfragments
 import android.content.*
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -310,11 +311,21 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         super.onStart()
         ondataRecieve = onDataRecieve()
         ondollarpriceRecieve = onDollarPriceRecieve()
-        requireActivity().registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"))
-        requireActivity().registerReceiver(
-            ondollarpriceRecieve,
-            IntentFilter("com.dust.extracker.onDollarPriceRecieve")
-        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"),Context.RECEIVER_EXPORTED)
+            requireActivity().registerReceiver(
+                ondollarpriceRecieve,
+                IntentFilter("com.dust.extracker.onDollarPriceRecieve")
+                ,Context.RECEIVER_EXPORTED
+            )
+        }else{
+            requireActivity().registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"))
+            requireActivity().registerReceiver(
+                ondollarpriceRecieve,
+                IntentFilter("com.dust.extracker.onDollarPriceRecieve")
+            )
+        }
     }
 
     override fun onStop() {

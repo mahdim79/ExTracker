@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -764,10 +765,18 @@ class PortfolioBaseFragment(
     override fun onStart() {
         super.onStart()
         ondollarpriceRecieve = onDollarPriceRecieve()
-        requireActivity().registerReceiver(
-            ondollarpriceRecieve,
-            IntentFilter("com.dust.extracker.onDollarPriceRecieve")
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(
+                ondollarpriceRecieve,
+                IntentFilter("com.dust.extracker.onDollarPriceRecieve"),
+                Context.RECEIVER_EXPORTED
+            )
+        }else{
+            requireActivity().registerReceiver(
+                ondollarpriceRecieve,
+                IntentFilter("com.dust.extracker.onDollarPriceRecieve")
+            )        }
+
     }
 
     override fun onStop() {

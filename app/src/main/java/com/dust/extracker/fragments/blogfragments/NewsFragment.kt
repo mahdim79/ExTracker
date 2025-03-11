@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.dust.extracker.BuildConfig
 import com.dust.extracker.R
 import com.dust.extracker.adapters.recyclerviewadapters.NewsRecyclerViewAdapter
 import com.dust.extracker.realmdb.RealmDataBaseCenter
@@ -102,7 +104,12 @@ class NewsFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         updateNewsViewPagerRecycler = UpdateNewsViewPagerRecycler()
-        requireActivity().registerReceiver(updateNewsViewPagerRecycler , IntentFilter("com.dust.extracker.UpdateNewsViewPagerRecycler"))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(updateNewsViewPagerRecycler , IntentFilter("com.dust.extracker.UpdateNewsViewPagerRecycler"),
+                Context.RECEIVER_EXPORTED)
+        }else{
+            requireActivity().registerReceiver(updateNewsViewPagerRecycler , IntentFilter("com.dust.extracker.UpdateNewsViewPagerRecycler"))
+        }
     }
 
     override fun onStop() {

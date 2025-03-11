@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -214,7 +215,12 @@ class MarketRecyclerViewAdapter(
                 }
             }
         }
-        context.registerReceiver(UpdatePrices(), IntentFilter("com.dust.extracker.UPDATE_ITEMS"))
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            context.registerReceiver(UpdatePrices(), IntentFilter("com.dust.extracker.UPDATE_ITEMS"),Context.RECEIVER_EXPORTED)
+        }else{
+            context.registerReceiver(UpdatePrices(), IntentFilter("com.dust.extracker.UPDATE_ITEMS"))
+        }
 
         class UpdateTomanData : BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
@@ -225,10 +231,20 @@ class MarketRecyclerViewAdapter(
                 holder.item_price_toman.startAnimation(alphaAnimation)
             }
         }
-        context.registerReceiver(
-            UpdatePrices(),
-            IntentFilter("com.dust.extracker.onDollarPriceRecieve")
-        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            context.registerReceiver(
+                UpdatePrices(),
+                IntentFilter("com.dust.extracker.onDollarPriceRecieve"),
+                Context.RECEIVER_EXPORTED
+            )
+        }else{
+            context.registerReceiver(
+                UpdatePrices(),
+                IntentFilter("com.dust.extracker.onDollarPriceRecieve")
+            )
+        }
+
     }
 
     override fun getItemCount(): Int = list.size

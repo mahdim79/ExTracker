@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -141,7 +142,11 @@ class ExchangersFragment : Fragment(), OnGetExchangersData, OnExchangerRealmData
     override fun onStart() {
         super.onStart()
         searchNotifier = SearchNotifier()
-        requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"),Context.RECEIVER_EXPORTED)
+        }else{
+            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))        }
 
     }
 

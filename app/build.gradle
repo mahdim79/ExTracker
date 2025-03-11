@@ -8,13 +8,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 34
     buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.dust.extracker"
         minSdkVersion 24
-        targetSdkVersion 31
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true

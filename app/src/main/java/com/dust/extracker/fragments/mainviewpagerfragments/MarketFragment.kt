@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.inputmethodservice.InputMethodService
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -342,10 +343,18 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
             IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
         )
         onClickMainData = OnClickMainData()
-        requireActivity().registerReceiver(
-            onClickMainData,
-            IntentFilter("com.dust.extracker.OnClickMainData")
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(
+                onClickMainData,
+                IntentFilter("com.dust.extracker.OnClickMainData"),
+                Context.RECEIVER_EXPORTED
+            )
+        }else{
+            requireActivity().registerReceiver(
+                onClickMainData,
+                IntentFilter("com.dust.extracker.OnClickMainData")
+            )        }
+
     }
 
     private fun startMarketCapTimer() {

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -68,7 +69,11 @@ class UserProfileFragment : Fragment() , OnGetAllCryptoList , OnUpdateUserData ,
     override fun onStart() {
         super.onStart()
         val onUpdatePhoneNumber = OnUpdatePhoneNumber()
-        requireActivity().registerReceiver(onUpdatePhoneNumber , IntentFilter("com.dust.extracker.UPDATE_PHONE_NUMBER"))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(onUpdatePhoneNumber , IntentFilter("com.dust.extracker.UPDATE_PHONE_NUMBER"),Context.RECEIVER_EXPORTED)
+        }else{
+            requireActivity().registerReceiver(onUpdatePhoneNumber , IntentFilter("com.dust.extracker.UPDATE_PHONE_NUMBER"))        }
+
     }
 
     override fun onStop() {

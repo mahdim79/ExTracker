@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -68,7 +69,12 @@ class BookMarksFragment:Fragment() {
     override fun onStart() {
         super.onStart()
         onRemove = OnRemove()
-        requireActivity().registerReceiver(onRemove , IntentFilter("com.dust.extracker.RemoveBookmark"))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(onRemove , IntentFilter("com.dust.extracker.RemoveBookmark"),Context.RECEIVER_EXPORTED)
+        }else{
+            requireActivity().registerReceiver(onRemove , IntentFilter("com.dust.extracker.RemoveBookmark"))
+        }
+
     }
 
     override fun onStop() {

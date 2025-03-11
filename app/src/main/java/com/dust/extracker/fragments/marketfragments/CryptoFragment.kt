@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -181,12 +182,23 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
         searchNotifier = SearchNotifier()
         ondataRecieve = onDataRecieve()
         connectionReceiver = ConnectionReceiver()
-        requireActivity().registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"))
-        requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))
-        requireActivity().registerReceiver(
-            connectionReceiver,
-            IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
-        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"),Context.RECEIVER_EXPORTED)
+            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"),Context.RECEIVER_EXPORTED)
+            requireActivity().registerReceiver(
+                connectionReceiver,
+                IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"),
+                Context.RECEIVER_EXPORTED
+            )
+        }else{
+            requireActivity().registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"))
+            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))
+            requireActivity().registerReceiver(
+                connectionReceiver,
+                IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
+            )
+        }
         if (INDEX != 0)
             startTimer()
     }

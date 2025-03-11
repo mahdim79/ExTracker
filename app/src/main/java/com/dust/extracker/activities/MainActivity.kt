@@ -1,12 +1,16 @@
 package com.dust.extracker.activities
 
+import android.Manifest
 import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -25,6 +29,9 @@ MainActivity : AppCompatActivity() {
     private var lastFragment: Int = 2
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var viewPager: CViewPager
+
+    private val notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         settheme()
         setLanguage()
@@ -34,6 +41,15 @@ MainActivity : AppCompatActivity() {
         setUpViewPager()
         setUpBottomNavigationView()
         checkNotificationService()
+        checkNotificationPermission()
+    }
+
+    private fun checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
     }
 
     private fun setLanguage() {
@@ -439,7 +455,11 @@ MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         onPageChange = OnPageChange()
-        registerReceiver(onPageChange, IntentFilter("com.dust.extracker.OnPageChange"))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            registerReceiver(onPageChange, IntentFilter("com.dust.extracker.OnPageChange"),Context.RECEIVER_EXPORTED)
+        }else{
+            registerReceiver(onPageChange, IntentFilter("com.dust.extracker.OnPageChange"))
+        }
     }
 
     override fun onStop() {

@@ -1,5 +1,7 @@
 package com.dust.extracker.services
 
+import android.Manifest
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
@@ -7,9 +9,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -61,7 +66,12 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
         data = shared.getNotificationData()
         apiService = ApiCenter(applicationContext, this)
         updateData = UpdateData()
-        registerReceiver(updateData, IntentFilter("com.dust.extracker.Update_NotificationData"))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            registerReceiver(updateData, IntentFilter("com.dust.extracker.Update_NotificationData"),Context.RECEIVER_EXPORTED)
+        }else{
+            registerReceiver(updateData, IntentFilter("com.dust.extracker.Update_NotificationData"))
+        }
+
         timer = Timer()
         timer.schedule(NewTimerTask(), 0, 30000)
         return Service.START_STICKY
@@ -220,33 +230,57 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
         })
     }
 
+    private fun createNotificationChannel(): String {
+        val channelId = packageName
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                channelId,
+                "cryptoline_notifications",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            channel.lightColor = Color.BLUE
+            channel.vibrationPattern = longArrayOf(0L)
+            channel.enableVibration(false)
+            channel.setSound(null, null)
+            val notificationManager =
+                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+        return channelId
+    }
+
     fun sendPortfolioNotification(
         portfolioName: String,
         currentCapital: Double,
         changePct: String
     ) {
-        shared.setLastDatePortfolioNotified(Date().day)
-        val intent = Intent(this, SplashActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-        val notification = NotificationCompat.Builder(applicationContext)
-            .setOngoing(false)
-            .setContentTitle("اطلاعیه پرتفولیو: $portfolioName")
-            .setContentText("ارزش$currentCapital تومان | تغییر$changePct درصد")
-            .setSmallIcon(R.drawable.ic_launcher)
-            .setVibrate(LongArray(1) {
-                1000
-            })
-            .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
-            .setContentIntent(
-                PendingIntent.getActivity(
-                    this, 101, intent
-                    , 0
+
+        if (checkNotificationPermission()){
+            shared.setLastDatePortfolioNotified(Date().day)
+            val intent = Intent(this, SplashActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            val notification = NotificationCompat.Builder(applicationContext,createNotificationChannel())
+                .setOngoing(false)
+                .setContentTitle("اطلاعیه پرتفولیو: $portfolioName")
+                .setContentText("ارزش$currentCapital تومان | تغییر$changePct درصد")
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setVibrate(LongArray(1) {
+                    1000
+                })
+                .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
+                .setContentIntent(
+                    PendingIntent.getActivity(
+                        this, 101, intent
+                        , PendingIntent.FLAG_IMMUTABLE
+                    )
                 )
-            )
-            .build()
-        val notify =
-            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notify.notify(generateFreshNotificationId(notify), notification)
+                .build()
+            val notify =
+                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notify.notify(generateFreshNotificationId(notify), notification)
+            Log.i("serviceTag","notifying notification")
+        }
+
     }
 
     private fun calculateTomanLastAmount(transactionList: List<TransactionDataClass>): Double {
@@ -276,32 +310,34 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
     }
 
     private fun sendPriceNotification(data: LastChangeDataClass) {
-        var changes = ""
-        if (data.ChangePercentage > 0)
-            changes = "+${String.format("%.2f", data.ChangePercentage)}"
-        else
-            changes = "${String.format("%.2f", data.ChangePercentage)}"
-        val intent = Intent(this, SplashActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-        val notification = NotificationCompat.Builder(applicationContext)
-            .setOngoing(false)
-            .setContentTitle("تغییرات قیمت ${data.CoinName}")
-            .setContentText("میزان تغییر روزانه قیمت: $changes")
-            .setSmallIcon(R.drawable.ic_launcher)
-            .setVibrate(LongArray(1) {
-                1000
-            })
-            .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
-            .setContentIntent(
-                PendingIntent.getActivity(
-                    this, 101, intent
-                    , 0
+        if (checkNotificationPermission()){
+            var changes = ""
+            if (data.ChangePercentage > 0)
+                changes = "+${String.format("%.2f", data.ChangePercentage)}"
+            else
+                changes = "${String.format("%.2f", data.ChangePercentage)}"
+            val intent = Intent(this, SplashActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            val notification = NotificationCompat.Builder(applicationContext,createNotificationChannel())
+                .setOngoing(false)
+                .setContentTitle("تغییرات قیمت ${data.CoinName}")
+                .setContentText("میزان تغییر روزانه قیمت: $changes")
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setVibrate(LongArray(1) {
+                    1000
+                })
+                .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
+                .setContentIntent(
+                    PendingIntent.getActivity(
+                        this, 101, intent
+                        , PendingIntent.FLAG_IMMUTABLE
+                    )
                 )
-            )
-            .build()
-        val notify =
-            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notify.notify(generateFreshNotificationId(notify), notification)
+                .build()
+            val notify =
+                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notify.notify(generateFreshNotificationId(notify), notification)
+        }
     }
 
     override fun onGetByName(price: Double, dataNum: Int) {
@@ -335,42 +371,44 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
         mode: Int,
         id: Int
     ) {
-        Log.i(tag, "notify")
-
-        val intent = Intent(this, SplashActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-        val notification = NotificationCompat.Builder(applicationContext)
-            .setOngoing(false)
-            .setContentTitle("قیمت به مقدار مد نظر رسید")
-            .setContentText("قیمت$symbol از$lastPrice عبور کرد!")
-            .setSmallIcon(R.drawable.ic_launcher)
-            .setVibrate(LongArray(1) {
-                1000
-            })
-            .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
-            .setContentIntent(
-                PendingIntent.getActivity(
-                    this, 101, intent
-                    , 0
+        if (checkNotificationPermission()){
+            Log.i(tag, "notify")
+            val intent = Intent(this, SplashActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            val notification = NotificationCompat.Builder(applicationContext,createNotificationChannel())
+                .setOngoing(false)
+                .setContentTitle("قیمت به مقدار مد نظر رسید")
+                .setContentText("قیمت$symbol از$lastPrice عبور کرد!")
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setVibrate(LongArray(1) {
+                    1000
+                })
+                .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
+                .setContentIntent(
+                    PendingIntent.getActivity(
+                        this, 101, intent
+                        , PendingIntent.FLAG_IMMUTABLE
+                    )
                 )
-            )
-            .build()
-        val notify =
-            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notify.notify(generateFreshNotificationId(notify), notification)
+                .build()
+            val notify =
+                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notify.notify(generateFreshNotificationId(notify), notification)
 
-        if (mode == 0) {
-            Log.i(tag, "mode : $mode")
-            shared.removeNotificationData(id)
-            sendBroadcast(Intent("com.dust.extracker.OnServiceDeleteNotification"))
-            try {
-                this.stopSelf()
-            } catch (e: Exception) {
-                Log.i(tag, "mode exception ${e.message!!}")
-            } finally {
-                startService(Intent(this, NotificationService::class.java))
+            if (mode == 0) {
+                Log.i(tag, "mode : $mode")
+                shared.removeNotificationData(id)
+                sendBroadcast(Intent("com.dust.extracker.OnServiceDeleteNotification"))
+                try {
+                    this.stopSelf()
+                } catch (e: Exception) {
+                    Log.i(tag, "mode exception ${e.message!!}")
+                } finally {
+                    startService(Intent(this, NotificationService::class.java))
+                }
             }
         }
+
     }
 
     private fun generateFreshNotificationId(notify: NotificationManager): Int {
@@ -422,27 +460,36 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
         super.onDestroy()
     }
 
+    private fun checkNotificationPermission():Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            return checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+        }
+        return true
+    }
+
     private fun sendNewsNotification(data: NewsDataClass) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(data.url))
-        val notification = NotificationCompat.Builder(applicationContext)
-            .setOngoing(false)
-            .setContentTitle("${data.title}")
-            .setContentText("${data.description}")
-            .setSmallIcon(R.drawable.ic_launcher)
-            .setVibrate(LongArray(1) {
-                1000
-            })
-            .setContentIntent(
-                PendingIntent.getActivity(
-                    this, 101, intent
-                    , 0
+        if (checkNotificationPermission()){
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(data.url))
+            val notification = NotificationCompat.Builder(applicationContext,createNotificationChannel())
+                .setOngoing(false)
+                .setContentTitle("${data.title}")
+                .setContentText("${data.description}")
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setVibrate(LongArray(1) {
+                    1000
+                })
+                .setContentIntent(
+                    PendingIntent.getActivity(
+                        this, 101, intent
+                        , PendingIntent.FLAG_IMMUTABLE
+                    )
                 )
-            )
-            .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
-            .build()
-        val notify =
-            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notify.notify(generateFreshNotificationId(notify), notification)
+                .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
+                .build()
+            val notify =
+                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notify.notify(generateFreshNotificationId(notify), notification)
+        }
     }
 
     override fun onGetNews(list: List<NewsDataClass>) {

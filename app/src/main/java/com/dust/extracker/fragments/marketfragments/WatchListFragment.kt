@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -166,13 +167,23 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
         super.onStart()
         startTimer()
         searchNotifier = SearchNotifier()
-        requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))
 
         notifyDataChanged = NotifyDataChanged()
-        requireActivity().registerReceiver(
-            notifyDataChanged,
-            IntentFilter("com.dust.extracker.notifyDataSetChanged")
-        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"),Context.RECEIVER_EXPORTED)
+            requireActivity().registerReceiver(
+                notifyDataChanged,
+                IntentFilter("com.dust.extracker.notifyDataSetChanged"),
+                Context.RECEIVER_EXPORTED
+            )
+        }else{
+            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))
+            requireActivity().registerReceiver(
+                notifyDataChanged,
+                IntentFilter("com.dust.extracker.notifyDataSetChanged")
+            )        }
+
     }
 
     override fun onStop() {

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -116,10 +117,18 @@ class PortfolioFragment:Fragment() {
         onClickTransactionData = OnClickTransactionData()
         addmoreFragments = AddMoreFragments()
         onUpdateTotalFund = OnUpdateTotalFund()
-        requireActivity().registerReceiver(addmoreFragments , IntentFilter("com.dust.extracker.addMoreHistory"))
-        requireActivity().registerReceiver(deleteFragment , IntentFilter("com.dust.extracker.DeleteFragment"))
-        requireActivity().registerReceiver(onClickTransactionData , IntentFilter("com.dust.extracker.OnClickTransactionData"))
-        requireActivity().registerReceiver(onUpdateTotalFund , IntentFilter("com.dust.extracker.OnUpdateTotalFund"))
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(addmoreFragments , IntentFilter("com.dust.extracker.addMoreHistory"),Context.RECEIVER_EXPORTED)
+            requireActivity().registerReceiver(deleteFragment , IntentFilter("com.dust.extracker.DeleteFragment"),Context.RECEIVER_EXPORTED)
+            requireActivity().registerReceiver(onClickTransactionData , IntentFilter("com.dust.extracker.OnClickTransactionData"),Context.RECEIVER_EXPORTED)
+            requireActivity().registerReceiver(onUpdateTotalFund , IntentFilter("com.dust.extracker.OnUpdateTotalFund"),Context.RECEIVER_EXPORTED)
+        }else{
+            requireActivity().registerReceiver(addmoreFragments , IntentFilter("com.dust.extracker.addMoreHistory"))
+            requireActivity().registerReceiver(deleteFragment , IntentFilter("com.dust.extracker.DeleteFragment"))
+            requireActivity().registerReceiver(onClickTransactionData , IntentFilter("com.dust.extracker.OnClickTransactionData"))
+            requireActivity().registerReceiver(onUpdateTotalFund , IntentFilter("com.dust.extracker.OnUpdateTotalFund"))
+        }
     }
 
     override fun onStop() {

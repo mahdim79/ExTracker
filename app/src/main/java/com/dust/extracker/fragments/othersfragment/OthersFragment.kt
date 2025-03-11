@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.LayoutInflater
@@ -370,7 +371,10 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     override fun onStart() {
         onUserLogIn = OnUserLogIn()
-        requireActivity().registerReceiver(onUserLogIn, IntentFilter("com.dust.extracker.USER_DATA"))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(onUserLogIn, IntentFilter("com.dust.extracker.USER_DATA"),Context.RECEIVER_EXPORTED)
+        }else{
+            requireActivity().registerReceiver(onUserLogIn, IntentFilter("com.dust.extracker.USER_DATA"))        }
         super.onStart()
         try {
             others_fingerPrintSwitcher.isChecked = sharedPreferencesCenter.getFingerPrintEnabled()

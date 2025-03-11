@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -226,10 +227,18 @@ class NotificationFragment : Fragment(), View.OnClickListener {
     override fun onStart() {
         super.onStart()
         onServiceDeleteNotification = OnServiceDeleteNotification()
-        requireActivity().registerReceiver(
-            onServiceDeleteNotification,
-            IntentFilter("com.dust.extracker.OnServiceDeleteNotification")
-        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(
+                onServiceDeleteNotification,
+                IntentFilter("com.dust.extracker.OnServiceDeleteNotification"),
+                Context.RECEIVER_EXPORTED
+            )
+        }else{
+            requireActivity().registerReceiver(
+                onServiceDeleteNotification,
+                IntentFilter("com.dust.extracker.OnServiceDeleteNotification")
+            )        }
     }
 
     override fun onStop() {
