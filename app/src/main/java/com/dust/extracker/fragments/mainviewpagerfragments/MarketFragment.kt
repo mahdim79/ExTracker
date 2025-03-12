@@ -369,7 +369,7 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
                     marketCapTimer.cancel()
                 }
             }
-        }, 50, 60000)
+        }, 1000, 60000)
     }
 
     override fun onStop() {

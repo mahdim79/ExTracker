@@ -13,9 +13,11 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.net.wifi.WifiManager
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.dust.extracker.R
@@ -51,12 +53,35 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
     private lateinit var portfolioList: List<String>
     private lateinit var shared: SharedPreferencesCenter
     private lateinit var updateData: UpdateData
+
+    private val cpuWakeLock by lazy {
+        (getSystemService(Context.POWER_SERVICE) as PowerManager).newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            this.javaClass.simpleName
+        )
+    }
+
+    private val wifiWakeLock by lazy {
+        (getSystemService(Context.WIFI_SERVICE) as WifiManager).createWifiLock(
+            WifiManager.WIFI_MODE_FULL_HIGH_PERF,
+            this.javaClass.simpleName
+        )
+    }
+
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }
 
+    private fun lockCpuAndWifi() {
+        cpuWakeLock.acquire()
+        wifiWakeLock.acquire()
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i(tag, "started")
+
+        lockCpuAndWifi()
+        wifiWakeLock.acquire()
 
         shared = SharedPreferencesCenter(applicationContext)
         priceNotificationEnabled = shared.getPriceNotificationsEnabled()
@@ -74,7 +99,7 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
 
         timer = Timer()
         timer.schedule(NewTimerTask(), 0, 30000)
-        return Service.START_STICKY
+        return START_STICKY
     }
 
     inner class NewTimerTask : TimerTask() {
@@ -452,12 +477,20 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
 
     override fun onDestroy() {
         Log.i(tag, "stoped")
+        unLockCpuAndWifi()
         if (::timer.isInitialized){
             timer.purge()
             timer.cancel()
         }
         unregisterReceiver(updateData)
         super.onDestroy()
+    }
+
+    private fun unLockCpuAndWifi() {
+        if (cpuWakeLock.isHeld)
+            cpuWakeLock.release()
+        if (wifiWakeLock.isHeld)
+            wifiWakeLock.release()
     }
 
     private fun checkNotificationPermission():Boolean {
