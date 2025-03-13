@@ -2,6 +2,8 @@ package com.dust.extracker.activities
 
 import android.Manifest
 import android.app.ActivityManager
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,17 +12,23 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.text.format.DateFormat
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.JobIntentService
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
-import com.android.volley.toolbox.Volley
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dust.extracker.R
 import com.dust.extracker.adapters.viewpagersadapters.MainViewPagerAdapter
 import com.dust.extracker.customviews.CViewPager
-import com.dust.extracker.services.NotificationService
+import com.dust.extracker.services.NotificationReceiver
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_CLOCK
+import com.google.android.material.timepicker.TimeFormat
 import java.util.*
 
 class
@@ -29,6 +37,10 @@ MainActivity : AppCompatActivity() {
     private var lastFragment: Int = 2
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var viewPager: CViewPager
+
+    private val alarmManager by lazy {
+        getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    }
 
     private val notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){}
 
@@ -40,7 +52,7 @@ MainActivity : AppCompatActivity() {
         setUpViews()
         setUpViewPager()
         setUpBottomNavigationView()
-        checkNotificationService()
+        startNotificationAlarm()
         checkNotificationPermission()
     }
 
@@ -65,20 +77,22 @@ MainActivity : AppCompatActivity() {
         resources.updateConfiguration(config, resources.displayMetrics)
     }
 
-    fun checkNotificationService() {
-        if (!checkServiceRunning())
-            startService(Intent(this, NotificationService::class.java))
-    }
+    fun startNotificationAlarm() {
 
+        sendBroadcast(Intent(this,NotificationReceiver::class.java))
 
-    fun checkServiceRunning(): Boolean {
-        val activityManager =
-            getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        activityManager.getRunningServices(Integer.MAX_VALUE).forEach {
-            if (it.service.className == NotificationService::class.java.name)
-                return true
-        }
-        return false
+        val intent = Intent(this, NotificationReceiver::class.java)
+        val pending = PendingIntent.getBroadcast(this, 15678 , intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+        alarmManager.cancel(pending)
+SwipeRefreshLayout
+        alarmManager.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            System.currentTimeMillis(),
+            60000,
+            pending
+        )
+
     }
 
     private fun settheme() {

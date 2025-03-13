@@ -4,155 +4,122 @@ import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Uri
-import android.net.wifi.WifiManager
-import android.os.Binder
 import android.os.Build
-import android.os.IBinder
-import android.os.PowerManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.dust.extracker.R
 import com.dust.extracker.activities.SplashActivity
 import com.dust.extracker.apimanager.ApiCenter
-import com.dust.extracker.dataclasses.*
+import com.dust.extracker.dataclasses.CryptoMainData
+import com.dust.extracker.dataclasses.HistoryDataClass
+import com.dust.extracker.dataclasses.LastChangeDataClass
+import com.dust.extracker.dataclasses.NewsDataClass
+import com.dust.extracker.dataclasses.NotificationDataClass
+import com.dust.extracker.dataclasses.PortfotioDataClass
+import com.dust.extracker.dataclasses.TransactionDataClass
 import com.dust.extracker.interfaces.OnGetAllCryptoList
 import com.dust.extracker.interfaces.OnGetDailyChanges
 import com.dust.extracker.interfaces.OnGetNews
 import com.dust.extracker.interfaces.OnGetPortfolioMainData
 import com.dust.extracker.realmdb.DollarObject
 import com.dust.extracker.realmdb.HistoryObject
-import com.dust.extracker.realmdb.MainRealmObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
 import com.google.gson.Gson
-import com.squareup.picasso.Picasso
 import io.realm.Realm
-import java.sql.Date
-import java.util.*
+import java.util.Date
+import java.util.Timer
 import kotlin.math.abs
 import kotlin.math.floor
 
-class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, OnGetNews {
+class NotificationReceiver : BroadcastReceiver(), OnGetAllCryptoList, OnGetDailyChanges, OnGetNews {
+
     private lateinit var data: List<NotificationDataClass>
     private lateinit var apiService: ApiCenter
-    private lateinit var timer: Timer
     private var popularList = arrayListOf<String>()
-    val tag = "ServiceTag"
+    val tag = "NotificationReceiver"
     private var notificationEnabled = false
     private var priceNotificationEnabled = false
     private var newsNotificationEnabled = false
     private lateinit var portfolioList: List<String>
     private lateinit var shared: SharedPreferencesCenter
-    private lateinit var updateData: UpdateData
 
-    private val cpuWakeLock by lazy {
-        (getSystemService(Context.POWER_SERVICE) as PowerManager).newWakeLock(
-            PowerManager.PARTIAL_WAKE_LOCK,
-            this.javaClass.simpleName
-        )
+    private var con:Context? = null
+
+    override fun onReceive(context: Context?, intent: Intent?) {
+        Log.i(tag, "call")
+        context?.let { con ->
+            this.con = con
+            handleNotifications()
+        }
     }
 
-    private val wifiWakeLock by lazy {
-        (getSystemService(Context.WIFI_SERVICE) as WifiManager).createWifiLock(
-            WifiManager.WIFI_MODE_FULL_HIGH_PERF,
-            this.javaClass.simpleName
-        )
-    }
-
-    override fun onBind(p0: Intent?): IBinder? {
-        return null
-    }
-
-    private fun lockCpuAndWifi() {
-        cpuWakeLock.acquire()
-        wifiWakeLock.acquire()
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.i(tag, "started")
-
-        lockCpuAndWifi()
-        wifiWakeLock.acquire()
-
-        shared = SharedPreferencesCenter(applicationContext)
+    private fun handleNotifications() {
+        shared = SharedPreferencesCenter(con!!)
         priceNotificationEnabled = shared.getPriceNotificationsEnabled()
         newsNotificationEnabled = shared.getImportantNewsNotificationsEnabled()
         notificationEnabled = shared.getNotificationEnabled()
         portfolioList = shared.getEnabledPortfolioNotifications()
         data = shared.getNotificationData()
-        apiService = ApiCenter(applicationContext, this)
-        updateData = UpdateData()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            registerReceiver(updateData, IntentFilter("com.dust.extracker.Update_NotificationData"),Context.RECEIVER_EXPORTED)
-        }else{
-            registerReceiver(updateData, IntentFilter("com.dust.extracker.Update_NotificationData"))
-        }
+        apiService = ApiCenter(con!!, this)
 
-        timer = Timer()
-        timer.schedule(NewTimerTask(), 0, 30000)
-        return START_STICKY
-    }
 
-    inner class NewTimerTask : TimerTask() {
-        override fun run() {
-            if (checkConn()) {
-                if (notificationEnabled) {
-                    Log.i(tag, "Request Sending ...")
-                    for (i in 0 until data.size)
-                        apiService.getCryptoPriceByName(data[i].symbol, i)
+        if (checkConn()) {
+            if (notificationEnabled) {
+                Log.i(tag, "Request Sending ...")
+                for (i in 0 until data.size)
+                    apiService.getCryptoPriceByName(data[i].symbol, i)
 
-                    if (priceNotificationEnabled) {
-                        if (shared.getLastDatePriceNotified() != Date().day) {
-                            if (popularList.isEmpty()) {
-                                val allData = RealmDataBaseCenter().getPopularCoins()
-                                for (i in 0 until allData.size) {
-                                    popularList.add(allData[i].Name!!)
-                                    if (i == 3)
-                                        break
-                                }
+                if (priceNotificationEnabled) {
+                    if (shared.getLastDatePriceNotified() != Date().day) {
+                        if (popularList.isEmpty()) {
+                            val allData = RealmDataBaseCenter().getPopularCoins()
+                            for (i in 0 until allData.size) {
+                                popularList.add(allData[i].Name!!)
+                                if (i == 3)
+                                    break
                             }
-
-                            apiService.getDailyChanges(
-                                popularList.joinToString(","),
-                                this@NotificationService
-                            )
                         }
+
+                        apiService.getDailyChanges(
+                            popularList.joinToString(","),
+                            this@NotificationReceiver
+                        )
                     }
+                }
 
-                    if (newsNotificationEnabled)
-                        if (shared.getLastDateNewsNotified() != Date().day)
-                            apiService.getNews(this@NotificationService)
+                if (newsNotificationEnabled)
+                    if (shared.getLastDateNewsNotified() != Date().day)
+                        apiService.getNews(this@NotificationReceiver)
 
 
-                    if (portfolioList.isNotEmpty()) {
-                        if (shared.getLastDatePortfolioNotified() != Date().day) {
-                            try {
-                                getAllHistoryData(Realm.getDefaultInstance()).forEach {
-                                    if (portfolioList.contains(it.portfolioName)) {
-                                        sendPortfolioDataRequest(
-                                            it.portfolioName,
-                                            it.transactionList
-                                        )
-                                    }
+                if (portfolioList.isNotEmpty()) {
+                    if (shared.getLastDatePortfolioNotified() != Date().day) {
+                        try {
+                            getAllHistoryData(Realm.getDefaultInstance()).forEach {
+                                if (portfolioList.contains(it.portfolioName)) {
+                                    sendPortfolioDataRequest(
+                                        it.portfolioName,
+                                        it.transactionList
+                                    )
                                 }
-                            } catch (e: Exception) {
-                                Log.i(tag, "All History Exception")
-
                             }
+                        } catch (e: Exception) {
+                            Log.i(tag, "All History Exception")
+
                         }
                     }
                 }
             }
         }
+
     }
 
     fun getAllHistoryData(realmDB: Realm): List<HistoryDataClass> {
@@ -256,7 +223,7 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
     }
 
     private fun createNotificationChannel(): String {
-        val channelId = packageName
+        val channelId = con!!.packageName
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
@@ -268,7 +235,7 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
             channel.enableVibration(false)
             channel.setSound(null, null)
             val notificationManager =
-                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                con!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
         return channelId
@@ -282,9 +249,9 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
 
         if (checkNotificationPermission()){
             shared.setLastDatePortfolioNotified(Date().day)
-            val intent = Intent(this, SplashActivity::class.java)
+            val intent = Intent(con!!, SplashActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-            val notification = NotificationCompat.Builder(applicationContext,createNotificationChannel())
+            val notification = NotificationCompat.Builder(con!!,createNotificationChannel())
                 .setOngoing(false)
                 .setContentTitle("اطلاعیه پرتفولیو: $portfolioName")
                 .setContentText("ارزش$currentCapital تومان | تغییر$changePct درصد")
@@ -292,16 +259,16 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
                 .setVibrate(LongArray(1) {
                     1000
                 })
-                .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
+                .setSound(Uri.parse("android.resources://${this.con!!.packageName}/${R.raw.notification_rington}"))
                 .setContentIntent(
                     PendingIntent.getActivity(
-                        this, 101, intent
+                        con!!, 101, intent
                         , PendingIntent.FLAG_IMMUTABLE
                     )
                 )
                 .build()
             val notify =
-                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                con!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notify.notify(generateFreshNotificationId(notify), notification)
             Log.i("serviceTag","notifying notification")
         }
@@ -341,9 +308,9 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
                 changes = "+${String.format("%.2f", data.ChangePercentage)}"
             else
                 changes = "${String.format("%.2f", data.ChangePercentage)}"
-            val intent = Intent(this, SplashActivity::class.java)
+            val intent = Intent(con!!, SplashActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-            val notification = NotificationCompat.Builder(applicationContext,createNotificationChannel())
+            val notification = NotificationCompat.Builder(con!!,createNotificationChannel())
                 .setOngoing(false)
                 .setContentTitle("تغییرات قیمت ${data.CoinName}")
                 .setContentText("میزان تغییر روزانه قیمت: $changes")
@@ -351,16 +318,16 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
                 .setVibrate(LongArray(1) {
                     1000
                 })
-                .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
+                .setSound(Uri.parse("android.resources://${this.con!!.packageName}/${R.raw.notification_rington}"))
                 .setContentIntent(
                     PendingIntent.getActivity(
-                        this, 101, intent
+                        con!!, 101, intent
                         , PendingIntent.FLAG_IMMUTABLE
                     )
                 )
                 .build()
             val notify =
-                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                con!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notify.notify(generateFreshNotificationId(notify), notification)
         }
     }
@@ -398,9 +365,9 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
     ) {
         if (checkNotificationPermission()){
             Log.i(tag, "notify")
-            val intent = Intent(this, SplashActivity::class.java)
+            val intent = Intent(con!!, SplashActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-            val notification = NotificationCompat.Builder(applicationContext,createNotificationChannel())
+            val notification = NotificationCompat.Builder(con!!,createNotificationChannel())
                 .setOngoing(false)
                 .setContentTitle("قیمت به مقدار مد نظر رسید")
                 .setContentText("قیمت$symbol از$lastPrice عبور کرد!")
@@ -408,29 +375,22 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
                 .setVibrate(LongArray(1) {
                     1000
                 })
-                .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
+                .setSound(Uri.parse("android.resources://${this.con!!.packageName}/${R.raw.notification_rington}"))
                 .setContentIntent(
                     PendingIntent.getActivity(
-                        this, 101, intent
+                        con!!, 101, intent
                         , PendingIntent.FLAG_IMMUTABLE
                     )
                 )
                 .build()
             val notify =
-                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                con!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notify.notify(generateFreshNotificationId(notify), notification)
 
             if (mode == 0) {
                 Log.i(tag, "mode : $mode")
                 shared.removeNotificationData(id)
-                sendBroadcast(Intent("com.dust.extracker.OnServiceDeleteNotification"))
-                try {
-                    this.stopSelf()
-                } catch (e: Exception) {
-                    Log.i(tag, "mode exception ${e.message!!}")
-                } finally {
-                    startService(Intent(this, NotificationService::class.java))
-                }
+                con!!.sendBroadcast(Intent("com.dust.extracker.OnServiceDeleteNotification"))
             }
         }
 
@@ -448,54 +408,15 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
     override fun onGet(cryptoList: List<CryptoMainData>) {}
     private fun checkConn(): Boolean {
         val connectivityManager =
-            applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            con!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = connectivityManager.activeNetworkInfo
         return info != null && info.isConnectedOrConnecting
     }
 
-    inner class UpdateData : BroadcastReceiver() {
-        override fun onReceive(p0: Context?, p1: Intent?) {
-            if (p1 != null && p1.extras != null) {
-                if (p1.extras!!.containsKey("updateData"))
-                    data = shared.getNotificationData()
-
-                if (p1.extras!!.containsKey("PriceData"))
-                    priceNotificationEnabled = p1.extras!!.getBoolean("PriceData")
-
-                if (p1.extras!!.containsKey("newsData"))
-                    newsNotificationEnabled = p1.extras!!.getBoolean("newsData")
-
-                if (p1.extras!!.containsKey("EnabledPortfolio"))
-                    portfolioList = shared.getEnabledPortfolioNotifications()
-
-                if (p1.extras!!.containsKey("EnabledNotifications"))
-                    notificationEnabled = shared.getNotificationEnabled()
-
-            }
-        }
-    }
-
-    override fun onDestroy() {
-        Log.i(tag, "stoped")
-        unLockCpuAndWifi()
-        if (::timer.isInitialized){
-            timer.purge()
-            timer.cancel()
-        }
-        unregisterReceiver(updateData)
-        super.onDestroy()
-    }
-
-    private fun unLockCpuAndWifi() {
-        if (cpuWakeLock.isHeld)
-            cpuWakeLock.release()
-        if (wifiWakeLock.isHeld)
-            wifiWakeLock.release()
-    }
 
     private fun checkNotificationPermission():Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            return checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+            return con!!.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
         }
         return true
     }
@@ -503,7 +424,7 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
     private fun sendNewsNotification(data: NewsDataClass) {
         if (checkNotificationPermission()){
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(data.url))
-            val notification = NotificationCompat.Builder(applicationContext,createNotificationChannel())
+            val notification = NotificationCompat.Builder(con!!,createNotificationChannel())
                 .setOngoing(false)
                 .setContentTitle("${data.title}")
                 .setContentText("${data.description}")
@@ -513,14 +434,14 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
                 })
                 .setContentIntent(
                     PendingIntent.getActivity(
-                        this, 101, intent
+                        con!!, 101, intent
                         , PendingIntent.FLAG_IMMUTABLE
                     )
                 )
-                .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
+                .setSound(Uri.parse("android.resources://${this.con!!.packageName}/${R.raw.notification_rington}"))
                 .build()
             val notify =
-                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                con!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notify.notify(generateFreshNotificationId(notify), notification)
         }
     }
@@ -534,4 +455,5 @@ class NotificationService : Service(), OnGetAllCryptoList, OnGetDailyChanges, On
             }
         }
     }
+
 }

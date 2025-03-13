@@ -20,12 +20,12 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dust.extracker.R
+import com.dust.extracker.activities.MainActivity
 import com.dust.extracker.adapters.recyclerviewadapters.NotificationRecyclerViewAdapter
 import com.dust.extracker.customviews.CTextView
 import com.dust.extracker.dataclasses.NotificationDataClass
 import com.dust.extracker.interfaces.OnNotificationRemoved
 import com.dust.extracker.realmdb.RealmDataBaseCenter
-import com.dust.extracker.services.NotificationService
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
 
 class NotificationFragment : Fragment(), View.OnClickListener {
@@ -164,25 +164,9 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                 override fun onNotificationRemoved(id: Int) {
                     shared.removeNotificationData(id)
                     setUpViewType()
-                    if (checkServiceRunning()) {
-                        val intent = Intent("com.dust.extracker.Update_NotificationData")
-                        intent.putExtra("updateData", "")
-                        requireActivity().sendBroadcast(intent)
-                    } else {
-                        requireActivity().startService(Intent(requireActivity(), NotificationService::class.java))
-                    }
+                    (requireActivity() as MainActivity).startNotificationAlarm()
                 }
             }, requireActivity())
-    }
-
-    fun checkServiceRunning(): Boolean {
-        val activityManager =
-            requireActivity().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        activityManager.getRunningServices(Integer.MAX_VALUE).forEach {
-            if (it.service.className == NotificationService::class.java.name)
-                return true
-        }
-        return false
     }
 
     private fun setUpBackButton() {

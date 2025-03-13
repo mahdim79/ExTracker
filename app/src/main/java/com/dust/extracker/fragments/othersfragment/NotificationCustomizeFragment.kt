@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.dust.extracker.R
+import com.dust.extracker.activities.MainActivity
 import com.dust.extracker.apimanager.ApiCenter
 import com.dust.extracker.customviews.CButton
 import com.dust.extracker.customviews.CTextView
@@ -25,7 +26,6 @@ import com.dust.extracker.dataclasses.PriceDataClass
 import com.dust.extracker.interfaces.OnGetAllCryptoList
 import com.dust.extracker.realmdb.MainRealmObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
-import com.dust.extracker.services.NotificationService
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
 import com.squareup.picasso.Picasso
 import java.util.*
@@ -183,13 +183,7 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
                     )
                 )
 
-                if (checkServiceRunning()){
-                    val intent = Intent("com.dust.extracker.Update_NotificationData")
-                    intent.putExtra("updateData", "")
-                    requireActivity().sendBroadcast(intent)
-                }else{
-                    requireActivity().startService(Intent(requireActivity(), NotificationService::class.java))
-                }
+                (requireActivity() as MainActivity).startNotificationAlarm()
             }
 
             requireActivity().supportFragmentManager.popBackStack(
@@ -198,15 +192,4 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
             )
         }
     }
-
-    fun checkServiceRunning(): Boolean {
-        val activityManager =
-            requireActivity().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        activityManager.getRunningServices(Integer.MAX_VALUE).forEach {
-            if (it.service.className == NotificationService::class.java.name)
-                return true
-        }
-        return false
-    }
-
 }
