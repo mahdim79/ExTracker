@@ -31,8 +31,7 @@ import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_CLOC
 import com.google.android.material.timepicker.TimeFormat
 import java.util.*
 
-class
-MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
     private lateinit var onPageChange: OnPageChange
     private var lastFragment: Int = 2
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -82,10 +81,10 @@ MainActivity : AppCompatActivity() {
         sendBroadcast(Intent(this,NotificationReceiver::class.java))
 
         val intent = Intent(this, NotificationReceiver::class.java)
-        val pending = PendingIntent.getBroadcast(this, 15678 , intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val pending = PendingIntent.getBroadcast(this, 15678 , intent, PendingIntent.FLAG_IMMUTABLE)
 
         alarmManager.cancel(pending)
-SwipeRefreshLayout
+
         alarmManager.setInexactRepeating(
             AlarmManager.RTC_WAKEUP,
             System.currentTimeMillis(),
