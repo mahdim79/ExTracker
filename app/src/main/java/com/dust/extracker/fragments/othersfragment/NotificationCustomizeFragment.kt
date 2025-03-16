@@ -182,8 +182,6 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
                         timeingNotificationSpinner.selectedItemPosition
                     )
                 )
-
-                (requireActivity() as MainActivity).startNotificationAlarm()
             }
 
             requireActivity().supportFragmentManager.popBackStack(

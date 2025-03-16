@@ -164,7 +164,6 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                 override fun onNotificationRemoved(id: Int) {
                     shared.removeNotificationData(id)
                     setUpViewType()
-                    (requireActivity() as MainActivity).startNotificationAlarm()
                 }
             }, requireActivity())
     }
