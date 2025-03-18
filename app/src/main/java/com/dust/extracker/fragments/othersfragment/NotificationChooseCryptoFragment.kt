@@ -21,6 +21,12 @@ import com.dust.extracker.adapters.recyclerviewadapters.SearchRecyclerViewAdapte
 import com.dust.extracker.fragments.portfoliofragments.InputDataFragment
 import com.dust.extracker.realmdb.MainRealmObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
+import io.realm.RealmResults
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class NotificationChooseCryptoFragment:Fragment() {
     private lateinit var crypto_recycler_view: RecyclerView
@@ -31,6 +37,7 @@ class NotificationChooseCryptoFragment:Fragment() {
     lateinit var realmDB: RealmDataBaseCenter
     private var datalist = arrayListOf<MainRealmObject>()
 
+    private var searchJob: Job? = null
     var MODE: Int = 0
     private lateinit var tempList: List<MainRealmObject>
     lateinit var list1: List<MainRealmObject>
@@ -59,20 +66,26 @@ class NotificationChooseCryptoFragment:Fragment() {
         val l = realmDB.getAllCryptoData()
         crypto_name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
-                if (crypto_name.text.toString() == "") {
-                    MODE = 0
-                    PaginationCount = 1
-                    setUpRecyclerView(PaginationCount)
-                    return
+
+                searchJob?.cancel()
+                searchJob = CoroutineScope(Dispatchers.Main).launch {
+                    delay(1000)
+
+                    if (crypto_name.text.toString() == "") {
+                        MODE = 0
+                        PaginationCount = 1
+                        setUpRecyclerView(PaginationCount)
+                    }else{
+                        MODE = 1
+                        val listTemp = arrayListOf<MainRealmObject>()
+                        for (i in 0 until l.size){
+                            if (l[i]!!.FullName!!.indexOf(crypto_name.text.toString() , ignoreCase = true) != -1)
+                                listTemp.add(l[i]!!)
+                        }
+                        tempList = listTemp
+                        setUpRecyclerView(PaginationCount)
+                    }
                 }
-                MODE = 1
-                val listTemp = arrayListOf<MainRealmObject>()
-                for (i in 0 until l.size){
-                    if (l[i]!!.FullName!!.indexOf(crypto_name.text.toString() , ignoreCase = true) != -1)
-                        listTemp.add(l[i]!!)
-                }
-                tempList = listTemp
-                setUpRecyclerView(PaginationCount)
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {

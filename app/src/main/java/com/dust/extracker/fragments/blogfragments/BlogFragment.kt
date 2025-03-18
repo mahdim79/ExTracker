@@ -158,12 +158,12 @@ class BlogFragment : Fragment(), OnGetNews {
         val sliderData = realmDB.getNews("ALL")
         for (i in sliderData.indices) {
             var showTime = ""
-            sliderData[i].date?.let { ts ->
+            sliderData[i].date.let { ts ->
                 showTime = Utils.convertTimestampToDate(ts * 1000L)
             }
             list.add(
                 SliderDataClass(
-                    sliderData[i].id!!,
+                    sliderData[i].id,
                     sliderData[i].imageUrl,
                     sliderData[i].title,
                     showTime

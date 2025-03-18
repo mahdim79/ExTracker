@@ -26,16 +26,23 @@ import com.dust.extracker.interfaces.OnNewsDataAdded
 import com.dust.extracker.realmdb.NewsObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class SearchNewsFragment() : Fragment() {
+class SearchNewsFragment : Fragment() {
 
-    lateinit var news_recycler_view: RecyclerView
-    lateinit var news_search_notation: CTextView
-    lateinit var news_back_btn: ImageView
-    lateinit var news_name: EditText
+    private lateinit var news_recycler_view: RecyclerView
+    private lateinit var news_search_notation: CTextView
+    private lateinit var news_back_btn: ImageView
+    private lateinit var news_name: EditText
     private lateinit var realmDB: RealmDataBaseCenter
     private lateinit var apiService: ApiCenter
-    lateinit var news_progressBar: ProgressBar
+    private lateinit var news_progressBar: ProgressBar
+
+    private var searchJob:Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,7 +78,6 @@ class SearchNewsFragment() : Fragment() {
 
     }
 
-
     private fun setUpSearchViews() {
 
         news_recycler_view.layoutManager =
@@ -79,33 +85,10 @@ class SearchNewsFragment() : Fragment() {
 
         news_name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
-                if (news_name.text.toString() == "") {
-                    news_progressBar.visibility = View.GONE
-                    news_search_notation.visibility = View.VISIBLE
-                    news_recycler_view.adapter =
-                        NewsRecyclerViewAdapter(
-                            arrayListOf(),
-                            requireActivity().supportFragmentManager, realmDB
-                        )
-                } else {
-                    news_progressBar.visibility = View.VISIBLE
-                    news_search_notation.visibility = View.GONE
-
-                    if (realmDB.getNewsDataCount() == 0) {
-                        if (checkConnection()) {
-                            apiService.getNews(object : OnGetNews {
-                                override fun onGetNews(list: List<NewsDataClass>) {
-                                    realmDB.insertNews(list, object : OnNewsDataAdded {
-                                        override fun onNewsDataAdded() {
-                                            performSearchAction()
-                                        }
-                                    })
-                                }
-                            })
-                        }
-                    } else {
-                        performSearchAction()
-                    }
+                searchJob?.cancel()
+                searchJob = CoroutineScope(Dispatchers.Main).launch {
+                    delay(1000)
+                    doSearch()
                 }
             }
 
@@ -116,12 +99,42 @@ class SearchNewsFragment() : Fragment() {
             }
 
         })
+    }
 
+    private fun doSearch(){
+        if (news_name.text.toString() == "") {
+            news_progressBar.visibility = View.GONE
+            news_search_notation.visibility = View.VISIBLE
+            news_recycler_view.adapter =
+                NewsRecyclerViewAdapter(
+                    arrayListOf(),
+                    requireActivity().supportFragmentManager, realmDB
+                )
+        } else {
+            news_progressBar.visibility = View.VISIBLE
+            news_search_notation.visibility = View.GONE
+
+            if (realmDB.getNewsDataCount() == 0) {
+                if (checkConnection()) {
+                    apiService.getNews(object : OnGetNews {
+                        override fun onGetNews(list: List<NewsDataClass>) {
+                            realmDB.insertNews(list, object : OnNewsDataAdded {
+                                override fun onNewsDataAdded() {
+                                    performSearchAction()
+                                }
+                            })
+                        }
+                    })
+                }
+            } else {
+                performSearchAction()
+            }
+        }
     }
 
     private fun performSearchAction() {
         val allData = realmDB.getNews("ALL")
-        val data = arrayListOf<NewsObject>()
+        val data = arrayListOf<NewsDataClass>()
         allData.forEach {
             if (it.title.indexOf(news_name.text.toString() , ignoreCase = true) != -1 || it.tags.indexOf(news_name.text.toString() , ignoreCase = true) != -1)
                 data.add(it)

@@ -145,7 +145,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/commentCounter"
+                android:text="10 دیدگاه"
                 android:layout_marginTop="@dimen/standardMargin3x"
                 android:textColor="?android:textColor"
                 android:gravity="center"/>

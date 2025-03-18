@@ -1,6 +1,7 @@
 package com.dust.extracker.fragments.blogfragments
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -27,8 +28,9 @@ import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
 import com.squareup.picasso.Picasso
 
-class ReadNewsFragment(var data: NewsObject) : Fragment() {
+class ReadNewsFragment(var newsData: NewsDataClass) : Fragment() {
     lateinit var new_img: ImageView
+    lateinit var news_like: ImageView
     lateinit var add_to_bookmark: ImageView
     lateinit var image_back: ImageView
     lateinit var news_content: CTextView
@@ -41,6 +43,8 @@ class ReadNewsFragment(var data: NewsObject) : Fragment() {
     lateinit var comment_recyclerview: RecyclerView
     lateinit var read_news_nestedScrollView: NestedScrollView
     private lateinit var realm: RealmDataBaseCenter
+
+    private var isLiked = false
 
     private lateinit var shared: SharedPreferencesCenter
     var COMMENT_PAGINATION_COUNTER = 1
@@ -107,31 +111,51 @@ class ReadNewsFragment(var data: NewsObject) : Fragment() {
     }
 
     private fun setNew() {
-        news_title.text = data.title
-        news_content.text = data.description
-        Picasso.get().load(data.imageUrl).into(new_img)
+        news_title.text = newsData.title
+        isLiked = newsData.is_liked
+        setIsLikedOnUi()
+        news_content.text = newsData.description
+        Picasso.get().load(newsData.imageUrl).into(new_img)
         send_comment.setTextColor(Color.BLACK)
         news_view_count.text =
-            requireActivity().resources.getString(R.string.view_count_news, data.likeCount, data.seenCount)
-        news_tag.text = "#${data.tags.replace(" ", "").replace("|", " #")}"
+            requireActivity().resources.getString(R.string.view_count_news, newsData.likeCount, newsData.seenCount)
+        news_tag.text = "#${newsData.tags.replace(" ", "").replace("|", " #")}"
         news_main_source.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(data.url))
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(newsData.url))
             requireActivity().startActivity(Intent.createChooser(intent, requireActivity().resources.getString(R.string.openUrlWith)))
         }
 
-        val availability = realm.checkBookmarkAvailability(data.url)
+        val availability = realm.checkBookmarkAvailability(newsData.url)
         if (availability)
             add_to_bookmark.setImageResource(R.drawable.ic_baseline_bookmarked)
 
         add_to_bookmark.setOnClickListener {
-            val availability2 = realm.checkBookmarkAvailability(data.url)
+            val availability2 = realm.checkBookmarkAvailability(newsData.url)
             if (availability2) {
-                realm.removeBookmark(data.url)
+                realm.removeBookmark(newsData.url)
                 add_to_bookmark.setImageResource(R.drawable.ic_baseline_bookmark)
             } else {
-                realm.insertBookmark(data)
+                realm.insertBookmark(newsData)
                 add_to_bookmark.setImageResource(R.drawable.ic_baseline_bookmarked)
             }
+        }
+
+        news_like.setOnClickListener {
+            newsData.ID.let { nId ->
+                isLiked = !isLiked
+                setIsLikedOnUi()
+                realm.setNewsIsLiked(nId,isLiked)
+            }
+        }
+    }
+
+    private fun setIsLikedOnUi(){
+        if (isLiked){
+            news_like.setImageResource(R.drawable.ic_baseline_news_liked)
+            news_like.imageTintList = ColorStateList.valueOf(Color.RED)
+        }else{
+            news_like.setImageResource(R.drawable.ic_baseline_news_unliked)
+            news_like.imageTintList = ColorStateList.valueOf(if(shared.getNightMode()) Color.WHITE else Color.BLACK)
         }
     }
 
@@ -147,6 +171,7 @@ class ReadNewsFragment(var data: NewsObject) : Fragment() {
 
     private fun setUpViews(view: View) {
         new_img = view.findViewById(R.id.new_img)
+        news_like = view.findViewById(R.id.news_like)
         news_view_count = view.findViewById(R.id.news_view_count)
         add_to_bookmark = view.findViewById(R.id.add_to_bookmark)
         news_main_source = view.findViewById(R.id.news_main_source)
