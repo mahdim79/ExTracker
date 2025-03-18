@@ -17,8 +17,10 @@ import com.dust.extracker.fragments.blogfragments.ReadNewsFragment
 import com.dust.extracker.realmdb.NewsObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
+import com.dust.extracker.utils.Utils
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import okhttp3.internal.Util
 import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
@@ -73,7 +75,9 @@ class NewsRecyclerViewAdapter(var list: List<NewsObject> ,var activity: Fragment
         }
 
 
-        holder.news_date.text = "${convertTimeStamp(list[position].date!!)}"
+        list[position].date?.let { ts ->
+            holder.news_date.text = Utils.convertTimestampToDate( ts * 1000L)
+        }
         Picasso.get().load(list[position].imageUrl).into(holder.news_image)
 
         if (list[position].is_liked == "false") {
@@ -91,14 +95,6 @@ class NewsRecyclerViewAdapter(var list: List<NewsObject> ,var activity: Fragment
     }
 
     override fun getItemCount(): Int = list.size
-
-    private fun convertTimeStamp(stampTime:Int):String{
-        var millis = stampTime * 1000
-        val s = Timestamp(millis.toLong())
-        val date = java.util.Date(s.time)
-        val time = "${date.date}/${date.month}/${date.year} ${date.hours}:${date.minutes}"
-        return time
-    }
 
     inner class MainViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

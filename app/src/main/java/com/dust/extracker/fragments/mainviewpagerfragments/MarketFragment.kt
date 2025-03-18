@@ -38,6 +38,7 @@ import com.dust.extracker.interfaces.OnGetTotalMarketCap
 import com.dust.extracker.realmdb.MainRealmObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
+import com.dust.extracker.utils.Utils
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -87,7 +88,7 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
         setUpSharedPreferencesCenter()
         try {
             totalMarketCap.text =
-                "${String.format("%.2f", (shared.getMarketCap().toDouble() / 1000000000))} B$"
+                "${Utils.formatPriceNumber((shared.getMarketCap().toDouble() / 1000000000),2)} B$"
         } catch (e: Exception) {
         }
         loadDollarPrice()
@@ -125,16 +126,19 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
         back_btn.setOnClickListener {
             search_linear.visibility = View.GONE
             header_rel.visibility = View.VISIBLE
-            edt_search.setText("")
             hideKeyBoard()
             sendSearchBroadcast("", "com.dust.extracker.kdsfjgksdjflasdk.STOP")
             SEARCHMODE = false
+            edt_search.setText("")
         }
 
         val allData = realmDB.getAllCryptoData()
         val allExchangers = realmDB.getAllExchangerData()
         edt_search.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
+
+                if (!SEARCHMODE)
+                    return
 
                 searchJob?.cancel()
                 searchJob = CoroutineScope(Dispatchers.Main).launch {
@@ -205,7 +209,7 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
         apiCenter.getTotalMarketCap(object : OnGetTotalMarketCap {
             override fun onGetMarketCap(marketCap: Double) {
                 shared.setMarketCap(marketCap.toString())
-                totalMarketCap.text = "${String.format("%.2f", (marketCap / 1000000000))} B$"
+                totalMarketCap.text = "${Utils.formatPriceNumber((marketCap / 1000000000),0)} B$"
             }
         })
     }
@@ -318,7 +322,11 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
 
     private fun setDollarPrice() {
         if (realmDB.checkDollarPriceAvailability()) {
-            dollar_price.text = "${String.format("%.0f" , realmDB.getDollarPrice().price.toDouble())} T"
+            realmDB.getDollarPrice()?.price?.toDouble()?.let { dollarPrice ->
+                try {
+                    dollar_price.text = "${Utils.formatPriceNumber(dollarPrice,0)} T"
+                }catch (e:Exception){}
+            }
         }
     }
 

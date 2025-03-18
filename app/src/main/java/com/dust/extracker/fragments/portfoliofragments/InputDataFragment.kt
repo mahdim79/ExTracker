@@ -143,7 +143,9 @@ class InputDataFragment : Fragment(), View.OnClickListener {
                 )
             ).LastPrice!!.toString()
         )
-        dollarPrice.editText!!.setText(realmDB.getDollarPrice().price)
+        realmDB.getDollarPrice()?.price?.let {
+            dollarPrice.editText!!.setText(it)
+        }
     }
 
     fun newInstance(

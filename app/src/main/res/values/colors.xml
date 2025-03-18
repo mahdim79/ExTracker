@@ -22,4 +22,5 @@
     <color name="linear_gradient_green">#9ffd32</color>
     <color name="linear_gradient_red">#F47279</color>
     <color name="dark_green">#19881D</color>
+    <color name="white_transparent">#0A000000</color>
 </resources>

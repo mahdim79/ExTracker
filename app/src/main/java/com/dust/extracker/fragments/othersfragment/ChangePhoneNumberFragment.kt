@@ -111,7 +111,7 @@ class ChangePhoneNumberFragment:Fragment() , View.OnClickListener , OnGetAllCryp
                         dialog.setContentView(R.layout.dialog_login_wait)
                         dialog.show()
                         val obj = realm.getUserData()
-                        apiCenter.updateUserData(UserDataClass(obj.id!! , obj.userName!! , phone_number.text.toString().toDouble() , obj.Email!! , obj.avatarUrl!! , obj.name!!),
+                        apiCenter.updateUserData(UserDataClass(obj?.id!! , obj.userName!! , phone_number.text.toString().toDouble() , obj.Email!! , obj.avatarUrl!! , obj.name!!),
                             obj.phoneNumber!! , this)
 
                     } else {

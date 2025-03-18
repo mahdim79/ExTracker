@@ -21,6 +21,7 @@ import com.dust.extracker.customviews.CTextView
 import com.dust.extracker.dataclasses.CryptoMainData
 import com.dust.extracker.interfaces.OnGetAllCryptoList
 import com.dust.extracker.realmdb.RealmDataBaseCenter
+import com.dust.extracker.utils.Utils
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
@@ -42,7 +43,7 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     lateinit var dollarPricetxt: CTextView
     lateinit var text_total_price: CTextView
     lateinit var resultOne_edittext: EditText
-    lateinit var resultTwo_textview: TextView
+    lateinit var resultTwo_textview: CTextView
     lateinit var exchanger_progressBar: ProgressBar
     private lateinit var ondataRecieve: onDataRecieve
     private lateinit var ondollarpriceRecieve: onDollarPriceRecieve
@@ -79,7 +80,9 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     private fun setDollarPrice() {
 
         if (realmDB.checkDollarPriceAvailability()) {
-            dollarPricetxt.text = String.format("%.0f" , realmDB.getDollarPrice().price.toDouble())
+            realmDB.getDollarPrice()?.price?.toDouble()?.let { dollarPrice ->
+                dollarPricetxt.text = Utils.formatPriceNumber(dollarPrice,0)
+            }
         }
     }
 
@@ -96,6 +99,10 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
                     return
                 }
                 resultTwo_textview.text = ""
+                text_total_price.text = "..."
+                dollar_text.text = "..."
+
+
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -268,11 +275,12 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         }
 
         val result = (price1!! * resultOne_edittext.text.toString().toDouble()) / price2!!
-        resultTwo_textview.text = String.format(Locale.ENGLISH ,"%.7f", result)
-        dollar_text.text = String.format("%.7f", (price1!! * resultOne_edittext.text.toString().toDouble()))
+        resultTwo_textview.text = Utils.formatPriceNumber(result,7)
+        dollar_text.text = Utils.formatPriceNumber((price1!! * resultOne_edittext.text.toString().toDouble()),7)
         if (dollarPricetxt.text.toString() != "") {
-            text_total_price.text =
-                String.format("%.3f", (realmDB.getDollarPrice().price.toDouble() * String.format(Locale.ENGLISH , "%.7f", (price1!! * resultOne_edittext.text.toString().toDouble())).toDouble()))
+            realmDB.getDollarPrice()?.price?.toDouble()?.let { dollarPrice ->
+                text_total_price.text = Utils.formatPriceNumber((dollarPrice * (price1!! * resultOne_edittext.text.toString().toDouble())),0)
+            }
         }
         exchanger_progressBar.visibility = View.GONE
 
@@ -303,7 +311,9 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     inner class onDollarPriceRecieve : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
-            dollarPricetxt.text = String.format("%.0f" , realmDB.getDollarPrice().price.toDouble())
+            realmDB.getDollarPrice()?.price?.toDouble()?.let { dollarPrice ->
+                dollarPricetxt.text = Utils.formatPriceNumber(dollarPrice,0)
+            }
         }
     }
 

@@ -17,8 +17,10 @@ import com.dust.extracker.dataclasses.HistoryDataClass
 import com.dust.extracker.interfaces.OnTransactionRemoveListener
 import com.dust.extracker.realmdb.DollarObject
 import com.dust.extracker.realmdb.MainRealmObject
+import com.dust.extracker.utils.Utils
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import okhttp3.internal.Util
 import java.util.*
 
 class PortfolioCoinRecyclerViewAdapter(
@@ -46,17 +48,8 @@ class PortfolioCoinRecyclerViewAdapter(
             .error(R.drawable.ic_baseline_error_24).into(holder.coin_img)
         holder.coin_amount.text = historyDataClass.transactionList[position].dealAmount.toString()
         holder.coinName.text = historyDataClass.transactionList[position].coinName
-        holder.dollarAggregation.text = "${String.format(
-            "%.4f",
-            calculateDollarCapital(position)
-        )} ~ ${String.format(
-            "%.6f",
-            (historyDataClass.transactionList[position].currentPrice)
-        )}"
-        holder.tomanAggregation.text = String.format(
-            "%.2f",
-            (calculateDollarCapital(position) * dollarObject.price.toDouble())
-        )
+        holder.dollarAggregation.text = "${Utils.formatPriceNumber(calculateDollarCapital(position),4)} ~ ${Utils.formatPriceNumber((historyDataClass.transactionList[position].currentPrice),6)}"
+        holder.tomanAggregation.text = Utils.formatPriceNumber((calculateDollarCapital(position) * dollarObject.price.toDouble()),2)
         val dollarResult = calculateDollarChange(position)
         holder.portfolioChangeDollar.text = dollarResult.first
         holder.portfolioChangeDollarPct.text = dollarResult.second
@@ -66,11 +59,11 @@ class PortfolioCoinRecyclerViewAdapter(
         var tomanChange = ""
         var tomanChangePct = ""
         if (tomanData.first.toDouble() > 0) {
-            tomanChange = "+${String.format("%.2f",tomanData.first.toDouble())}"
-            tomanChangePct = "+${String.format("%.2f",tomanData.second.toDouble())}"
+            tomanChange = "+${Utils.formatPriceNumber(tomanData.first.toDouble(),2)}"
+            tomanChangePct = "+${Utils.formatPriceNumber(tomanData.second.toDouble(),2)}"
         } else {
-            tomanChange = "${String.format("%.2f",tomanData.first.toDouble())}"
-            tomanChangePct = "-${String.format("%.2f",tomanData.second.toDouble())}"
+            tomanChange = "${Utils.formatPriceNumber(tomanData.first.toDouble(),2)}"
+            tomanChangePct = "-${Utils.formatPriceNumber(tomanData.second.toDouble(),2)}"
         }
         holder.portfolioChangeToman.text = tomanChange
         holder.portfolioChangeTomanPct.text = tomanChangePct
@@ -136,33 +129,25 @@ class PortfolioCoinRecyclerViewAdapter(
         var first = ""
         var second = ""
         if (diffrence > 0) {
-            second = "+${String.format(
-                "%.2f",
-                ((diffrence) / lastRate) * 100
-            )}"
-            first = "+${String.format("%.2f", (diffrence))}"
+            second = "+${Utils.formatPriceNumber(((diffrence) / lastRate) * 100,2)}"
+            first = "+${Utils.formatPriceNumber(diffrence,2)}"
         } else {
-            second = "-${String.format(
-                "%.2f",
-                ((lastRate - currentRate) / lastRate) * 100
-            )}"
-            first =
-                "${String.format("%.2f", (diffrence))}"
+            second = "-${Utils.formatPriceNumber(((lastRate - currentRate) / lastRate) * 100,2)}"
+            first = Utils.formatPriceNumber(diffrence,2)
         }
         return Pair(first, second)
     }
 
-    fun calculateTomanData(position: Int): Pair<String, String> {
+    private fun calculateTomanData(position: Int): Pair<String, String> {
         val lastRate =
             historyDataClass.transactionList[position].dealAmount * historyDataClass.transactionList[position].dealOpenPrice * historyDataClass.transactionList[position].dollarPrice
         val currentRate =
             calculateDollarCapital(position) * dollarObject.price.toDouble()
 
-        var changePct = 0.toDouble()
-        if (currentRate > lastRate)
-            changePct = ((currentRate - lastRate) / lastRate) * 100
+        val changePct = if (currentRate > lastRate)
+            ((currentRate - lastRate) / lastRate) * 100
         else
-            changePct = ((lastRate - currentRate) / lastRate) * 100
+            ((lastRate - currentRate) / lastRate) * 100
 
         // first is toman change
         // second is toman Pct

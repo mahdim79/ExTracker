@@ -64,7 +64,7 @@
                 android:layout_marginHorizontal="@dimen/standardMargin"
                 android:layout_marginTop="@dimen/standardMargin2x"
                 android:foreground="?attr/selectableItemBackground"
-
+                android:visibility="gone"
                 android:gravity="center_vertical"
                 android:layoutDirection="rtl"
                 android:orientation="horizontal">
@@ -120,6 +120,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:visibility="gone"
                 android:background="?colorPrimaryVariant"
                 android:layout_marginTop="@dimen/standardMargin"/>
             <LinearLayout

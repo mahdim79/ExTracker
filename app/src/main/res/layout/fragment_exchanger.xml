@@ -149,7 +149,7 @@
                 android:layout_height="match_parent">
 
 
-                <TextView
+                <com.dust.extracker.customviews.CTextView
                     android:id="@+id/resultTwo_textview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

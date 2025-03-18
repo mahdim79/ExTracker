@@ -1,13 +1,20 @@
 package com.dust.extracker.fragments.marketfragments
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.PowerManager
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +23,7 @@ import android.view.animation.AlphaAnimation
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -57,25 +65,15 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     private var INDEX: Int? = 0
     private var SEARCH_MODE = false
 
-    private val SORT_BY_REFRESH = 0
-    private val SORT_BY_NAME = 1
-    private val SORT_BY_PRICE = 2
-    private val SORT_BY_DAILY_CHANGE = 3
-    private val SORT_BY_COMMENTS = 4
-    private val SORT_ASCENDING = 10
-    private val SORT_DESCENDING = 11
-
-    private var SORT = SORT_BY_REFRESH
-    private var SORT_TYPE = SORT_ASCENDING
-
     var dollarPrice = 0.0
 
-    val priceTotalList = arrayListOf<PriceDataClass>()
-    val PCTTotalList = arrayListOf<LastChangeDataClass>()
+    private val notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
+        if (it)
+            runPermissionCheckProcess()
+    }
 
-    private var RequestNum = 0
-    private var RequestNumPCT = 0
-    private var RequestTotal = 0
+    private val batteryIgnoreLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){}
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -98,7 +96,9 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
 
 
     private fun setDollarPrice() {
-        dollarPrice = realmDB.getDollarPrice().price.toDouble()
+        realmDB.getDollarPrice()?.price?.toDouble()?.let {
+            dollarPrice = it
+        }
     }
 
     fun startTimer() {
@@ -250,6 +250,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
                 }
             })
         }
+        runPermissionCheckProcess()
     }
 
 
@@ -288,7 +289,33 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     override fun onAddComplete(list: List<MainRealmObject>) {
         requireActivity().sendBroadcast(Intent("com.dust.extracker.onGetMainData"))
         loadData()
+
     }
+
+    private fun runPermissionCheckProcess() {
+
+        // notification
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            if (requireContext().checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                return
+            }
+        }
+
+        // battery optimization
+        if (!isIgnoringBatteryOptimization()){
+            val intent = Intent()
+            intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+            intent.data = Uri.parse("package:${requireContext().packageName}")
+            batteryIgnoreLauncher.launch(intent)
+        }
+    }
+
+    private fun isIgnoringBatteryOptimization(): Boolean {
+        val powerManager = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
+        return powerManager.isIgnoringBatteryOptimizations(requireContext().packageName)
+    }
+
 
     override fun onGetPrices(priceList: List<PriceDataClass>) {
         realmDB.updatePrices(datalist, priceList)
@@ -300,23 +327,24 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
         }catch (e:Exception){}
     }
 
-    fun updatePriceList(list: List<String>) {
-        val prices = realmDB.getPricesByIds(list)
-        val intent = Intent("com.dust.extracker.UPDATE_ITEMS")
-        intent.putExtra("PRICE", realmDB.getDollarPrice().price)
-        for (i in 0 until prices.size) {
-            intent.putExtra(prices[i].name, prices[i].price)
+    private fun updatePriceList(list: List<String>) {
+        realmDB.getDollarPrice()?.price?.let {
+            val prices = realmDB.getPricesByIds(list)
+            val intent = Intent("com.dust.extracker.UPDATE_ITEMS")
+            intent.putExtra("PRICE", it)
+            for (i in prices.indices) {
+                intent.putExtra(prices[i].name, prices[i].price)
+            }
+
+            requireActivity().sendBroadcast(intent)
         }
-
-        requireActivity().sendBroadcast(intent)
-
     }
 
     private fun updateDailyChangesList(list: List<String>) {
         val changes = realmDB.getLastDailyChangesByIds(list)
         val intent = Intent("com.dust.extracker.UPDATE_ITEMS")
         intent.putExtra("IS_DAILY_CHANGE", true)
-        for (i in 0 until changes.size) {
+        for (i in changes.indices) {
             intent.putExtra(changes[i].CoinName, changes[i].ChangePercentage)
         }
 
@@ -355,10 +383,11 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
             startTimer()
         market_progressBar.visibility = View.GONE
 
-        val price = realmDB.getDollarPrice()
-        val intent = Intent("com.dust.extracker.onDollarPriceRecieve")
-        intent.putExtra("PRICE", price.price)
-        requireActivity().sendBroadcast(intent)
+        realmDB.getDollarPrice()?.let { price ->
+            val intent = Intent("com.dust.extracker.onDollarPriceRecieve")
+            intent.putExtra("PRICE", price.price)
+            requireActivity().sendBroadcast(intent)
+        }
     }
 
     private fun updateSortOrders(list1: List<CryptoMainData>) {

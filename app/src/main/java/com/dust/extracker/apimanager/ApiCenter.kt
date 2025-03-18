@@ -66,13 +66,6 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
 
     fun getDollarPrice(onGetDollarPrice: OnGetDollarPrice) {
 
-        onGetDollarPrice.onGet(
-            DollarInfoDataClass(
-                "90000",
-                "1400-03-02"
-            )
-        )
-
         val request = JsonObjectRequest(Request.Method.GET,
             "https://brsapi.ir/FreeTsetmcBourseApi/Api_Free_Gold_Currency_v2.json",
             null,

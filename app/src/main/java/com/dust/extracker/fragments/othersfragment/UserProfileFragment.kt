@@ -101,7 +101,7 @@ class UserProfileFragment : Fragment() , OnGetAllCryptoList , OnUpdateUserData ,
     private fun setUpButtons() {
         submit_save.setOnClickListener {
             val userObject = realmDB.getUserData()
-            if (IS_PHOTO_CHANGED || name_text.text.toString() != userObject.name || email_text.text.toString() != userObject.Email){
+            if (IS_PHOTO_CHANGED || name_text.text.toString() != userObject?.name || email_text.text.toString() != userObject.Email){
                 dialog = Dialog(requireActivity())
                 dialog.setCancelable(false)
                 dialog.setContentView(R.layout.dialog_login_wait)
@@ -111,7 +111,7 @@ class UserProfileFragment : Fragment() , OnGetAllCryptoList , OnUpdateUserData ,
                 if (IS_PHOTO_CHANGED){
                     // TODO: 6/7/2021 upload new photo to server
                 }
-                val userData = UserDataClass(userObject.id!! , userObject.userName!! , phone_number.text.toString().toDouble() , email_text.text.toString() , "" , name_text.text.toString())
+                val userData = UserDataClass(userObject?.id!! , userObject.userName!! , phone_number.text.toString().toDouble() , email_text.text.toString() , "" , name_text.text.toString())
                 apiCenter.updateUserData(userData , userObject.phoneNumber!!, this)
             }
         }
@@ -119,11 +119,11 @@ class UserProfileFragment : Fragment() , OnGetAllCryptoList , OnUpdateUserData ,
 
     private fun setDefaultData() {
         val userObject = realmDB.getUserData()
-        if (userObject.avatarUrl != "")
-            Picasso.get().load(userObject.avatarUrl).into(others_profilePhoto)
-        name_text.setText(userObject.name)
-        email_text.setText(userObject.Email)
-        phone_number.setText(userObject.phoneNumber.toString())
+        if (userObject?.avatarUrl != "")
+            Picasso.get().load(userObject?.avatarUrl).into(others_profilePhoto)
+        name_text.setText(userObject?.name)
+        email_text.setText(userObject?.Email)
+        phone_number.setText(userObject?.phoneNumber.toString())
     }
 
     private fun setUpRealmDB() {

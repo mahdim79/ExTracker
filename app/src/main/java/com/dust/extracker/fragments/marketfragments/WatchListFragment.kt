@@ -69,7 +69,9 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
     }
 
     private fun setDollarPrice() {
-        dollarPrice = realmDB.getDollarPrice().price.toDouble()
+        realmDB.getDollarPrice()?.price?.toDouble()?.let {
+            dollarPrice = it
+        }
     }
 
     private fun setUpApiCenter() {
@@ -288,22 +290,25 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
         val datalist = realmDB.getCryptoDataByIds(favlist)
         realmDB.updatePrices(datalist, priceList)
         val idlist = arrayListOf<String>()
-        for (i in 0 until datalist.size)
-            idlist.add(datalist[i].ID!!)
+        for (element in datalist)
+            idlist.add(element.ID!!)
         updatePriceList(idlist)
         swiprefreshLayout.isRefreshing = false
     }
 
-    fun updatePriceList(list: List<String>) {
-        val prices = realmDB.getPricesByIds(list)
-        val intent = Intent("com.dust.extracker.UPDATE_ITEMS_WatchList")
-        intent.putExtra("PRICE" , realmDB.getDollarPrice().price)
-        for (i in 0 until prices.size) {
-            intent.putExtra(prices[i].name, prices[i].price)
+    private fun updatePriceList(list: List<String>) {
+        realmDB.getDollarPrice()?.price?.let {
+            val prices = realmDB.getPricesByIds(list)
+            val intent = Intent("com.dust.extracker.UPDATE_ITEMS_WatchList")
+            intent.putExtra("PRICE" , it)
+            for (i in prices.indices) {
+                intent.putExtra(prices[i].name, prices[i].price)
+            }
+            try {
+                requireActivity().sendBroadcast(intent)
+            }catch (e:Exception){}
         }
-        try {
-            requireActivity().sendBroadcast(intent)
-        }catch (e:Exception){}
+
     }
 
     private fun updateDailyChangesList(list: List<String>) {

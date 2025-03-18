@@ -28,6 +28,7 @@ import com.dust.extracker.interfaces.OnGetAllCryptoList
 import com.dust.extracker.interfaces.OnGetNews
 import com.dust.extracker.interfaces.OnNewsDataAdded
 import com.dust.extracker.realmdb.RealmDataBaseCenter
+import com.dust.extracker.utils.Utils
 import com.google.android.material.tabs.TabLayout
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 import java.util.*
@@ -155,13 +156,17 @@ class BlogFragment : Fragment(), OnGetNews {
         list.clear()
 
         val sliderData = realmDB.getNews("ALL")
-        for (i in 0 until sliderData.size) {
+        for (i in sliderData.indices) {
+            var showTime = ""
+            sliderData[i].date?.let { ts ->
+                showTime = Utils.convertTimestampToDate(ts * 1000L)
+            }
             list.add(
                 SliderDataClass(
                     sliderData[i].id!!,
                     sliderData[i].imageUrl,
                     sliderData[i].title,
-                    sliderData[i].date.toString()
+                    showTime
                 )
             )
             if (list.size == 3)
@@ -187,11 +192,11 @@ class BlogFragment : Fragment(), OnGetNews {
                     if (sliderViewPager.currentItem == list.size - 1) {
                         sliderViewPager.currentItem = 0
                     } else {
-                        sliderViewPager.currentItem = sliderViewPager.currentItem + 1
+                        sliderViewPager.currentItem += 1
                     }
                 }
             }
-        }, 0, 5000)
+        }, 0, 10000)
 
     }
 

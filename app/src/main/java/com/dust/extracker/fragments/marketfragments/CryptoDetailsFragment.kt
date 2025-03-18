@@ -33,12 +33,14 @@ import com.dust.extracker.realmdb.DollarObject
 import com.dust.extracker.realmdb.MainRealmObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
+import com.dust.extracker.utils.Utils
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import lecho.lib.hellocharts.formatter.SimpleAxisValueFormatter
 import lecho.lib.hellocharts.model.*
 import lecho.lib.hellocharts.view.LineChartView
+import okhttp3.internal.Util
 import org.w3c.dom.Text
 import java.util.*
 
@@ -73,17 +75,17 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     private lateinit var addTransactionbtn: CButton
     private lateinit var fullChart: CButton
 
-    lateinit var rank: TextView
-    lateinit var price: TextView
-    lateinit var marketCap: TextView
-    lateinit var dailyVolume: TextView
-    lateinit var dailyChange: TextView
-    lateinit var weeklyChange: TextView
-    lateinit var monthlyChange: TextView
-    lateinit var sixmonthChange: TextView
-    lateinit var yearlyChange: TextView
-    lateinit var totalSupply: TextView
-    lateinit var marketCoins: TextView
+    lateinit var rank: CTextView
+    lateinit var price: CTextView
+    lateinit var marketCap: CTextView
+    lateinit var dailyVolume: CTextView
+    lateinit var dailyChange: CTextView
+    lateinit var weeklyChange: CTextView
+    lateinit var monthlyChange: CTextView
+    lateinit var sixmonthChange: CTextView
+    lateinit var yearlyChange: CTextView
+    lateinit var totalSupply: CTextView
+    lateinit var marketCoins: CTextView
     lateinit var dominance: TextView
 
     private var TIME_PERIOD = "24H"
@@ -151,7 +153,9 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     }
 
     private fun setDollarPrice() {
-        freshDollarPrice = realmDB.getDollarPrice()
+        realmDB.getDollarPrice()?.let {
+            freshDollarPrice = it
+        }
     }
 
     private fun setUpCoinList() {
@@ -369,9 +373,9 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         var changeStr = ""
         var color = Color.GREEN
         if (dailychange > 0) {
-            changeStr = "+${String.format("%.2f", dailychange)}"
+            changeStr = "+${Utils.formatPriceNumber(dailychange,2)}"
         } else {
-            changeStr = "${String.format("%.2f", dailychange)}"
+            changeStr = "${Utils.formatPriceNumber(dailychange,2)}"
             color = Color.RED
         }
         TotalCoinDailyChange.text = changeStr
@@ -452,17 +456,14 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         var dailychange = 0.toDouble()
         if (newValue > oldValue) {
             dailychange = ((newValue - oldValue) / oldValue) * 100
-            changeStr = "+${String.format("%.2f", dailychange)}"
+            changeStr = "+${Utils.formatPriceNumber(dailychange,2)}"
         } else {
             dailychange = ((oldValue - newValue) / oldValue) * 100
-            changeStr = "-${String.format("%.2f", dailychange)}"
+            changeStr = "-${Utils.formatPriceNumber(dailychange,2)}"
             color = Color.RED
         }
 
-        val str = "${String.format(
-            "%.6f",
-            newValue
-        )} BTC | $changeStr"
+        val str = "${Utils.formatPriceNumber(newValue,6)} BTC | $changeStr"
         val spannableString = SpannableString(str)
         spannableString.setSpan(
             ForegroundColorSpan(color),
@@ -498,24 +499,30 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
         setUpTotalChange()
 
-        coinPrice.text = "$${String.format("%.6f", mainObject.LastPrice!!)}"
+        coinPrice.text = "$${Utils.formatPriceNumber(mainObject.LastPrice!!,6)}"
 
         date.text = "${requireActivity().resources.getString(R.string.time)} ${freshDollarPrice.date}"
 
         dollarPrice.text = "${requireActivity().resources.getString(R.string.dollarPrice)} ${freshDollarPrice.price}"
 
-        tomanPrice.text = "${String.format(
-            "%.2f",
-            (mainObject.LastPrice!!.toDouble() * freshDollarPrice.price.toDouble())
-        )} ${requireActivity().resources.getString(R.string.toman)}"
+        tomanPrice.text = "${Utils.formatPriceNumber((mainObject.LastPrice!!.toDouble() * freshDollarPrice.price.toDouble()),2)} ${requireActivity().resources.getString(R.string.toman)}"
 
-        rank.text = "#${mainObject.SortOrder}"
+        mainObject.SortOrder?.let { so ->
+            rank.text = "#${Utils.formatPriceNumber(so.toDouble(),0)}"
+        }
 
-        price.text = "$${mainObject.LastPrice}"
+        mainObject.LastPrice?.let { lp ->
+            val decimal = if (lp > 1) 2 else 7
+            price.text = "$${Utils.formatPriceNumber(lp,decimal)}"
+        }
 
-        dailyChange.text = "${mainObject.DailyChangePCT}"
+        mainObject.DailyChangePCT?.let { pct ->
+            dailyChange.text = "${Utils.formatPriceNumber(pct,2)}"
+            if (pct > 0)
+                dailyChange.text = "+${dailyChange.text}"
+        }
 
-        totalSupply.text = "${String.format("%.2f", mainObject.MaxSupply)} ${mainObject.Name}"
+        totalSupply.text = "${Utils.formatPriceNumber(mainObject.MaxSupply ?: 0.0,2)} ${mainObject.Name}"
 
         details_text.text = requireActivity().getString(R.string.details, mainObject.Name)
 
@@ -692,10 +699,10 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     }
 
     override fun onReceive(data: DetailsDataClass) {
-        marketCap.text = "$ ${String.format("%.2f", data.marketCap.toDouble())}"
+        marketCap.text = "$ ${Utils.formatPriceNumber(data.marketCap.toDouble(),2)}"
         dailyVolume.text =
-            "${String.format("%.2f", data.dailyVolume.toDouble())} ${mainObject.Name}"
-        marketCoins.text = "${String.format("%.2f", data.supply.toDouble())} ${mainObject.Name}"
+            "${Utils.formatPriceNumber(data.dailyVolume.toDouble(),2)} ${mainObject.Name}"
+        marketCoins.text = "${Utils.formatPriceNumber(data.supply.toDouble(),2)} ${mainObject.Name}"
     }
 
     private fun calculateChangesPCT(P: String) {
@@ -723,9 +730,9 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
                 var changeStr = ""
                 if (dailychange > 0) {
-                    changeStr = "+${String.format("%.2f", dailychange)}"
+                    changeStr = "+${Utils.formatPriceNumber(dailychange,2)}"
                 } else {
-                    changeStr = "${String.format("%.2f", dailychange)}"
+                    changeStr = "${Utils.formatPriceNumber(dailychange,2)}"
                 }
 
                 when (P) {

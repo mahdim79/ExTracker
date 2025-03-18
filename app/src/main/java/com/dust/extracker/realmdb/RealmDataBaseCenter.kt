@@ -161,21 +161,14 @@ class RealmDataBaseCenter() {
         }
     }
 
-    fun getDollarPrice(): DollarObject {
+    fun getDollarPrice(): DollarObject? {
         var result: DollarObject? = null
         realmDB.executeTransaction {
             try {
                 result = realmDB.where(DollarObject::class.java).findFirst()!!
-            } catch (e: Exception) {
-                result = DollarObject()
-                result!!.price = "0.0"
-                result!!.date = "0"
-                result!!.lastDollarPrice = "0.0"
-                result!!.changePct = "0.0"
-                result!!.id = 1
-            }
+            } catch (e: Exception) {}
         }
-        return result!!
+        return result
     }
 
     fun checkDollarPriceAvailability(): Boolean {
@@ -307,7 +300,7 @@ class RealmDataBaseCenter() {
 
     fun deleteUserData() = realmDB.where(UserObject::class.java).findAll().deleteAllFromRealm()
 
-    fun getUserData(): UserObject = realmDB.where(UserObject::class.java).findFirst()!!
+    fun getUserData(): UserObject? = realmDB.where(UserObject::class.java).findFirst()
 
     fun updateUserData(userData: UserDataClass) {
         realmDB.executeTransaction {
