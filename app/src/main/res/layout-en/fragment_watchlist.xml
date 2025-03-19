@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants"
+    >
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiprefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/Crypto_watchlist_nested"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="?colorPrimary">
+
+                    <TextView
+                        android:id="@+id/sort_refresh"
+                        android:layout_width="0dp"
+                        android:layout_weight="7"
+                        android:layout_height="wrap_content"
+                        android:text="#"
+                        android:gravity="end"
+                        android:textSize="@dimen/TextSize2x"
+                        android:layout_marginEnd="@dimen/standardMargin0.5x"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="10"
+                        android:textSize="@dimen/TextSize2x"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textDirection="ltr"
+                        android:gravity="center_vertical"
+                        android:src="@drawable/btc_icon"
+                        />
+
+                    <TextView
+                        android:id="@+id/sort_by_name"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:layout_marginStart="@dimen/standardMargin"
+                        android:layout_gravity="center"
+                        android:gravity="center_vertical"
+                        android:textSize="@dimen/TextSize2x"
+                        android:textDirection="ltr"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cryptoName"/>
+
+                    <TextView
+                        android:id="@+id/sort_by_price"
+                        android:layout_width="0dp"
+                        android:layout_weight="30"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="@dimen/TextSize2x"
+                        android:gravity="center_horizontal"
+                        android:paddingStart="@dimen/standardMargin0.5x"
+                        android:layout_marginStart="@dimen/standardMargin"
+                        android:text="@string/price"/>
+
+                    <TextView
+                        android:id="@+id/sort_by_daily_change"
+                        android:layout_width="0dp"
+                        android:layout_weight="20"
+                        android:gravity="end"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/standardMargin"
+                        android:layout_gravity="center"
+                        android:textDirection="ltr"
+                        android:textSize="@dimen/TextSize2x"
+                        android:text="@string/dailyChange"
+                        />
+                    <TextView
+                        android:id="@+id/sort_by_comments"
+                        android:layout_width="0dp"
+                        android:layout_weight="15"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="@dimen/TextSize2x"
+                        android:gravity="center"
+                        android:text="@string/comments"
+                        />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/market_watchlist_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+
+</RelativeLayout>

@@ -9,7 +9,7 @@
     <string name="priceAndChart">%s Prices and charts </string>
     <string name="details">%s Details</string>
     <string name="view_count_news">Liked by %d and viewed by %d people </string>
-    <string name = "cryptoName"> currency name </string>
+    <string name = "cryptoName"> Currency name </string>
     <string name = "price"> Price </string>
     <string name = "dailyChange"> Daily Swing </string>
     <string name = "comments"> Comments </string>
@@ -28,7 +28,7 @@
     <string name = "enterSearchWord"> Please enter your desired phrase </string>
     <string name = "search"> Search </string>
     <string name = "cryptoExchange"> Digital Currency Converter </string>
-    <string name = "dollarEquality"> dollar equivalent </string>
+    <string name = "dollarEquality"> Dollar Equivalent </string>
     <string name = "tomanPrice"> Value in Toman </string>
     <string name = "tetherCaculation"> Calculate with tether rate </string>
     <string name = "toman"> Toman </string>
@@ -55,10 +55,10 @@
     <string name = "verificationCode"> Activation code </string>
     <string name = "sendVerificationCode"> Receive verification code </string>
     <string name = "editNumber"> Edit number </string>
-    <string name = "customization"> personalization </string>
+    <string name = "customization"> Personalization </string>
     <string name = "fewerThan"> less than </string>
     <string name = "moreThan"> more than </string>
-    <string name = "alarmRepeat"> repeat alarm </string>
+    <string name = "alarmRepeat"> Repeat alarm </string>
     <string name = "save"> save </string>
     <string name = "anounsement"> Announcements </string>
     <string name = "priceAnounsment"> Price Announcements </string>
@@ -77,7 +77,7 @@
     <string name = "firstUser"> New Comer? </string>
     <string name = "errorReport"> Error Report </string>
     <string name = "resources"> Information and resources </string>
-    <string name = "logout"> exit </string>
+    <string name = "logout"> Exit </string>
     <string name = "followUs"> Follow us on social media </string>
     <string name = "loginAndSignUp"> Login / Register </string>
     <string name = "phoneNumber"> Mobile number </string>
@@ -99,7 +99,7 @@
     <string name = "count"> count </string>
     <string name = "dollar"> dollar </string>
     <string name = "description"> Description </string>
-    <string name = "Accessibility"> access </string>
+    <string name = "Accessibility"> Access </string>
     <string name = "total_fund">Total assets:</string>
     <string name = "exchangers">Exchangers</string>
     <string name = "watchList">Watch List</string>
@@ -143,7 +143,7 @@
     <string name = "updateInfoSucces"> Your information was successfully updated </string>
     <string name = "sendingInformation"> Sending information… </string>
     <string name = "userProfile"> User Profile </string>
-    <string name = "once"> once </string>
+    <string name = "once"> Once </string>
     <string name = "errorOrder"> An error occurred while sending the order </string>
     <string name = "updateComplete"> Your information was successfully updated </string>
     <string name = "sendingSuccess"> Code sent. Please enter the received code in the box </string>

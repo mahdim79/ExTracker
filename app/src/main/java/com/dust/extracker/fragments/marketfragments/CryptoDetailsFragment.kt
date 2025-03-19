@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.icu.util.Calendar
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -43,6 +44,11 @@ import lecho.lib.hellocharts.view.LineChartView
 import okhttp3.internal.Util
 import org.w3c.dom.Text
 import java.util.*
+import androidx.core.net.toUri
+import com.dust.extracker.activities.MainActivity
+import com.dust.extracker.application.MyApplication
+import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener
+import saman.zamani.persiandate.PersianDate
 
 class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     OnDetailsDataReceive {
@@ -52,12 +58,12 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     lateinit var details_title: CTextView
     lateinit var details_fullName: TextView
     lateinit var details_text: TextView
-    lateinit var tomanPrice: TextView
-    lateinit var dollarPrice: TextView
-    lateinit var date: TextView
-    lateinit var coinPrice: TextView
-    lateinit var coin_btcBase_Price: TextView
-    lateinit var foreign_date: TextView
+    lateinit var tomanPrice: CTextView
+    lateinit var dollarPrice: CTextView
+    lateinit var date: CTextView
+    lateinit var coinPrice: CTextView
+    lateinit var coin_btcBase_Price: CTextView
+    lateinit var foreign_date: CTextView
     lateinit var lineChart: LineChartView
     lateinit var chartProgressBar: ProgressBar
     lateinit var swiprefreshLayout: SwipeRefreshLayout
@@ -87,6 +93,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     lateinit var totalSupply: CTextView
     lateinit var marketCoins: CTextView
     lateinit var dominance: TextView
+    lateinit var img_cryptoDetails_avatar: CircleImageView
 
     private var TIME_PERIOD = "24H"
 
@@ -174,7 +181,6 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         addTransactionbtn = view.findViewById(R.id.addTransactionbtn)
         shareImg = view.findViewById(R.id.shareImg)
         TotalCoinDailyChange = view.findViewById(R.id.TotalCoinDailyChange)
-        TotalCoinDailyChange.setTextColor(Color.WHITE)
         weeklyChange = view.findViewById(R.id.weeklyChange)
         monthlyChange = view.findViewById(R.id.monthlyChange)
         sixmonthChange = view.findViewById(R.id.sixmonthChange)
@@ -184,6 +190,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         foreign_date = view.findViewById(R.id.foreign_date)
         marketCoins = view.findViewById(R.id.marketCoins)
         dominance = view.findViewById(R.id.dominance)
+        img_cryptoDetails_avatar = view.findViewById(R.id.img_cryptoDetails_avatar)
         lineChart = view.findViewById(R.id.lineChart)
         chartProgressBar = view.findViewById(R.id.chartProgressBar)
         swiprefreshLayout = view.findViewById(R.id.swiprefreshLayout)
@@ -336,6 +343,19 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
             requireActivity().sendBroadcast(intent)
 
         }
+
+        setupUserAvatar()
+
+    }
+
+    private fun setupUserAvatar(){
+        realmDB.getUserData()?.avatarUrl.let {
+            if (!it.isNullOrEmpty()){
+                val uri = it.toUri()
+                (requireActivity().application as MyApplication).grantUriPermission(uri)
+                img_cryptoDetails_avatar.setImageURI(uri)
+            }
+        }
     }
 
     private fun showErrorSnack(txt: String) {
@@ -396,7 +416,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     private fun setUpLiveChart(list: List<PointValue>) {
         setUpTotalChange(list)
         lineChart.isInteractive = true
-        lineChart.isZoomEnabled = true
+        lineChart.isZoomEnabled = false
         lineChart.setOnClickListener {
             lineChart.setZoomLevelWithAnimation(1f, 1f, 1f)
         }
@@ -409,8 +429,9 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         line.strokeWidth = 2
         line.areaTransparency = 80
         line.pointRadius = 1
-        line.setHasLabels(false)
-        line.setHasPoints(false)
+        line.setHasLabels(true)
+        line.setHasLabelsOnlyForSelected(true)
+        line.setHasPoints(true)
 
         val lineList = arrayListOf(line)
         val cList = arrayListOf<Double>()
@@ -503,7 +524,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
         date.text = "${requireActivity().resources.getString(R.string.time)} ${freshDollarPrice.date}"
 
-        dollarPrice.text = "${requireActivity().resources.getString(R.string.dollarPrice)} ${freshDollarPrice.price}"
+        dollarPrice.text = "${requireActivity().resources.getString(R.string.dollarPrice)} ${Utils.formatPriceNumber(freshDollarPrice.price.toDouble(),0)}"
 
         tomanPrice.text = "${Utils.formatPriceNumber((mainObject.LastPrice!!.toDouble() * freshDollarPrice.price.toDouble()),2)} ${requireActivity().resources.getString(R.string.toman)}"
 

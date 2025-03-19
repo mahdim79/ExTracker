@@ -383,7 +383,7 @@ class PortfolioBaseFragment(
 
     private fun setUpLiveChart(list: List<PointValue>) {
         lineChart.isInteractive = true
-        lineChart.isZoomEnabled = true
+        lineChart.isZoomEnabled = false
         lineChart.setOnClickListener {
             lineChart.setZoomLevelWithAnimation(1f, 1f, 1f)
         }
@@ -396,8 +396,10 @@ class PortfolioBaseFragment(
         line.isCubic = true
         line.strokeWidth = 2
         line.areaTransparency = 60
-        line.setHasLabels(false)
-        line.setHasPoints(false)
+        line.setHasLabels(true)
+        line.setHasLabelsOnlyForSelected(true)
+        line.setHasPoints(true)
+
         val lineList = arrayListOf(line)
         val cList = arrayListOf<Double>()
         list.forEach {

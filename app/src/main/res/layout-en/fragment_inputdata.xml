@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?colorPrimary"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layoutDirection="ltr"
+            android:orientation="horizontal"
+            android:paddingVertical="@dimen/standardMargin">
+
+            <ImageView
+                android:id="@+id/backImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/standardMargin"
+                app:tint="?colorAccent"
+                android:src="@drawable/ic_baseline_arrow_back"/>
+
+            <com.dust.extracker.customviews.CTextView
+                android:id="@+id/crypto_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/standardMargin"
+                android:text="@string/potfolio_add_btn"
+                android:textDirection="rtl"
+                android:textSize="@dimen/standardMargin1.5x"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?colorPrimary"
+
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standardMargin2x"
+                android:orientation="horizontal">
+
+                <com.dust.extracker.customviews.CButton
+                    android:id="@+id/btnSell"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/standardMargin3x"
+                    android:layout_marginHorizontal="@dimen/standardMargin"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/sell_button_selector"
+                    android:text="@string/sell"
+                    android:textColor="?android:textColor" />
+
+                <com.dust.extracker.customviews.CButton
+                    android:id="@+id/btnBuy"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/standardMargin3x"
+                    android:layout_marginHorizontal="@dimen/standardMargin"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/buy_button_selector"
+                    android:enabled="false"
+                    android:text="@string/buy"
+                    android:textColor="?android:textColor" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/standardMargin"
+                android:layout_marginTop="@dimen/standardMargin2x"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/nameRelativeLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@+id/portfolioName"
+                        android:layout_alignBottom="@+id/portfolioName"
+                        android:layout_alignParentEnd="true"
+                        android:gravity="center"
+                        android:text="@string/portfolioName"
+                        android:textSize="@dimen/TextSize4x" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/portfolioName"
+                        android:layout_width="180dp"
+                        android:layout_marginStart="@dimen/standardMargin"
+                        android:layout_marginTop="@dimen/standardMargin"
+                        android:layout_height="wrap_content"
+                        app:errorEnabled="true"
+                        android:textColorHint="?android:textColor"
+                        app:errorTextColor="@color/red">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/name"
+                            android:textColor="?android:textColor"
+                            android:inputType="text"
+                            android:backgroundTint="?android:textColor"
+                            android:textDirection="rtl" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:id="@+id/txt_totalAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@+id/count"
+                        android:layout_alignBottom="@+id/count"
+                        android:layout_alignParentEnd="true"
+                        android:gravity="center"
+                        android:text="@string/totalAmountText"
+                        android:textSize="@dimen/TextSize4x" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/count"
+                        android:layout_width="180dp"
+                        android:layout_marginStart="@dimen/standardMargin"
+                        android:layout_marginTop="@dimen/standardMargin"
+                        android:layout_height="wrap_content"
+                        app:errorEnabled="true"
+                        android:textColorHint="?android:textColor"
+                        app:errorTextColor="@color/red">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/count"
+                            android:textColor="?android:textColor"
+                            android:backgroundTint="?android:textColor"
+                            android:inputType="numberDecimal"
+                            android:textDirection="ltr" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@+id/price"
+                        android:layout_alignBottom="@+id/price"
+                        android:layout_alignParentEnd="true"
+                        android:gravity="center"
+                        android:text="@string/price"
+                        android:textSize="@dimen/TextSize4x" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/price"
+                        android:layout_width="180dp"
+                        android:layout_marginStart="@dimen/standardMargin"
+                        android:layout_marginTop="@dimen/standardMargin"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="?android:textColor"
+                        app:errorEnabled="true"
+                        app:errorTextColor="@color/red">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"
+                            android:textDirection="ltr"
+                            android:textColor="?android:textColor"
+                            android:backgroundTint="?android:textColor"
+                            android:hint="USD"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@+id/dollarPrice"
+                        android:layout_alignBottom="@+id/dollarPrice"
+                        android:layout_alignParentEnd="true"
+                        android:gravity="center"
+                        android:text="@string/dollar"
+                        android:textSize="@dimen/TextSize4x" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/dollarPrice"
+                        android:layout_width="180dp"
+                        android:layout_marginStart="@dimen/standardMargin"
+                        android:layout_marginTop="@dimen/standardMargin"
+                        android:layout_height="wrap_content"
+                        app:errorEnabled="true"
+                        android:textColorHint="?android:textColor"
+                        app:errorTextColor="@color/red">
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:textColor="?android:textColor"
+                            android:textDirection="ltr"
+                            android:text="0"
+                            android:backgroundTint="?android:textColor"
+                            android:hint="@string/toman"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/spinnerRelativeLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                        android:gravity="center"
+                        android:text="@string/portfolio"
+                        android:textSize="@dimen/TextSize4x" />
+
+                    <Spinner
+                        android:id="@+id/portfolio_spinner"
+                        android:layout_width="180dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/standardMargin"
+                        android:layout_marginTop="@dimen/standardMargin" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/descRelativeLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@+id/descriptions"
+                        android:layout_alignBottom="@+id/descriptions"
+                        android:layout_alignParentEnd="true"
+                        android:gravity="center"
+                        android:text="@string/description"
+                        android:textSize="@dimen/TextSize4x" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/descriptions"
+                        android:layout_width="180dp"
+                        android:layout_marginStart="@dimen/standardMargin"
+                        android:textColorHint="?android:textColor"
+                        android:layout_marginTop="@dimen/standardMargin"
+                        android:layout_height="wrap_content">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:textColor="?android:textColor"
+                            android:backgroundTint="?android:textColor"
+                            android:hint="@string/description"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <com.dust.extracker.customviews.CButton
+                android:id="@+id/btnAdd"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/standardMargin4x"
+                android:layout_marginHorizontal="@dimen/standardMargin3x"
+                android:layout_marginTop="@dimen/standardMargin2x"
+                android:background="@drawable/buy_add_deal_button_selector"
+                android:text="@string/potfolio_add_btn"
+                android:textColor="?android:textColor"
+                android:layout_marginBottom="@dimen/standardMargin1.5x"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

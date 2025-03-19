@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
+import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -33,9 +34,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewPager: CViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        settheme()
-        setLanguage()
+        setTheme()
         super.onCreate(savedInstanceState)
+        adjustFontScale()
         setContentView(R.layout.activity_main)
         setUpViews()
         setUpViewPager()
@@ -43,24 +44,41 @@ class MainActivity : AppCompatActivity() {
         startNotificationJobService()
     }
 
-    private fun setLanguage() {
-        var localeStr = "fa"
-        localeStr = if (SharedPreferencesCenter(this).getEnglishLanguage())
+    private fun adjustFontScale() {
+        val configuration = resources.configuration
+        if (configuration.fontScale != 0.82f) {
+            configuration.fontScale = 0.82f
+            val metrics = resources.displayMetrics
+            val wm = getSystemService(WINDOW_SERVICE) as WindowManager
+            wm.defaultDisplay.getMetrics(metrics)
+            metrics.scaledDensity = configuration.fontScale * metrics.density
+            baseContext.resources.updateConfiguration(configuration, metrics)
+        }
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        val localeStr = if (SharedPreferencesCenter(newBase!!).getEnglishLanguage())
             "en"
         else
             "fa"
-        val locale = Locale(localeStr)
-        Locale.setDefault(locale)
-        val config = resources.configuration
-        config.setLocale(locale)
-        resources.updateConfiguration(config, resources.displayMetrics)
+
+        val newLocale = Locale(localeStr)
+        Locale.setDefault(newLocale)
+        val config = newBase.resources?.configuration
+        var myContext = newBase
+        config?.let {
+            it.setLayoutDirection(Locale(localeStr))
+            it.setLocale(newLocale)
+            myContext = newBase.createConfigurationContext(it) ?: newBase
+        }
+        super.attachBaseContext(myContext)
     }
 
     private fun startNotificationJobService() {
         sendBroadcast(Intent(this, NotificationServiceStarter::class.java))
     }
 
-    private fun settheme() {
+    private fun setTheme() {
         if (SharedPreferencesCenter(this).getNightMode()) {
             setTheme(R.style.Theme_ExTracker_dark)
             window.statusBarColor = Color.BLACK

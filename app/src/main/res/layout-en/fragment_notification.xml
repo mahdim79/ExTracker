@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/coordinatorlayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="?colorPrimary"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layoutDirection="ltr"
+            android:layout_height="?attr/actionBarSize">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                >
+                <ImageView
+                    android:id="@+id/image_back"
+                    android:layout_width="wrap_content"
+                    app:tint="?android:textColor"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_arrow_back"/>
+
+                <com.dust.extracker.customviews.CTextView
+                    android:id="@+id/news_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@+id/image_back"
+                    android:textStyle="bold"
+                    android:layout_centerVertical="true"
+                    android:textColor="?android:textColor"
+                    android:textSize="12dp"
+                    android:layout_marginHorizontal="@dimen/standardMargin2x"
+                    android:text="@string/anounsement"/>
+
+            </RelativeLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="ltr"
+            android:orientation="vertical"
+            android:layout_marginTop="?attr/actionBarSize">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/standardMargin"
+                android:layout_marginTop="@dimen/standardMargin2x"
+                android:foreground="?attr/selectableItemBackground"
+                android:visibility="gone"
+                android:gravity="center_vertical"
+                android:layoutDirection="rtl"
+                android:orientation="horizontal">
+
+                <com.dust.extracker.customviews.CTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/standardMargin0.5x"
+                    android:text="@string/priceAnounsment"
+                    android:textColor="?android:textColor"
+                    android:textSize="@dimen/TextSize4x" />
+                <LinearLayout
+                    android:id="@+id/others_nightMode"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layoutDirection="ltr"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/notifications_switcher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layoutDirection="ltr"
+                        app:thumbTint="@color/light_black"
+                        app:trackTint="@color/switcher_selector"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+
+           <!-- <com.warkiz.tickseekbar.TickSeekBar
+                android:id="@+id/notification_tick_seekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tsb_ticks_count="3"
+                android:layout_marginHorizontal="@dimen/standardMargin"
+                app:tsb_thumb_color="@color/light_orange"
+                app:tsb_thumb_size="16dp"
+                app:tsb_show_tick_marks_type="oval"
+                app:tsb_progress_value_float="true"
+                android:layout_marginTop="@dimen/standardMargin1.5x"
+                app:tsb_tick_marks_color="@color/blue"
+                app:tsb_tick_marks_size="8dp"
+                app:tsb_show_tick_texts="below"
+                app:tsb_tick_texts_color="?android:textColor"
+                app:tsb_tick_texts_array="@array/notification_seekbar_texts"
+                app:tsb_tick_texts_size="13sp"
+                app:tsb_track_background_color="?colorAccent"
+                app:tsb_track_background_size="2dp"
+                app:tsb_track_progress_color="@color/light_orange"
+                app:tsb_track_progress_size="3dp" />-->
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:visibility="gone"
+                android:background="?colorPrimaryVariant"
+                android:layout_marginTop="@dimen/standardMargin"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/standardMargin"
+                android:layout_marginTop="@dimen/standardMargin2x"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:layoutDirection="ltr"
+                android:orientation="horizontal">
+
+                <com.dust.extracker.customviews.CTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/standardMargin0.5x"
+                    android:text="@string/importantNewsAnounsment"
+                    android:textColor="?android:textColor"
+                    android:textSize="@dimen/TextSize4x" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layoutDirection="rtl"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/notifications_news"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layoutDirection="ltr"
+                        app:thumbTint="@color/light_black"
+                        app:trackTint="@color/switcher_selector"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?colorPrimaryVariant"
+                android:layout_marginTop="@dimen/standardMargin"/>
+            <com.dust.extracker.customviews.CTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="?android:textColor"
+                android:textSize="12dp"
+                android:layout_marginHorizontal="@dimen/standardMargin"
+                android:layout_marginTop="@dimen/standardMargin"
+                android:text="@string/portfolioAnounsment"/>
+
+            <LinearLayout
+                android:id="@+id/container_linear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?colorPrimaryVariant"
+                android:layout_marginTop="@dimen/standardMargin"/>
+            <com.dust.extracker.customviews.CTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="?android:textColor"
+                android:textSize="12dp"
+                android:layout_marginHorizontal="@dimen/standardMargin"
+                android:layout_marginTop="@dimen/standardMargin"
+                android:text="@string/customizeAnounsments"/>
+            <Button
+                android:id="@+id/create_customization"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:text="@string/craeteCustomization"
+                android:textColor="@color/button_textcolor_selector"
+                android:layout_marginHorizontal="@dimen/standardMargin4x"
+                android:background="@drawable/main_button_selector"
+                android:layout_marginVertical="@dimen/standardMargin2x"
+                />
+
+            <LinearLayout
+                android:id="@+id/notification_Linear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/standardMargin"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="?colorPrimary">
+
+                    <TextView
+                        android:id="@+id/sort_refresh"
+                        android:layout_width="0dp"
+                        android:layout_weight="7"
+                        android:layout_height="wrap_content"
+                        android:text="#"
+                        android:gravity="end"
+                        android:textSize="@dimen/TextSize2x"
+                        android:layout_marginEnd="@dimen/standardMargin0.5x"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="10"
+                        android:textSize="@dimen/TextSize2x"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textDirection="ltr"
+                        android:gravity="center_vertical"
+                        android:src="@drawable/btc_icon"
+                        />
+
+                    <TextView
+                        android:id="@+id/sort_by_name"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:layout_gravity="center"
+                        android:gravity="center_vertical"
+                        android:textSize="@dimen/TextSize2x"
+                        android:textDirection="ltr"
+                        android:layout_height="wrap_content"
+                        android:text="نام ارز"/>
+
+                    <TextView
+                        android:id="@+id/sort_by_price"
+                        android:layout_width="0dp"
+                        android:layout_weight="30"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="@dimen/TextSize2x"
+                        android:gravity="center_horizontal"
+                        android:text="قیمت مد نظر"/>
+
+                    <TextView
+                        android:id="@+id/sort_by_daily_change"
+                        android:layout_width="0dp"
+                        android:layout_weight="20"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/standardMargin"
+                        android:layout_gravity="center"
+                        android:textDirection="ltr"
+                        android:textSize="@dimen/TextSize2x"
+                        android:text="نوع شرط"
+                        />
+                    <TextView
+                        android:id="@+id/sort_by_comments"
+                        android:layout_width="0dp"
+                        android:layout_weight="15"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="@dimen/TextSize2x"
+                        android:gravity="start"
+                        android:text="تکرار"
+                        />
+
+                </LinearLayout>
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/notification_customized_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/standardMargin0.5x"/>
+
+                <ImageView
+                    android:id="@+id/add_Image"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_baseline_add_circle_outline_24"
+                    android:layout_marginTop="@dimen/standardMargin"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?colorPrimaryVariant"
+                android:layout_marginTop="@dimen/standardMargin"/>
+
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -107,7 +107,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:text="-"
-                        android:textColor="?android:textColor"
+                        android:textColor="@color/black"
                         />
                 </FrameLayout>
 
@@ -358,6 +358,7 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
+                        android:layoutDirection="rtl"
                         android:layout_height="wrap_content">
 
                         <com.dust.extracker.customviews.CTextView
@@ -369,6 +370,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             android:text="-"
+                            android:textDirection="ltr"
                             android:textSize="@dimen/standardMargin" />
 
                         <View
@@ -388,6 +390,7 @@
                             app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider1"
                             android:padding="8dp"
                             android:gravity="center"
+                            android:textDirection="ltr"
                             android:text="-"
                             android:textSize="@dimen/standardMargin" />
 
@@ -409,6 +412,7 @@
                             android:padding="8dp"
                             android:gravity="center"
                             android:text="-"
+                            android:textDirection="ltr"
                             android:textSize="@dimen/standardMargin" />
 
                         <View
@@ -424,6 +428,7 @@
                             android:id="@+id/dailyVolume"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textDirection="ltr"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider3"
                             android:padding="8dp"
@@ -449,6 +454,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider4"
                             android:text="-"
+                            android:textDirection="ltr"
                             android:textSize="@dimen/standardMargin" />
 
                         <View
@@ -469,6 +475,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider5"
                             android:text="-"
+                            android:textDirection="ltr"
                             android:textSize="@dimen/standardMargin" />
 
                         <View
@@ -488,6 +495,7 @@
                             android:layout_height="wrap_content"
                             android:padding="8dp"
                             android:gravity="center"
+                            android:textDirection="ltr"
                             android:text="-"
                             android:textSize="@dimen/standardMargin" />
 
@@ -509,6 +517,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider7"
                             android:text="-"
+                            android:textDirection="ltr"
                             android:textSize="@dimen/standardMargin" />
 
                         <View
@@ -528,6 +537,7 @@
                             app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider8"
                             android:padding="8dp"
                             android:gravity="center"
+                            android:textDirection="ltr"
                             android:text="-"
                             android:textSize="@dimen/standardMargin" />
 
@@ -549,6 +559,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider9"
                             android:text="-"
+                            android:textDirection="ltr"
                             android:textSize="@dimen/standardMargin" />
 
                         <View
@@ -568,6 +579,7 @@
                             app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider10"
                             android:padding="8dp"
                             android:gravity="center"
+                            android:textDirection="ltr"
                             android:text="-"
                             android:textSize="@dimen/standardMargin" />
 
@@ -588,6 +600,7 @@
                             app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider11"
                             android:padding="8dp"
                             android:gravity="center"
+                            android:textDirection="ltr"
                             android:text="-"
                             android:textSize="@dimen/standardMargin" />
 

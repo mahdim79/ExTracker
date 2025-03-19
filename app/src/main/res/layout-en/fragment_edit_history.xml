@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:background="?colorPrimary"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layoutDirection="ltr"
+        android:paddingVertical="@dimen/standardMargin">
+
+        <ImageView
+            android:id="@+id/backImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:tint="?android:textColor"
+            android:layout_marginStart="@dimen/standardMargin"
+            android:src="@drawable/ic_baseline_arrow_back" />
+
+        <com.dust.extracker.customviews.CTextView
+            android:id="@+id/crypto_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/standardMargin"
+            android:text="@string/editPortfolioName"
+            android:textDirection="rtl"
+            android:textSize="@dimen/standardMargin1.5x"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/portfolioName"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/standardMargin"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/standardMargin4x"
+        app:errorEnabled="true"
+        android:textColorHint="?android:textColor"
+        app:errorTextColor="@color/red">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/name"
+            android:inputType="text"
+            android:backgroundTint="?android:textColor"
+            android:textColor="?android:textColor"
+            android:textDirection="rtl" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:text="@string/save"
+        android:textColor="@color/button_textcolor_selector"
+        android:layout_marginHorizontal="@dimen/standardMargin4x"
+        android:background="@drawable/main_button_selector"
+        android:layout_marginTop="@dimen/standardMargin1.5x"
+        />
+
+</LinearLayout>

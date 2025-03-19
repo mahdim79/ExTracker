@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="?colorPrimary"
+    android:layout_height="match_parent"
+    tools:context=".activities.MainActivity">
+
+    <com.dust.extracker.customviews.CViewPager
+        android:id="@+id/viewpager_main"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:overScrollMode="never"
+        android:layout_weight="0.9"
+        />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomnavigation_main"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="?colorPrimary"
+        app:itemTextAppearanceActive="@style/customTabLayout"
+        app:itemTextAppearanceInactive="@style/customTabLayout"
+        app:menu="@menu/bottom_navigation"
+        android:layoutDirection="ltr"
+        app:itemTextColor="@color/bottom_navigation_selector"
+        app:itemIconTint="@color/bottom_navigation_selector"
+        android:layout_weight="0.09"/>
+
+</LinearLayout>
