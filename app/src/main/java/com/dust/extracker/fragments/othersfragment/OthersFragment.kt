@@ -1,39 +1,48 @@
 package com.dust.extracker.fragments.othersfragment
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SwitchCompat
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.dust.extracker.BuildConfig
 import com.dust.extracker.R
 import com.dust.extracker.activities.SplashActivity
 import com.dust.extracker.apimanager.ApiCenter
+import com.dust.extracker.application.MyApplication
 import com.dust.extracker.customviews.CButton
 import com.dust.extracker.customviews.CTextView
 import com.dust.extracker.dataclasses.CryptoMainData
+import com.dust.extracker.dataclasses.UserDataClass
 import com.dust.extracker.interfaces.OnGetAllCryptoList
+import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
+import com.dust.extracker.utils.Constants
 import com.squareup.picasso.Picasso
+import com.yalantis.ucrop.UCrop
 import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
+import java.util.UUID
+
 
 class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
@@ -55,6 +64,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     private lateinit var others_telegram: ImageView
     private lateinit var others_aparat: ImageView
     private lateinit var others_facebook: ImageView
+    private val realmDb = RealmDataBaseCenter()
 
     private lateinit var others_profile_edit: LinearLayout
     private lateinit var others_nightMode: LinearLayout
@@ -67,8 +77,34 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     private lateinit var sharedPreferencesCenter: SharedPreferencesCenter
     private lateinit var apiCenter: ApiCenter
 
+    private var getContent: ActivityResultLauncher<String> =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
+            val dest_uri = StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString()
+            result?.let {
+                val ucropOption = UCrop.Options()
+                ucropOption.withMaxResultSize(860, 860)
+                val u = UCrop.of(it, Uri.fromFile(File(requireActivity().cacheDir, dest_uri)))
+                    .withAspectRatio(1f, 1f)
+                    .withOptions(ucropOption)
+                resultImageCrop.launch(u.getIntent(requireContext()))
+            }
+        }
 
-    private lateinit var onUserLogIn: OnUserLogIn
+    private var resultImageCrop =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uri = result.data?.let { UCrop.getOutput(it) }
+                uri?.let {
+                    val imageUri = it.toString()
+                    setUserAvatar(imageUri)
+                    val currentUserData = realmDb.getUserData()
+                    realmDb.updateUserData(UserDataClass(currentUserData?.id ?: 0,currentUserData?.userName ?: "",currentUserData?.phoneNumber ?: 0.0,currentUserData?.Email ?: "",imageUri,currentUserData?.name ?: ""))
+                }
+            }
+        }
+
+
+private lateinit var onUserLogIn: OnUserLogIn
 
     // Consts .......................................................
 
@@ -91,11 +127,11 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     }
 
     private fun setUpApiCenter() {
-        apiCenter = ApiCenter(activity!!, this)
+        apiCenter = ApiCenter(requireActivity(), this)
     }
 
     private fun setUpSharedPrefCenter() {
-        sharedPreferencesCenter = SharedPreferencesCenter(activity!!)
+        sharedPreferencesCenter = SharedPreferencesCenter(requireActivity())
     }
 
 
@@ -103,32 +139,27 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         if (sharedPreferencesCenter.checkUserLogIn()) {
             sharedPreferencesCenter.setUserLogIn(true)
             others_logOut.visibility = View.VISIBLE
-            userLogInTxt.text = activity!!.resources.getString(R.string.userProfile)
+            userLogInTxt.text = requireActivity().resources.getString(R.string.userProfile)
             others_name.text = sharedPreferencesCenter.getUserName()
-            setUserAvatar()
         }
+        setUpUserAvatarImageView()
 
     }
 
-    private fun setUserAvatar() {
-        val root = Environment.getExternalStorageDirectory().absolutePath
-        val rootFile = File(root, "/ExTracker")
-        if (!rootFile.exists())
-            rootFile.mkdir()
-        val avatarFile = File(rootFile, "/ExAvatar.jpeg")
-        if (avatarFile.exists()) {
-            val inputStream = FileInputStream(avatarFile)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            others_profilePhoto.setImageBitmap(bitmap)
-        } else {
-            val url = sharedPreferencesCenter.getAvatarUrl()
-            if (url != "null") {
-                val resolvedBitmap = Picasso.get().load(url).get()
-                val outPutStream = FileOutputStream(avatarFile)
-                resolvedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outPutStream)
-                setUserAvatar()
+    private fun setUpUserAvatarImageView() {
+        realmDb.getUserData()?.avatarUrl?.let { uriStr ->
+            if (uriStr.isNotEmpty()){
+                setUserAvatar(uriStr)
             }
         }
+    }
+
+    private fun setUserAvatar(uriStr:String){
+        try {
+            val uri = uriStr.toUri()
+            (requireActivity().application as MyApplication).grantUriPermission(uri)
+            others_profilePhoto.setImageURI(uri)
+        }catch (e:Exception){}
     }
 
     private fun setUpClickListeners() {
@@ -159,7 +190,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
             val intent = Intent("com.dust.extracker.Update_NotificationData")
             intent.putExtra("EnabledNotifications", "")
-            activity!!.sendBroadcast(intent)
+            requireActivity().sendBroadcast(intent)
 
         }
         others_nightModeSwitcher.setOnCheckedChangeListener { _, b ->
@@ -174,16 +205,16 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     fun restartApp() {
         try {
-            activity!!.finishAffinity()
+            requireActivity().finishAffinity()
         } catch (e: Exception) {
 
         } finally {
-            activity!!.startActivity(Intent(activity!!, SplashActivity::class.java))
+            requireActivity().startActivity(Intent(requireActivity(), SplashActivity::class.java))
         }
     }
 
     private fun startLogInFragment() {
-        activity!!.supportFragmentManager.beginTransaction()
+        requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.others_frame_holder, UserLogInFragment())
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .addToBackStack("UserLogInFragment")
@@ -191,7 +222,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     }
 
     private fun startProfileFragment() {
-        activity!!.supportFragmentManager.beginTransaction()
+        requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.others_frame_holder, UserProfileFragment())
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .addToBackStack("UserProfileFragment")
@@ -211,15 +242,24 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
                 }
             }
             R.id.others_edit -> {
-                activity!!.supportFragmentManager.beginTransaction()
+                requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.others_frame_holder, NotificationFragment())
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack("NotificationFragment")
                     .commit()
             }
+            R.id.others_profilePhoto -> {
+                try {
+                    getContent.launch("image/*")
+                }catch (e:Exception){
+                    Log.i("setUpUserAvatarImageView",e.message.toString())
+                }
+            }
             R.id.others_instagram -> {
+                openInstagramAccount()
             }
             R.id.others_telegram -> {
+                openTelegramAccount()
             }
             R.id.others_facebook -> {
             }
@@ -239,6 +279,30 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
             R.id.others_problemReport -> {
                 openUrl("https://www.google.com")
             }
+        }
+    }
+
+    private fun openTelegramAccount(){
+        val intent = Intent(Intent.ACTION_VIEW, "tg://resolve?domain=${Constants.TELEGRAM_USER_NAME}".toUri())
+        startActivity(intent)
+    }
+
+    private fun openInstagramAccount(){
+        val instagramUserName = Constants.INSTAGRAM_USER_NAME
+        val uri = "http://instagram.com/_u/$instagramUserName".toUri()
+        val likeIng = Intent(Intent.ACTION_VIEW, uri)
+
+        likeIng.setPackage("com.instagram.android")
+
+        try {
+            startActivity(likeIng)
+        } catch (e: ActivityNotFoundException) {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    "http://instagram.com/$instagramUserName".toUri()
+                )
+            )
         }
     }
 
@@ -266,17 +330,13 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         userLogInTxt = view.findViewById(R.id.userLogInTxt)
 
         others_name.text =
-            activity!!.resources.getString(R.string.version, BuildConfig.VERSION_NAME)
-
-        if (SharedPreferencesCenter(activity!!).getNightMode()) {
-            others_profilePhoto.setImageResource(R.drawable.ic_launcher_black)
-        }
+            requireActivity().resources.getString(R.string.version, BuildConfig.VERSION_NAME)
 
         others_notificationSwitcher.isChecked = sharedPreferencesCenter.getNotificationEnabled()
         others_nightModeSwitcher.isChecked = sharedPreferencesCenter.getNightMode()
         others_languageSwitcher.isChecked = sharedPreferencesCenter.getEnglishLanguage()
 
-        if (SharedPreferencesCenter(activity!!).getNightMode())
+        if (SharedPreferencesCenter(requireActivity()).getNightMode())
             others_edit.setTextColor(Color.WHITE)
         else
             others_edit.setTextColor(Color.BLACK)
@@ -296,7 +356,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         others_fingerPrintSwitcher.setOnClickListener {
             others_fingerPrintSwitcher.isChecked = !others_fingerPrintSwitcher.isChecked
 
-            val executor = ContextCompat.getMainExecutor(activity!!)
+            val executor = ContextCompat.getMainExecutor(requireActivity())
             val prompt =
                 BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
                     override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
@@ -309,7 +369,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
                             sharedPreferencesCenter.setFingerPrintEnabled(false)
                             others_fingerPrintSwitcher.isChecked = false
                         } else {
-                            activity!!.supportFragmentManager.beginTransaction()
+                            requireActivity().supportFragmentManager.beginTransaction()
                                 .replace(R.id.others_frame_holder, SetPasswordFragment())
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                 .addToBackStack("SetPasswordFragment")
@@ -341,15 +401,15 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     override fun onDestroy() {
         super.onDestroy()
-        activity!!.finishAffinity()
+        requireActivity().finishAffinity()
     }
 
     private fun openUrl(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        activity!!.startActivity(
+        requireActivity().startActivity(
             Intent.createChooser(
                 intent,
-                activity!!.resources.getString(R.string.openUrlWith)
+                requireActivity().resources.getString(R.string.openUrlWith)
             )
         )
     }
@@ -357,7 +417,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     inner class OnUserLogIn : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
             others_logOut.visibility = View.VISIBLE
-            userLogInTxt.text = activity!!.resources.getString(R.string.userProfile)
+            userLogInTxt.text = requireActivity().resources.getString(R.string.userProfile)
             val bundle = p1!!.extras!!
             if (!bundle.isEmpty && bundle.containsKey("name") && bundle.containsKey("avatarUrl")) {
                 others_name.text = bundle.getString("name")
@@ -370,7 +430,11 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     override fun onStart() {
         onUserLogIn = OnUserLogIn()
-        activity!!.registerReceiver(onUserLogIn, IntentFilter("com.dust.extracker.USER_DATA"))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(onUserLogIn, IntentFilter("com.dust.extracker.USER_DATA"),Context.RECEIVER_EXPORTED)
+        }else{
+            requireActivity().registerReceiver(onUserLogIn, IntentFilter("com.dust.extracker.USER_DATA"))
+        }
         super.onStart()
         try {
             others_fingerPrintSwitcher.isChecked = sharedPreferencesCenter.getFingerPrintEnabled()
@@ -379,7 +443,7 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     }
 
     override fun onStop() {
-        activity!!.unregisterReceiver(onUserLogIn)
+        requireActivity().unregisterReceiver(onUserLogIn)
         super.onStop()
     }
 

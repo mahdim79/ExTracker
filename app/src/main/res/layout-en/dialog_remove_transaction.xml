@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?colorPrimary">
+
+    <com.dust.extracker.customviews.CTextView
+        android:id="@+id/txt_remove_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_marginHorizontal="@dimen/standardMargin6x"
+        android:layout_marginVertical="@dimen/standardMargin1.5x"
+        android:text="@string/deleteTransaction"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_remove_question"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="@dimen/standardMargin1.5x"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:background="@drawable/dialog_remove_cancle_btn"
+            android:layout_below="@+id/txt_remove_question"
+            android:text="@string/cancel"
+            android:layout_marginEnd="@dimen/standardMargin"/>
+
+        <Button
+            android:id="@+id/btnConfirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:background="@drawable/dialog_remove_confirm_btn"
+            android:text="@string/confirm"/>
+    </LinearLayout>
+
+</RelativeLayout>

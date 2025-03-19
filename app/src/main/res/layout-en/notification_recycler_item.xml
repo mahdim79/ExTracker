@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/standardMargin"
+        android:background="?colorPrimary">
+
+        <TextView
+            android:id="@+id/txt_id"
+            android:layout_width="0dp"
+            android:layout_weight="7"
+            android:layout_height="wrap_content"
+            android:textColor="?colorAccent"
+            android:text="0"
+            android:textSize="@dimen/standardMargin"
+            android:layout_marginEnd="@dimen/standardMargin0.5x"
+            android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/txt_name"
+                android:layout_width="0dp"
+                android:layout_weight="25"
+                android:layout_marginStart="@dimen/standardMargin"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                tools:text="Bitcoin"/>
+
+            <TextView
+                android:id="@+id/item_price"
+                android:layout_width="0dp"
+                android:layout_weight="30"
+                android:layout_marginStart="@dimen/standardMargin"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="12dp"
+                android:gravity="center_horizontal"
+                tools:text="$34000"/>
+
+
+
+            <com.dust.extracker.customviews.CTextView
+                android:id="@+id/txt_condition"
+                android:layout_width="0dp"
+                android:layout_weight="20"
+                android:layout_marginHorizontal="@dimen/standardMargin"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="بروز نشده"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="9dp" />
+
+            <TextView
+                android:id="@+id/txt_repeate_type"
+                android:layout_width="0dp"
+                android:layout_weight="10"
+                android:layout_height="wrap_content"
+                android:text="23.6K"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal"
+                android:textColor="?android:textColor"
+                android:textSize="@dimen/standardMargin"
+                />
+
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?colorPrimaryVariant"/>
+
+</LinearLayout>

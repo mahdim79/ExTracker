@@ -76,14 +76,14 @@
                 android:layout_width="30dp"
                 android:layout_alignParentStart="true"
                 android:layout_height="30dp"
-                android:src="@drawable/btc_icon"/>
+                tools:src="@drawable/tether"/>
 
             <com.dust.extracker.customviews.CTextView
                 android:id="@+id/cryptoName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/standardMargin0.5x"
-                android:text="DogeCoin"
+                tools:text="DogeCoin"
                 android:layout_toEndOf="@+id/cryptoImage"
                 android:textColor="?android:textColor"
                 android:layout_centerVertical="true"

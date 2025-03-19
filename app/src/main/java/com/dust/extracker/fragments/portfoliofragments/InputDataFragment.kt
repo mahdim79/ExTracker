@@ -95,7 +95,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
         dollarPrice = view.findViewById(R.id.dollarPrice)
         descriptions = view.findViewById(R.id.descriptions)
 
-        var color = if (SharedPreferencesCenter(activity!!).getNightMode())
+        var color = if (SharedPreferencesCenter(requireActivity()).getNightMode())
             Color.WHITE
         else
             Color.BLACK
@@ -105,22 +105,22 @@ class InputDataFragment : Fragment(), View.OnClickListener {
         btnSell.setTextColor(color)
 
         txt_totalAmount.text =
-            resources.getString(R.string.totalAmountText, arguments!!.getString("COINNAME", "BTC2"))
+            resources.getString(R.string.totalAmountText, requireArguments().getString("COINNAME", "BTC2"))
 
-        if (arguments!!.getBoolean("IS_TRANSACTION", false)) {
+        if (requireArguments().getBoolean("IS_TRANSACTION", false)) {
             realmDB.getAllHistoryData().forEach {
                 spinnerList.add(it.portfolioName)
             }
             var index = 0
             for (i in 0 until spinnerList.size)
-                if (spinnerList[i] == arguments!!.getString(
+                if (spinnerList[i] == requireArguments().getString(
                         "PortfolioName",
                         "SecKey=sdffgvbnmsdfghjkrtyuio"
                     )
                 )
                     index = i
             portfolio_spinner.adapter = ArrayAdapter<String>(
-                activity!!,
+                requireActivity(),
                 R.layout.custom_spinner_item,
                 R.id.textview1,
                 spinnerList
@@ -129,21 +129,23 @@ class InputDataFragment : Fragment(), View.OnClickListener {
 
             nameRelativeLayout.visibility = View.GONE
             descRelativeLayout.visibility = View.GONE
-            crypto_name.text = activity!!.resources.getString(R.string.addDeal)
-            btnAdd.text = activity!!.resources.getString(R.string.addDeal)
+            crypto_name.text = requireActivity().resources.getString(R.string.addDeal)
+            btnAdd.text = requireActivity().resources.getString(R.string.addDeal)
         } else {
             spinnerRelativeLayout.visibility = View.GONE
         }
 
         mainPrice.editText!!.setText(
             realmDB.getCryptoDataByName(
-                arguments!!.getString(
+                requireArguments().getString(
                     "COINNAME",
                     "BTC"
                 )
             ).LastPrice!!.toString()
         )
-        dollarPrice.editText!!.setText(realmDB.getDollarPrice().price)
+        realmDB.getDollarPrice()?.price?.let {
+            dollarPrice.editText!!.setText(it)
+        }
     }
 
     fun newInstance(
@@ -193,7 +195,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
     private fun calculateAndAddData() {
         val validity = checkValidity()
         if (validity == "RESULT_OK") {
-            if (arguments!!.getBoolean("IS_TRANSACTION", false)) {
+            if (requireArguments().getBoolean("IS_TRANSACTION", false)) {
                 val allData = realmDB.getAllHistoryData()
                 allData.forEach {
                     if (it.portfolioName == spinnerList[portfolio_spinner.selectedItemPosition]) {
@@ -210,7 +212,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
                         newList.add(
                             TransactionDataClass(
                                 it.transactionList.size,
-                                arguments!!.getString("COINNAME", "BTC"),
+                                requireArguments().getString("COINNAME", "BTC"),
                                 dealType,
                                 count.editText!!.text.toString().toDouble(),
                                 dollarPrice.editText!!.text.toString().toDouble(),
@@ -223,11 +225,11 @@ class InputDataFragment : Fragment(), View.OnClickListener {
                         realmDB.updateHistoryData(it)
                     }
                 }
-                fragmentManager!!.popBackStack(
+                requireFragmentManager().popBackStack(
                     "SelectCtyptoFragment",
                     FragmentManager.POP_BACK_STACK_INCLUSIVE
                 )
-                fragmentManager!!.popBackStack(
+                requireFragmentManager().popBackStack(
                     "InputDataFragment",
                     FragmentManager.POP_BACK_STACK_INCLUSIVE
                 )
@@ -235,12 +237,12 @@ class InputDataFragment : Fragment(), View.OnClickListener {
             }
             realmDB.getAllHistoryData().forEach {
                 if (portfolioName.editText!!.text.toString() == it.portfolioName){
-                    portfolioName.error = activity!!.resources.getString(R.string.nameUsed)
+                    portfolioName.error = requireActivity().resources.getString(R.string.nameUsed)
                     return
                 }
             }
             val historyData = createHistoryData()
-            realmDB.insertHistoryData(historyData, fragmentManager!!, activity!!)
+            realmDB.insertHistoryData(historyData, requireFragmentManager(), requireActivity())
         }
     }
 
@@ -255,7 +257,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
         val transactionDataList = arrayListOf(
             TransactionDataClass(
                 0,
-                arguments!!.getString("COINNAME", "BTC"),
+                requireArguments().getString("COINNAME", "BTC"),
                 dealType,
                 count.editText!!.text.toString().toDouble(),
                 dollarPrice.editText!!.text.toString().toDouble(),
@@ -266,7 +268,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
         )
         var desc = ""
         if (descriptions.editText!!.text.toString() == "")
-            desc = activity!!.resources.getString(R.string.noDescription)
+            desc = requireActivity().resources.getString(R.string.noDescription)
         else
             desc = descriptions.editText!!.text.toString()
 
@@ -286,10 +288,10 @@ class InputDataFragment : Fragment(), View.OnClickListener {
     private fun checkValidity(): String {
         var result = "RESULT_NOT_OK"
 
-        if (!arguments!!.getBoolean("IS_TRANSACTION", false)) {
+        if (!requireArguments().getBoolean("IS_TRANSACTION", false)) {
             val pName = portfolioName.editText!!.text.toString()
             if (pName == "") {
-                portfolioName.error = activity!!.resources.getString(R.string.requireField)
+                portfolioName.error = requireActivity().resources.getString(R.string.requireField)
                 return result
             } else {
                 portfolioName.error = ""
@@ -308,19 +310,19 @@ class InputDataFragment : Fragment(), View.OnClickListener {
                     dollarPrice.error = ""
                     result = "RESULT_OK"
                 } else {
-                    dollarPrice.error = activity!!.resources.getString(R.string.requireField)
+                    dollarPrice.error = requireActivity().resources.getString(R.string.requireField)
                 }
             } else {
                 if (price == "")
-                    mainPrice.error = activity!!.resources.getString(R.string.requireField)
+                    mainPrice.error = requireActivity().resources.getString(R.string.requireField)
                 else
-                    mainPrice.error = activity!!.resources.getString(R.string.enterCorrectAmount)
+                    mainPrice.error = requireActivity().resources.getString(R.string.enterCorrectAmount)
             }
         } else {
             if (count1 == "")
-                count.error = activity!!.resources.getString(R.string.requireField)
+                count.error = requireActivity().resources.getString(R.string.requireField)
             else
-                count.error = activity!!.resources.getString(R.string.enterCorrectAmount)
+                count.error = requireActivity().resources.getString(R.string.enterCorrectAmount)
         }
 
 

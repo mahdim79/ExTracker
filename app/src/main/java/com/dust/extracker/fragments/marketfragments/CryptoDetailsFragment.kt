@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.icu.util.Calendar
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -33,14 +34,21 @@ import com.dust.extracker.realmdb.DollarObject
 import com.dust.extracker.realmdb.MainRealmObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
+import com.dust.extracker.utils.Utils
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import lecho.lib.hellocharts.formatter.SimpleAxisValueFormatter
 import lecho.lib.hellocharts.model.*
 import lecho.lib.hellocharts.view.LineChartView
+import okhttp3.internal.Util
 import org.w3c.dom.Text
 import java.util.*
+import androidx.core.net.toUri
+import com.dust.extracker.activities.MainActivity
+import com.dust.extracker.application.MyApplication
+import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener
+import saman.zamani.persiandate.PersianDate
 
 class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     OnDetailsDataReceive {
@@ -50,12 +58,12 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     lateinit var details_title: CTextView
     lateinit var details_fullName: TextView
     lateinit var details_text: TextView
-    lateinit var tomanPrice: TextView
-    lateinit var dollarPrice: TextView
-    lateinit var date: TextView
-    lateinit var coinPrice: TextView
-    lateinit var coin_btcBase_Price: TextView
-    lateinit var foreign_date: TextView
+    lateinit var tomanPrice: CTextView
+    lateinit var dollarPrice: CTextView
+    lateinit var date: CTextView
+    lateinit var coinPrice: CTextView
+    lateinit var coin_btcBase_Price: CTextView
+    lateinit var foreign_date: CTextView
     lateinit var lineChart: LineChartView
     lateinit var chartProgressBar: ProgressBar
     lateinit var swiprefreshLayout: SwipeRefreshLayout
@@ -73,18 +81,19 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     private lateinit var addTransactionbtn: CButton
     private lateinit var fullChart: CButton
 
-    lateinit var rank: TextView
-    lateinit var price: TextView
-    lateinit var marketCap: TextView
-    lateinit var dailyVolume: TextView
-    lateinit var dailyChange: TextView
-    lateinit var weeklyChange: TextView
-    lateinit var monthlyChange: TextView
-    lateinit var sixmonthChange: TextView
-    lateinit var yearlyChange: TextView
-    lateinit var totalSupply: TextView
-    lateinit var marketCoins: TextView
+    lateinit var rank: CTextView
+    lateinit var price: CTextView
+    lateinit var marketCap: CTextView
+    lateinit var dailyVolume: CTextView
+    lateinit var dailyChange: CTextView
+    lateinit var weeklyChange: CTextView
+    lateinit var monthlyChange: CTextView
+    lateinit var sixmonthChange: CTextView
+    lateinit var yearlyChange: CTextView
+    lateinit var totalSupply: CTextView
+    lateinit var marketCoins: CTextView
     lateinit var dominance: TextView
+    lateinit var img_cryptoDetails_avatar: CircleImageView
 
     private var TIME_PERIOD = "24H"
 
@@ -120,7 +129,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
     private fun hideKeyBoard() {
         val softInputManager =
-            activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         softInputManager.hideSoftInputFromWindow(
             total_frame.windowToken,
             InputMethodManager.HIDE_NOT_ALWAYS
@@ -129,7 +138,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
 
     private fun setUpApiService() {
-        apiService = ApiCenter(activity!!, object : OnGetAllCryptoList {
+        apiService = ApiCenter(requireActivity(), object : OnGetAllCryptoList {
             override fun onGet(cryptoList: List<CryptoMainData>) {}
 
             override fun onGetByName(price: Double, dataNum: Int) {}
@@ -138,7 +147,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
     private fun checkNetworkConnectivity(): Boolean {
         val connectivityManager =
-            activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connectivityManager.activeNetworkInfo
         return networkInfo != null && networkInfo.isConnectedOrConnecting
     }
@@ -151,11 +160,13 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     }
 
     private fun setDollarPrice() {
-        freshDollarPrice = realmDB.getDollarPrice()
+        realmDB.getDollarPrice()?.let {
+            freshDollarPrice = it
+        }
     }
 
     private fun setUpCoinList() {
-        mainObject = realmDB.getCryptoDataByName(arguments!!.getString("COIN_NAME")!!)
+        mainObject = realmDB.getCryptoDataByName(requireArguments().getString("COIN_NAME")!!)
     }
 
     private fun setUpRealmDB() {
@@ -170,7 +181,6 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         addTransactionbtn = view.findViewById(R.id.addTransactionbtn)
         shareImg = view.findViewById(R.id.shareImg)
         TotalCoinDailyChange = view.findViewById(R.id.TotalCoinDailyChange)
-        TotalCoinDailyChange.setTextColor(Color.WHITE)
         weeklyChange = view.findViewById(R.id.weeklyChange)
         monthlyChange = view.findViewById(R.id.monthlyChange)
         sixmonthChange = view.findViewById(R.id.sixmonthChange)
@@ -180,6 +190,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         foreign_date = view.findViewById(R.id.foreign_date)
         marketCoins = view.findViewById(R.id.marketCoins)
         dominance = view.findViewById(R.id.dominance)
+        img_cryptoDetails_avatar = view.findViewById(R.id.img_cryptoDetails_avatar)
         lineChart = view.findViewById(R.id.lineChart)
         chartProgressBar = view.findViewById(R.id.chartProgressBar)
         swiprefreshLayout = view.findViewById(R.id.swiprefreshLayout)
@@ -204,7 +215,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         oneYear = view.findViewById(R.id.oneYear)
         threeMonth = view.findViewById(R.id.threeMonth)
         all_Time = view.findViewById(R.id.all_Time)
-        twentyFourtime.setTextColor(ContextCompat.getColor(activity!!, R.color.light_orange))
+        twentyFourtime.setTextColor(ContextCompat.getColor(requireActivity(), R.color.light_orange))
 
         twentyFourtime.setOnClickListener(this)
         oneWeek.setOnClickListener(this)
@@ -227,7 +238,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
                 requestChartData()
             } else {
                 chartProgressBar.visibility = View.GONE
-                showErrorSnack(activity!!.resources.getString(R.string.connectionFailure))
+                showErrorSnack(requireActivity().resources.getString(R.string.connectionFailure))
                 swiprefreshLayout.isRefreshing = false
             }
         }
@@ -238,32 +249,32 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "text/plain"
             intent.putExtra(Intent.EXTRA_TEXT, txtBody)
-            activity!!.startActivity(Intent.createChooser(intent, "ارسال با ..."))
+            requireActivity().startActivity(Intent.createChooser(intent, "ارسال با ..."))
         }
 
         addToeWatchListbtn.setTextColor(Color.WHITE)
         addTransactionbtn.setTextColor(Color.WHITE)
         fullChart.setTextColor(Color.WHITE)
 
-        val sharedPreferences1 = activity!!.getSharedPreferences("FAV", Context.MODE_PRIVATE)
+        val sharedPreferences1 = requireActivity().getSharedPreferences("FAV", Context.MODE_PRIVATE)
         if (sharedPreferences1.getString("fav", "")!!.indexOf(mainObject.ID!!) != -1) {
-            addToeWatchListbtn.text = activity!!.resources.getString(R.string.deleteFromWatchlist)
+            addToeWatchListbtn.text = requireActivity().resources.getString(R.string.deleteFromWatchlist)
             addToeWatchListbtn.background = ResourcesCompat.getDrawable(
-                activity!!.resources,
+                requireActivity().resources,
                 R.drawable.details_addtowatch_added,
                 null
             )
         } else {
-            addToeWatchListbtn.text = activity!!.resources.getString(R.string.addToWatchlist)
+            addToeWatchListbtn.text = requireActivity().resources.getString(R.string.addToWatchlist)
             addToeWatchListbtn.background = ResourcesCompat.getDrawable(
-                activity!!.resources,
+                requireActivity().resources,
                 R.drawable.details_addtowatch_not_added,
                 null
             )
         }
 
         addToeWatchListbtn.setOnClickListener {
-            val sharedPreferences = activity!!.getSharedPreferences("FAV", Context.MODE_PRIVATE)
+            val sharedPreferences = requireActivity().getSharedPreferences("FAV", Context.MODE_PRIVATE)
             val rawData = sharedPreferences.getString("fav", "")
             val resultList = arrayListOf<String>()
             var listRawData = listOf<String>()
@@ -273,31 +284,31 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
             }
             if (rawData.indexOf("${mainObject.ID!!}") != -1) {
                 resultList.remove(mainObject.ID!!)
-                addToeWatchListbtn.text = activity!!.resources.getString(R.string.addToWatchlist)
+                addToeWatchListbtn.text = requireActivity().resources.getString(R.string.addToWatchlist)
                 addToeWatchListbtn.background = ResourcesCompat.getDrawable(
-                    activity!!.resources,
+                    requireActivity().resources,
                     R.drawable.details_addtowatch_not_added,
                     null
                 )
 
             } else {
                 resultList.add(mainObject.ID!!)
-                addToeWatchListbtn.text = activity!!.resources.getString(R.string.deleteFromWatchlist)
+                addToeWatchListbtn.text = requireActivity().resources.getString(R.string.deleteFromWatchlist)
                 addToeWatchListbtn.background = ResourcesCompat.getDrawable(
-                    activity!!.resources,
+                    requireActivity().resources,
                     R.drawable.details_addtowatch_added,
                     null
                 )
 
             }
             sharedPreferences.edit().putString("fav", resultList.joinToString(",")).apply()
-            activity!!.sendBroadcast(Intent("com.dust.extracker.notifyDataSetChanged"))
+            requireActivity().sendBroadcast(Intent("com.dust.extracker.notifyDataSetChanged"))
         }
 
         addTransactionbtn.setOnClickListener {
             var intent = Intent("com.dust.extracker.OnPageChange")
             intent.putExtra("PAGE", 1)
-            activity!!.sendBroadcast(intent)
+            requireActivity().sendBroadcast(intent)
             val coinName = mainObject.Name!!
             var IS_TRANSACTION = false
             var portfolioName = ""
@@ -325,12 +336,25 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         fullChart.setOnClickListener {
             val intent1 = Intent("com.dust.extracker.OnPageChange")
             intent1.putExtra("PAGE", 2)
-            activity!!.sendBroadcast(intent1)
+            requireActivity().sendBroadcast(intent1)
 
             val intent = Intent("com.dust.extracker.OnClickMainData")
             intent.putExtra("COIN", mainObject.Name)
-            activity!!.sendBroadcast(intent)
+            requireActivity().sendBroadcast(intent)
 
+        }
+
+        setupUserAvatar()
+
+    }
+
+    private fun setupUserAvatar(){
+        realmDB.getUserData()?.avatarUrl.let {
+            if (!it.isNullOrEmpty()){
+                val uri = it.toUri()
+                (requireActivity().application as MyApplication).grantUriPermission(uri)
+                img_cryptoDetails_avatar.setImageURI(uri)
+            }
         }
     }
 
@@ -339,17 +363,10 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
             swiprefreshLayout,
             txt,
             Snackbar.LENGTH_LONG
-        ).setAction(
-            activity!!.resources.getString(R.string.connect)
-        ) {
-            val intent = Intent(Intent.ACTION_MAIN)
-            intent.setClassName("com.android.phone", "com.android.phone.NetworkSetting")
-            activity!!.startActivity(intent)
-
-        }
-        snackBar.setTextColor(Color.BLACK)
-        snackBar.setActionTextColor(Color.BLACK)
-        snackBar.view.setBackgroundColor(Color.RED)
+        )
+        snackBar.setTextColor(Color.WHITE)
+        snackBar.setActionTextColor(Color.WHITE)
+        snackBar.view.setBackgroundColor(Color.BLACK)
         snackBar.show()
     }
 
@@ -376,21 +393,21 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         var changeStr = ""
         var color = Color.GREEN
         if (dailychange > 0) {
-            changeStr = "+${String.format("%.2f", dailychange)}"
+            changeStr = "+${Utils.formatPriceNumber(dailychange,2)}"
         } else {
-            changeStr = "${String.format("%.2f", dailychange)}"
+            changeStr = "${Utils.formatPriceNumber(dailychange,2)}"
             color = Color.RED
         }
         TotalCoinDailyChange.text = changeStr
         if (color == Color.RED)
             total_frame.background = ResourcesCompat.getDrawable(
-                activity!!.resources,
+                requireActivity().resources,
                 R.drawable.cryptodetails_frame_shape_red,
                 null
             )
         else
             total_frame.background = ResourcesCompat.getDrawable(
-                activity!!.resources,
+                requireActivity().resources,
                 R.drawable.cryptodetails_frame_shape_green,
                 null
             )
@@ -399,24 +416,24 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     private fun setUpLiveChart(list: List<PointValue>) {
         setUpTotalChange(list)
         lineChart.isInteractive = true
-        lineChart.isZoomEnabled = true
+        lineChart.isZoomEnabled = false
         lineChart.setOnClickListener {
             lineChart.setZoomLevelWithAnimation(1f, 1f, 1f)
         }
         lineChart.isValueTouchEnabled = true
         lineChart.isValueSelectionEnabled = true
         val line = Line(list)
-        line.color = Color.DKGRAY
+        line.color = ContextCompat.getColor(requireActivity(), R.color.dark_green)
+        line.pointColor = ContextCompat.getColor(requireActivity(), R.color.green)
         line.isCubic = true
         line.strokeWidth = 2
         line.areaTransparency = 80
-        line.pointRadius = 2
-        line.setHasLabels(false)
+        line.pointRadius = 1
+        line.setHasLabels(true)
+        line.setHasLabelsOnlyForSelected(true)
         line.setHasPoints(true)
-        line.color = Color.LTGRAY
 
-        line.pointColor = ContextCompat.getColor(activity!!, R.color.light_orange)
-        val lineList = arrayListOf<Line>(line)
+        val lineList = arrayListOf(line)
         val cList = arrayListOf<Double>()
         list.forEach {
             cList.add(it.y.toDouble())
@@ -460,17 +477,14 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         var dailychange = 0.toDouble()
         if (newValue > oldValue) {
             dailychange = ((newValue - oldValue) / oldValue) * 100
-            changeStr = "+${String.format("%.2f", dailychange)}"
+            changeStr = "+${Utils.formatPriceNumber(dailychange,2)}"
         } else {
             dailychange = ((oldValue - newValue) / oldValue) * 100
-            changeStr = "-${String.format("%.2f", dailychange)}"
+            changeStr = "-${Utils.formatPriceNumber(dailychange,2)}"
             color = Color.RED
         }
 
-        val str = "${String.format(
-            "%.6f",
-            newValue
-        )} BTC | $changeStr"
+        val str = "${Utils.formatPriceNumber(newValue,6)} BTC | $changeStr"
         val spannableString = SpannableString(str)
         spannableString.setSpan(
             ForegroundColorSpan(color),
@@ -506,26 +520,32 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
         setUpTotalChange()
 
-        coinPrice.text = "$${String.format("%.6f", mainObject.LastPrice!!)}"
+        coinPrice.text = "$${Utils.formatPriceNumber(mainObject.LastPrice!!,6)}"
 
-        date.text = "${activity!!.resources.getString(R.string.time)} ${freshDollarPrice.date}"
+        date.text = "${requireActivity().resources.getString(R.string.time)} ${freshDollarPrice.date}"
 
-        dollarPrice.text = "${activity!!.resources.getString(R.string.dollarPrice)} ${freshDollarPrice.price}"
+        dollarPrice.text = "${requireActivity().resources.getString(R.string.dollarPrice)} ${Utils.formatPriceNumber(freshDollarPrice.price.toDouble(),0)}"
 
-        tomanPrice.text = "${String.format(
-            "%.2f",
-            (mainObject.LastPrice!!.toDouble() * freshDollarPrice.price.toDouble())
-        )} ${activity!!.resources.getString(R.string.toman)}"
+        tomanPrice.text = "${Utils.formatPriceNumber((mainObject.LastPrice!!.toDouble() * freshDollarPrice.price.toDouble()),2)} ${requireActivity().resources.getString(R.string.toman)}"
 
-        rank.text = "#${mainObject.SortOrder}"
+        mainObject.SortOrder?.let { so ->
+            rank.text = "#${Utils.formatPriceNumber(so.toDouble(),0)}"
+        }
 
-        price.text = "$${mainObject.LastPrice}"
+        mainObject.LastPrice?.let { lp ->
+            val decimal = if (lp > 1) 2 else 7
+            price.text = "$${Utils.formatPriceNumber(lp,decimal)}"
+        }
 
-        dailyChange.text = "${mainObject.DailyChangePCT}"
+        mainObject.DailyChangePCT?.let { pct ->
+            dailyChange.text = "${Utils.formatPriceNumber(pct,2)}"
+            if (pct > 0)
+                dailyChange.text = "+${dailyChange.text}"
+        }
 
-        totalSupply.text = "${String.format("%.2f", mainObject.MaxSupply)} ${mainObject.Name}"
+        totalSupply.text = "${Utils.formatPriceNumber(mainObject.MaxSupply ?: 0.0,2)} ${mainObject.Name}"
 
-        details_text.text = activity!!.getString(R.string.details, mainObject.Name)
+        details_text.text = requireActivity().getString(R.string.details, mainObject.Name)
 
         details_fullName.text = mainObject.FullName
 
@@ -541,7 +561,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         image_back.setOnClickListener {
 
             var str = "CryptoDetailsFragment"
-            if (arguments!!.getString(
+            if (requireArguments().getString(
                     "Type",
                     "CryptoDetailsFragment"
                 ) == "CryptoDetailsFragment_MAIN"
@@ -554,7 +574,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
             )
         }
 
-        details_title.text = activity!!.resources.getString(
+        details_title.text = requireActivity().resources.getString(
             R.string.priceAndChart,
             mainObject.Name
         )
@@ -585,7 +605,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
     override fun onFailureChartData() {
         try {
-            showErrorSnack(activity!!.resources.getString(R.string.errorLog))
+            showErrorSnack(requireActivity().resources.getString(R.string.errorLog))
             chartProgressBar.visibility = View.GONE
         }catch (e:Exception){}
     }
@@ -648,20 +668,20 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     }
 
     fun setCurrentItemTextColor(views: List<View>, view: View) {
-        (view as CTextView).setTextColor(ContextCompat.getColor(activity!!, R.color.light_orange))
+        (view as CTextView).setTextColor(ContextCompat.getColor(requireActivity(), R.color.light_orange))
         views.forEach {
             if (it.id != view.id) {
-                if (SharedPreferencesCenter(activity!!).getNightMode())
+                if (SharedPreferencesCenter(requireActivity()).getNightMode())
                     (it as CTextView).setTextColor(
                         ContextCompat.getColor(
-                            activity!!,
+                            requireActivity(),
                             R.color.white
                         )
                     )
                 else
                     (it as CTextView).setTextColor(
                         ContextCompat.getColor(
-                            activity!!,
+                            requireActivity(),
                             R.color.black
                         )
                     )
@@ -700,10 +720,10 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     }
 
     override fun onReceive(data: DetailsDataClass) {
-        marketCap.text = "$ ${String.format("%.2f", data.marketCap.toDouble())}"
+        marketCap.text = "$ ${Utils.formatPriceNumber(data.marketCap.toDouble(),2)}"
         dailyVolume.text =
-            "${String.format("%.2f", data.dailyVolume.toDouble())} ${mainObject.Name}"
-        marketCoins.text = "${String.format("%.2f", data.supply.toDouble())} ${mainObject.Name}"
+            "${Utils.formatPriceNumber(data.dailyVolume.toDouble(),2)} ${mainObject.Name}"
+        marketCoins.text = "${Utils.formatPriceNumber(data.supply.toDouble(),2)} ${mainObject.Name}"
     }
 
     private fun calculateChangesPCT(P: String) {
@@ -731,9 +751,9 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
                 var changeStr = ""
                 if (dailychange > 0) {
-                    changeStr = "+${String.format("%.2f", dailychange)}"
+                    changeStr = "+${Utils.formatPriceNumber(dailychange,2)}"
                 } else {
-                    changeStr = "${String.format("%.2f", dailychange)}"
+                    changeStr = "${Utils.formatPriceNumber(dailychange,2)}"
                 }
 
                 when (P) {

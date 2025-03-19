@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -51,8 +52,8 @@ class BookMarksFragment:Fragment() {
         val list = realmDB.getBookmarks()
         if (list.isNotEmpty())
             notation.visibility = View.GONE
-        bookmark_recyclerview.layoutManager = LinearLayoutManager(activity!! , LinearLayoutManager.VERTICAL , false)
-        bookmark_recyclerview.adapter = NewsRecyclerViewAdapter( list, activity!!.supportFragmentManager , realmDB , true)
+        bookmark_recyclerview.layoutManager = LinearLayoutManager(requireActivity() , LinearLayoutManager.VERTICAL , false)
+        bookmark_recyclerview.adapter = NewsRecyclerViewAdapter( list, requireActivity().supportFragmentManager , realmDB , true)
     }
 
     private fun setUpViews(view: View) {
@@ -61,19 +62,24 @@ class BookMarksFragment:Fragment() {
         notation = view.findViewById(R.id.notation)
 
         back_img.setOnClickListener {
-            activity!!.supportFragmentManager.popBackStack("BookMarksFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            requireActivity().supportFragmentManager.popBackStack("BookMarksFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
     }
 
     override fun onStart() {
         super.onStart()
         onRemove = OnRemove()
-        activity!!.registerReceiver(onRemove , IntentFilter("com.dust.extracker.RemoveBookmark"))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(onRemove , IntentFilter("com.dust.extracker.RemoveBookmark"),Context.RECEIVER_EXPORTED)
+        }else{
+            requireActivity().registerReceiver(onRemove , IntentFilter("com.dust.extracker.RemoveBookmark"))
+        }
+
     }
 
     override fun onStop() {
         super.onStop()
-        activity!!.unregisterReceiver(onRemove)
+        requireActivity().unregisterReceiver(onRemove)
     }
 
     inner class OnRemove:BroadcastReceiver(){

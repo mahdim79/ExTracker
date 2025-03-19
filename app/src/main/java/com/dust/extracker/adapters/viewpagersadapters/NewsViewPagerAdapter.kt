@@ -14,7 +14,7 @@ class NewsViewPagerAdapter(fm:FragmentManager , var context: Context):FragmentPa
 
     override fun getCount(): Int = 5
 
-    override fun getPageTitle(position: Int): CharSequence? {
+    override fun getPageTitle(position: Int): CharSequence {
         return when(position)
         {
             0 -> context.resources.getString(R.string.all)

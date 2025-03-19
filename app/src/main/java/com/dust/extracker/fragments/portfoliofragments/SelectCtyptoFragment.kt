@@ -18,6 +18,11 @@ import com.dust.extracker.R
 import com.dust.extracker.adapters.recyclerviewadapters.SearchRecyclerViewAdapter
 import com.dust.extracker.realmdb.MainRealmObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SelectCtyptoFragment : Fragment() {
     private lateinit var crypto_recycler_view: RecyclerView
@@ -26,6 +31,8 @@ class SelectCtyptoFragment : Fragment() {
     private lateinit var search_nested: NestedScrollView
     lateinit var realmDB: RealmDataBaseCenter
     private var datalist = arrayListOf<MainRealmObject>()
+
+    private var searchJob:Job? = null
 
     var MODE: Int = 0
     private lateinit var tempList: List<MainRealmObject>
@@ -55,20 +62,24 @@ class SelectCtyptoFragment : Fragment() {
         val l = realmDB.getAllCryptoData()
         crypto_name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
-                if (crypto_name.text.toString() == "") {
-                    MODE = 0
-                    PaginationCount = 1
+                searchJob?.cancel()
+                searchJob = CoroutineScope(Dispatchers.Main).launch {
+                    delay(1000)
+
+                    if (crypto_name.text.toString() == "") {
+                        MODE = 0
+                        PaginationCount = 1
+                    }else{
+                        MODE = 1
+                        val listTemp = arrayListOf<MainRealmObject>()
+                        for (i in 0 until l.size){
+                            if (l[i]!!.FullName!!.indexOf(crypto_name.text.toString() , ignoreCase = true) != -1)
+                                listTemp.add(l[i]!!)
+                        }
+                        tempList = listTemp
+                    }
                     setUpRecyclerView(PaginationCount)
-                    return
                 }
-                MODE = 1
-                val listTemp = arrayListOf<MainRealmObject>()
-                for (i in 0 until l.size){
-                    if (l[i]!!.FullName!!.indexOf(crypto_name.text.toString() , ignoreCase = true) != -1)
-                        listTemp.add(l[i]!!)
-                }
-                tempList = listTemp
-                setUpRecyclerView(PaginationCount)
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -92,7 +103,7 @@ class SelectCtyptoFragment : Fragment() {
         search_nested = view.findViewById(R.id.search_nested)
 
         crypto_recycler_view.layoutManager =
-            LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
     }
 
     private fun setUpPagination() {
@@ -130,16 +141,16 @@ class SelectCtyptoFragment : Fragment() {
 
         var bool = false
         var PortfolioName = "SecKey=sdffgvbnmsdfghjkrtyuio"
-        if (arguments != null && arguments!!.containsKey("IS_TRANSACTION")){
-            PortfolioName = arguments!!.getString("PortfolioName")!!
-            bool = arguments!!.getBoolean("IS_TRANSACTION")
+        if (arguments != null && requireArguments().containsKey("IS_TRANSACTION")){
+            PortfolioName = requireArguments().getString("PortfolioName")!!
+            bool = requireArguments().getBoolean("IS_TRANSACTION")
         }
 
         val adapter =
             SearchRecyclerViewAdapter(
                 PortfolioName,
                 bool,
-                activity!!,
+                requireActivity(),
                 datalist,
                 object :
                     SearchRecyclerViewAdapter.OnSelectItem {
@@ -166,7 +177,7 @@ class SelectCtyptoFragment : Fragment() {
     }
     private fun setUpBackImage(view: View) {
 
-        var imageView:ImageView = view.findViewById(R.id.imageView)
+        val imageView:ImageView = view.findViewById(R.id.imageView)
         imageView.setOnClickListener {
             fragmentManager?.popBackStack("SelectCtyptoFragment" , 1)
         }

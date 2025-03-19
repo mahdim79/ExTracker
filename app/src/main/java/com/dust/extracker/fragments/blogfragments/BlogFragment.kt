@@ -28,6 +28,7 @@ import com.dust.extracker.interfaces.OnGetAllCryptoList
 import com.dust.extracker.interfaces.OnGetNews
 import com.dust.extracker.interfaces.OnNewsDataAdded
 import com.dust.extracker.realmdb.RealmDataBaseCenter
+import com.dust.extracker.utils.Utils
 import com.google.android.material.tabs.TabLayout
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 import java.util.*
@@ -66,7 +67,7 @@ class BlogFragment : Fragment(), OnGetNews {
 
     private fun setUpBookmarkButton() {
         bookmark_img.setOnClickListener {
-            activity!!.supportFragmentManager.beginTransaction()
+            requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.news_frame_holder , BookMarksFragment())
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack("BookMarksFragment")
@@ -75,7 +76,7 @@ class BlogFragment : Fragment(), OnGetNews {
     }
 
     private fun setUpApiService() {
-        apiService = ApiCenter(activity!!, object : OnGetAllCryptoList {
+        apiService = ApiCenter(requireActivity(), object : OnGetAllCryptoList {
             override fun onGet(cryptoList: List<CryptoMainData>) {
             }
 
@@ -106,7 +107,7 @@ class BlogFragment : Fragment(), OnGetNews {
         apiService.getNews(object : OnGetNews {
             override fun onGetNews(list: List<NewsDataClass>) {
                 realmDB.updateNewsData(list)
-                activity!!.sendBroadcast(Intent("com.dust.extracker.UpdateNewsViewPagerRecycler"))
+                requireActivity().sendBroadcast(Intent("com.dust.extracker.UpdateNewsViewPagerRecycler"))
                 swiprefreshLayout.isRefreshing = false
             }
         })
@@ -130,7 +131,7 @@ class BlogFragment : Fragment(), OnGetNews {
     private fun setUpNewsViewPager() {
         newsViewPager.adapter =
             NewsViewPagerAdapter(
-                childFragmentManager,activity!!
+                childFragmentManager,requireActivity()
             )
         newsViewPager.offscreenPageLimit = 4
         newsTabLayout.setupWithViewPager(newsViewPager)
@@ -142,7 +143,7 @@ class BlogFragment : Fragment(), OnGetNews {
                 for (k in 0 until viewGroup2.childCount) {
                     if (viewGroup2.getChildAt(k) is TextView) {
                         (viewGroup2.getChildAt(k) as TextView).typeface =
-                            (activity!!.applicationContext as MyApplication).initializeTypeFace()
+                            (requireActivity().applicationContext as MyApplication).initializeTypeFace()
                         (viewGroup2.getChildAt(k) as TextView).textSize = 8.0f
                     }
                 }
@@ -155,13 +156,17 @@ class BlogFragment : Fragment(), OnGetNews {
         list.clear()
 
         val sliderData = realmDB.getNews("ALL")
-        for (i in 0 until sliderData.size) {
+        for (i in sliderData.indices) {
+            var showTime = ""
+            sliderData[i].date.let { ts ->
+                showTime = Utils.convertTimestampToDate(ts * 1000L)
+            }
             list.add(
                 SliderDataClass(
-                    sliderData[i].id!!,
+                    sliderData[i].id,
                     sliderData[i].imageUrl,
                     sliderData[i].title,
-                    sliderData[i].date.toString()
+                    showTime
                 )
             )
             if (list.size == 3)
@@ -187,11 +192,11 @@ class BlogFragment : Fragment(), OnGetNews {
                     if (sliderViewPager.currentItem == list.size - 1) {
                         sliderViewPager.currentItem = 0
                     } else {
-                        sliderViewPager.currentItem = sliderViewPager.currentItem + 1
+                        sliderViewPager.currentItem += 1
                     }
                 }
             }
-        }, 0, 2000)
+        }, 0, 10000)
 
     }
 
@@ -216,7 +221,7 @@ class BlogFragment : Fragment(), OnGetNews {
                 updateNewsData()
             } else {
                 swiprefreshLayout.isRefreshing = false
-                Toast.makeText(activity!!, "No Connection!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), "No Connection!", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -224,7 +229,7 @@ class BlogFragment : Fragment(), OnGetNews {
 
     private fun checkConnection(): Boolean {
         val connectivityManager =
-            activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = connectivityManager.activeNetworkInfo
         return info != null && info.isConnectedOrConnecting
     }
@@ -245,7 +250,7 @@ class BlogFragment : Fragment(), OnGetNews {
 
     override fun onDestroy() {
         super.onDestroy()
-        activity!!.finishAffinity()
+        requireActivity().finishAffinity()
     }
 
     override fun onStart() {
@@ -263,7 +268,7 @@ class BlogFragment : Fragment(), OnGetNews {
 
     private fun checkNetworkConnectivity(): Boolean {
         val connectivityManager =
-            activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connectivityManager.activeNetworkInfo
         return networkInfo != null && networkInfo.isConnectedOrConnecting
     }

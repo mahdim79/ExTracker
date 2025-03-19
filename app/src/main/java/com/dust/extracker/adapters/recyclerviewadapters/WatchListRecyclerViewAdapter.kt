@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,8 +21,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dust.extracker.R
 import com.dust.extracker.customviews.CTextView
 import com.dust.extracker.realmdb.MainRealmObject
+import com.dust.extracker.utils.Utils
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import okhttp3.internal.Util
+import java.util.Locale
 import kotlin.Exception
 
 class WatchListRecyclerViewAdapter(
@@ -93,7 +97,8 @@ class WatchListRecyclerViewAdapter(
             if (list[position].LastPrice!! == 0.0)
                 holder.item_price.text = ""
             else
-                holder.item_price.text = "$${String.format("%.4f", list[position].LastPrice!!)}"
+                holder.item_price.text = "$${Utils.formatPriceNumber(list[position].LastPrice!!,4,
+                    Locale.ENGLISH)}"
         } catch (e: Exception) {
             holder.item_price.text = ""
         }
@@ -101,10 +106,7 @@ class WatchListRecyclerViewAdapter(
 
         holder.sort_num.text = list[position].SortOrder
 
-        holder.item_price_toman.text = "${String.format(
-            "%.1f",
-            (list[position].LastPrice!! * dollarPrice)
-        )} ${context.resources.getString(R.string.toman)}"
+        holder.item_price_toman.text = "${Utils.formatPriceNumber((list[position].LastPrice!! * dollarPrice),1)} ${context.resources.getString(R.string.toman)}"
 
         holder.item_text_coinName.text = list[position].Name
 
@@ -172,39 +174,29 @@ class WatchListRecyclerViewAdapter(
                             var price = 0.0
                             try {
                                 price =
-                                    holder.item_price.text.toString().replace("$", "").toDouble()
+                                    holder.item_price.text.toString().replace("$", "").replace(",","").toDouble()
                             } catch (e: Exception) {
                                 price = 0.0
                             }
                             if (price < bundle.getDouble(list[position].Name)
                             ) {
-                                holder.item_price.text =
-                                    "$${String.format(
-                                        "%.4f",
-                                        bundle.getDouble(list[position].Name)
-                                    )}"
+                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Name),4,
+                                    Locale.ENGLISH)}"
                                 holder.item_price.setTextColor(Color.GREEN)
 
                             } else if (price == 0.0) {
-                                holder.item_price.text = "$${String.format(
-                                    "%.4f",
-                                    bundle.getDouble(list[position].Name)
-                                )}"
+                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Name),4,
+                                    Locale.ENGLISH)}"
 
                             } else {
-                                holder.item_price.text = "$${String.format(
-                                    "%.4f",
-                                    bundle.getDouble(list[position].Name)
-                                )}"
+                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Name),4,
+                                    Locale.ENGLISH)}"
 
                                 holder.item_price.setTextColor(Color.RED)
 
                             }
-                            holder.item_price_toman.text = "${String.format(
-                                "%.1f",
-                                ((holder.item_price.text.toString().replace("$", "")
-                                    .toDouble()) * (p1!!.extras!!.getString("PRICE")!!.toDouble()))
-                            )} ${context.resources.getString(R.string.toman)}"
+                            holder.item_price_toman.text = "${Utils.formatPriceNumber(((holder.item_price.text.toString().replace("$", "").replace(",","").toDouble()) * (p1!!.extras!!.getString("PRICE")!!.toDouble())),1,
+                                Locale.ENGLISH)} ${context.resources.getString(R.string.toman)}"
 
                             holder.item_price.startAnimation(alphaAnimation)
                         }
@@ -213,10 +205,19 @@ class WatchListRecyclerViewAdapter(
                 }
             }
         }
-        context.registerReceiver(
-            UpdatePrices(),
-            IntentFilter("com.dust.extracker.UPDATE_ITEMS_WatchList")
-        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            context.registerReceiver(
+                UpdatePrices(),
+                IntentFilter("com.dust.extracker.UPDATE_ITEMS_WatchList"),
+                Context.RECEIVER_EXPORTED
+            )
+        }else{
+            context.registerReceiver(
+                UpdatePrices(),
+                IntentFilter("com.dust.extracker.UPDATE_ITEMS_WatchList")
+            )
+        }
 
         class UpdateTomanData : BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
@@ -229,10 +230,19 @@ class WatchListRecyclerViewAdapter(
 
             }
         }
-        context.registerReceiver(
-            UpdatePrices(),
-            IntentFilter("com.dust.extracker.onDollarPriceRecieve")
-        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            context.registerReceiver(
+                UpdatePrices(),
+                IntentFilter("com.dust.extracker.onDollarPriceRecieve"),
+                Context.RECEIVER_EXPORTED
+            )
+        }else{
+            context.registerReceiver(
+                UpdatePrices(),
+                IntentFilter("com.dust.extracker.onDollarPriceRecieve")
+            )
+        }
     }
 
     override fun getItemCount(): Int = list.size

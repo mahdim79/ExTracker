@@ -1,0 +1,849 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layoutDirection="ltr"
+            android:layout_height="?attr/actionBarSize">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/image_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:tint="?colorAccent"
+                    android:src="@drawable/ic_baseline_arrow_back" />
+
+                <com.dust.extracker.customviews.CTextView
+                    android:id="@+id/details_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginHorizontal="@dimen/standardMargin2x"
+                    android:layout_toEndOf="@+id/image_back"
+                    android:textColor="?android:textColor"
+                    android:textSize="12dp"
+                    android:textStyle="bold"
+                    tools:text="@string/priceAndChart" />
+
+            </RelativeLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiprefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="?colorPrimary"
+                android:layoutDirection="ltr"
+                android:layout_height="wrap_content">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/coinImg"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="@dimen/standardMargin0.5x"
+                    android:src="@drawable/btc_icon" />
+
+                <TextView
+                    android:id="@+id/details_fullName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/coinImg"
+                    android:layout_alignBottom="@+id/coinImg"
+                    android:layout_toEndOf="@+id/coinImg"
+                    android:gravity="center_vertical"
+                    android:textSize="13dp"
+                    tools:text="-" />
+
+                <ImageView
+                    android:id="@+id/shareImg"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignTop="@+id/coinImg"
+                    android:layout_alignBottom="@+id/coinImg"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="@dimen/standardMargin"
+                    android:src="@drawable/ic_baseline_share_24"
+                    app:tint="@color/light_black" />
+
+                <FrameLayout
+                    android:id="@+id/total_frame"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_below="@+id/coinImg"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/cryptodetails_frame_shape_green">
+
+                    <TextView
+                        android:id="@+id/TotalCoinDailyChange"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="-"
+                        android:textColor="@color/black"
+                        />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/total_frame"
+                    android:layout_alignBottom="@+id/total_frame"
+                    android:layout_marginRight="@dimen/standardMargin"
+                    android:layout_toLeftOf="@+id/total_frame"
+                    android:gravity="center_vertical"
+                    android:layoutDirection="rtl"
+                    android:orientation="vertical">
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:id="@+id/tomanPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textColor="?android:textColor"
+                        android:textSize="@dimen/TextSize2x"
+                        android:textStyle="bold" />
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:id="@+id/dollarPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textColor="?android:textColor"
+                        android:textSize="8dp" />
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:id="@+id/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textColor="?android:textColor"
+                        android:textSize="8dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/total_frame"
+                    android:layout_alignBottom="@+id/total_frame"
+                    android:layout_marginLeft="@dimen/standardMargin"
+                    android:layout_toRightOf="@+id/total_frame"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:id="@+id/coinPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textColor="?android:textColor"
+                        android:textSize="@dimen/TextSize2x"
+                        android:textStyle="bold" />
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:id="@+id/coin_btcBase_Price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textColor="?android:textColor"
+                        android:textSize="8dp" />
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:id="@+id/foreign_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textColor="?android:textColor"
+                        android:textSize="8dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lineChartView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/total_frame"
+                    android:layout_marginTop="@dimen/standardMargin"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:layout_margin="@dimen/standardMargin0.5x">
+
+                        <lecho.lib.hellocharts.view.LineChartView
+                            android:id="@+id/lineChart"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:paddingEnd="@dimen/standardMargin1.5x" />
+
+                        <ProgressBar
+                            android:id="@+id/chartProgressBar"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_margin="@dimen/standardMargin0.5x"
+                            android:indeterminateTint="@color/light_orange"
+                            android:visibility="gone" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/standardMargin1.5x"
+                        android:layout_marginTop="@dimen/standardMargin"
+                        android:orientation="horizontal">
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/twentyFourtime"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="24H"
+                            android:textColor="?android:textColor"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/oneWeek"
+                            android:layout_width="0dp"
+                            android:textColor="?android:textColor"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="1W"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/oneMonth"
+                            android:layout_width="0dp"
+
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="1M"
+                            android:textColor="?android:textColor"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/threeMonth"
+                            android:layout_width="0dp"
+
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="3M"
+                            android:textColor="?android:textColor"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/sixMonth"
+                            android:layout_width="0dp"
+
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="6M"
+                            android:textColor="?android:textColor"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/oneYear"
+                            android:layout_width="0dp"
+
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="1Y"
+                            android:textColor="?android:textColor"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/all_Time"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="ALL"
+                            android:textColor="?android:textColor"
+                            android:textSize="@dimen/standardMargin" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btns"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lineChartView"
+                    android:layout_marginTop="@dimen/standardMargin2x"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <com.dust.extracker.customviews.CButton
+                        android:id="@+id/addToeWatchListbtn"
+                        android:layout_width="0dp"
+                        android:layout_weight="50"
+                        android:layout_height="wrap_content"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:background="@drawable/details_addtowatch_not_added"
+                        android:textSize="12dp"
+                        android:layout_marginHorizontal="@dimen/standardMargin"
+                        android:textStyle="bold"
+                        android:padding="@dimen/standardMargin"
+                        android:text="@string/addToWatchList" />
+
+                    <com.dust.extracker.customviews.CButton
+                        android:id="@+id/addTransactionbtn"
+                        android:layout_width="0dp"
+                        android:layout_weight="50"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/standardMargin"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:background="@drawable/details_addtransaction"
+                        android:textStyle="bold"
+                        android:textSize="12dp"
+                        android:layout_marginHorizontal="@dimen/standardMargin"
+                        android:text="@string/addDeal" />
+                </LinearLayout>
+
+                <com.dust.extracker.customviews.CTextView
+                    android:id="@+id/details_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/btns"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/standardMargin3x"
+                    android:text="@string/details"
+                    android:textColor="?android:textColor"
+                    android:textSize="13dp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/details_linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/details_text"
+                    android:layout_marginTop="@dimen/standardMargin2x"
+                    android:orientation="horizontal">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layoutDirection="rtl"
+                        android:layout_height="wrap_content">
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/rank"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:text="-"
+                            android:textDirection="ltr"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <View
+                            android:id="@+id/view_cryptoDetails_divider1"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            app:layout_constraintTop_toBottomOf="@+id/rank"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:background="?colorPrimaryVariant" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider1"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            android:textDirection="ltr"
+                            android:text="-"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <View
+                            android:id="@+id/view_cryptoDetails_divider2"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            app:layout_constraintTop_toBottomOf="@+id/price"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:background="?colorPrimaryVariant" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/marketCap"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider2"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            android:text="-"
+                            android:textDirection="ltr"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <View
+                            android:id="@+id/view_cryptoDetails_divider3"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            app:layout_constraintTop_toBottomOf="@+id/marketCap"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:background="?colorPrimaryVariant" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/dailyVolume"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textDirection="ltr"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider3"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            android:text="-"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <View
+                            android:id="@+id/view_cryptoDetails_divider4"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            app:layout_constraintTop_toBottomOf="@+id/dailyVolume"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:background="?colorPrimaryVariant" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/dailyChange"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider4"
+                            android:text="-"
+                            android:textDirection="ltr"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <View
+                            android:id="@+id/view_cryptoDetails_divider5"
+                            android:layout_width="match_parent"
+                            app:layout_constraintTop_toBottomOf="@+id/dailyChange"
+                            android:layout_height="1dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:background="?colorPrimaryVariant" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/weeklyChange"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider5"
+                            android:text="-"
+                            android:textDirection="ltr"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <View
+                            android:id="@+id/view_cryptoDetails_divider6"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            app:layout_constraintTop_toBottomOf="@+id/weeklyChange"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:background="?colorPrimaryVariant" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/monthlyChange"
+                            android:layout_width="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider6"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            android:textDirection="ltr"
+                            android:text="-"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <View
+                            android:id="@+id/view_cryptoDetails_divider7"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            app:layout_constraintTop_toBottomOf="@+id/monthlyChange"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:background="?colorPrimaryVariant" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/sixmonthChange"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider7"
+                            android:text="-"
+                            android:textDirection="ltr"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <View
+                            android:id="@+id/view_cryptoDetails_divider8"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/sixmonthChange"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:background="?colorPrimaryVariant" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/yearlyChange"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider8"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            android:textDirection="ltr"
+                            android:text="-"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <View
+                            android:id="@+id/view_cryptoDetails_divider9"
+                            android:layout_width="match_parent"
+                            app:layout_constraintTop_toBottomOf="@+id/yearlyChange"
+                            android:layout_height="1dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:background="?colorPrimaryVariant" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/totalSupply"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider9"
+                            android:text="-"
+                            android:textDirection="ltr"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <View
+                            android:id="@+id/view_cryptoDetails_divider10"
+                            android:layout_width="match_parent"
+                            app:layout_constraintTop_toBottomOf="@+id/totalSupply"
+                            android:layout_height="1dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:background="?colorPrimaryVariant" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/marketCoins"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider10"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            android:textDirection="ltr"
+                            android:text="-"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <View
+                            android:id="@+id/view_cryptoDetails_divider11"
+                            android:layout_width="match_parent"
+                            app:layout_constraintTop_toBottomOf="@+id/marketCoins"
+                            android:layout_height="1dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:background="?colorPrimaryVariant" />
+
+                        <TextView
+                            android:id="@+id/dominance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider11"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            android:textDirection="ltr"
+                            android:text="-"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            app:layout_constraintTop_toBottomOf="@+id/dominance"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:background="?colorPrimaryVariant" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="6dp"
+                            android:gravity="center"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:text="@string/rate"
+                            android:textDirection="rtl"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="6dp"
+                            android:gravity="center"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider1"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:text="@string/price"
+                            android:textDirection="rtl"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="6dp"
+                            android:gravity="center"
+                            android:text="@string/markerCap"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider2"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:textDirection="rtl"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="6dp"
+                            android:gravity="center"
+                            android:text="@string/dalilyVolume"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider3"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:textDirection="rtl"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="6dp"
+                            android:gravity="center"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider4"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:text="@string/dailyChanges"
+                            android:textDirection="rtl"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="6dp"
+                            android:gravity="center"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider5"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:textDirection="rtl"
+                            android:text="@string/weeklyChanges"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="6dp"
+                            android:gravity="center"
+                            android:text="@string/monthlyChanges"
+                            android:textDirection="rtl"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider6"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textDirection="rtl"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider7"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:padding="6dp"
+                            android:gravity="center"
+                            android:text="@string/sixMChanges"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="6dp"
+                            android:gravity="center"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider8"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:text="@string/yearlyChange"
+                            android:textDirection="rtl"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider9"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:padding="6dp"
+                            android:gravity="center"
+                            android:text="@string/totalSupply"
+                            android:textDirection="rtl"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="6dp"
+                            android:gravity="center"
+                            android:text="@string/marketCoins"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider10"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:textDirection="rtl"
+                            android:textSize="@dimen/standardMargin" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="6dp"
+                            android:gravity="center"
+                            app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider11"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:textDirection="rtl"
+                            android:text="@string/dominance"
+                            android:textSize="@dimen/standardMargin" />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+
+                <com.dust.extracker.customviews.CButton
+                    android:id="@+id/fullChart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/details_linear"
+                    android:background="@drawable/fullchart_button_selector"
+                    android:layout_centerHorizontal="true"
+                    android:textStyle="bold"
+                    android:textSize="12dp"
+                    android:padding="@dimen/standardMargin"
+                    android:layout_marginTop="@dimen/standardMargin"
+                    android:text="@string/fullChart" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/fullChart"
+                    android:layout_marginTop="@dimen/standardMargin"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/standardMargin2x"
+                        android:gravity="center"
+                        android:text="10 دیدگاه" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginTop="@dimen/standardMargin0.5x"
+                        android:background="@color/teal_700" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/standardMargin0.5x"
+                        android:layout_marginVertical="@dimen/standardMargin2x"
+                        android:gravity="end"
+                        android:orientation="horizontal">
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/standardMargin0.5x"
+                            android:text="مهدی مصطفوی"
+                            android:textSize="@dimen/standardMargin1.5x" />
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/img_cryptoDetails_avatar"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/avatar" />
+
+                    </LinearLayout>
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginHorizontal="@dimen/standardMargin0.5x"
+                        android:textColorHint="?android:textColor"
+                        android:textColor="?android:textColor"
+                        android:background="@drawable/edittext_selector"
+                        android:hint="@string/startCommenting" />
+
+                    <com.dust.extracker.customviews.CButton
+                        android:id="@+id/comment_send_reply"
+                        android:layout_width="@dimen/standardMargin10x"
+                        android:layout_height="@dimen/standardMargin3x"
+                        android:layout_marginHorizontal="@dimen/standardMargin0.5x"
+                        android:layout_marginTop="@dimen/standardMargin0.5x"
+                        android:background="@drawable/buy_button_selector"
+                        android:enabled="false"
+                        android:text="@string/sendComment"
+                        android:textColor="?android:textColor"
+                        android:textSize="10dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/comment_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/standardMargin3x" />
+
+                    <ProgressBar
+                        android:id="@+id/comment_progressBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:indeterminateTint="?android:textColor"
+                        android:visibility="invisible" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

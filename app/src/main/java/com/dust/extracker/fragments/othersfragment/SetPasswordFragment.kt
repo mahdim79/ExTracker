@@ -47,12 +47,12 @@ class SetPasswordFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         setUpShared()
         coordinator = view.findViewById(R.id.coordinator)
-        vibrator = activity!!.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        vibrator = requireActivity().getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         setupview(view)
     }
 
     private fun setUpShared() {
-        preferences = SharedPreferencesCenter(activity!!)
+        preferences = SharedPreferencesCenter(requireActivity())
     }
 
     private fun setupview(view: View) {
@@ -74,10 +74,10 @@ class SetPasswordFragment : Fragment(), View.OnClickListener {
 
         image_back.visibility = View.VISIBLE
         image_back.setOnClickListener {
-            activity!!.supportFragmentManager.popBackStack("SetPasswordFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            requireActivity().supportFragmentManager.popBackStack("SetPasswordFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
 
-        txtMessage.text = activity!!.resources.getString(R.string.enterPassword)
+        txtMessage.text = requireActivity().resources.getString(R.string.enterPassword)
 
         one.setOnClickListener(this)
         two.setOnClickListener(this)
@@ -110,7 +110,7 @@ class SetPasswordFragment : Fragment(), View.OnClickListener {
                         confirm.isEnabled = true
                         pass = edittextpassword.text.toString()
                         edittextpassword.setText("")
-                        txtMessage.text = activity!!.resources.getString(R.string.enterPasswordAgain)
+                        txtMessage.text = requireActivity().resources.getString(R.string.enterPasswordAgain)
                         txtcon.setBackgroundColor(
                             ResourcesCompat.getColor(
                                 resources,
@@ -177,7 +177,7 @@ class SetPasswordFragment : Fragment(), View.OnClickListener {
                 if (pass == edittextpassword.text.toString()) {
                     preferences.setFingerPrintEnabled(true)
                     preferences.setPassword(pass.toInt())
-                    activity!!.supportFragmentManager.popBackStack("SetPasswordFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    requireActivity().supportFragmentManager.popBackStack("SetPasswordFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 } else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         vibrator.vibrate(

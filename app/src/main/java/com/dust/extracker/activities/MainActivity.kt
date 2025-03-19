@@ -1,57 +1,84 @@
 package com.dust.extracker.activities
 
-import android.app.ActivityManager
+import android.Manifest
+import android.app.AlarmManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
+import android.view.WindowManager
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
-import com.android.volley.toolbox.Volley
 import com.dust.extracker.R
 import com.dust.extracker.adapters.viewpagersadapters.MainViewPagerAdapter
 import com.dust.extracker.customviews.CViewPager
-import com.dust.extracker.services.NotificationService
+import com.dust.extracker.receivers.NotificationServiceStarter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
 
-class
-MainActivity : AppCompatActivity() {
+
+class MainActivity : AppCompatActivity() {
     private lateinit var onPageChange: OnPageChange
     private var lastFragment: Int = 2
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var viewPager: CViewPager
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        settheme()
+        setTheme()
         super.onCreate(savedInstanceState)
+        adjustFontScale()
         setContentView(R.layout.activity_main)
         setUpViews()
         setUpViewPager()
         setUpBottomNavigationView()
-        checkNotificationService()
+        startNotificationJobService()
     }
 
-    fun checkNotificationService() {
-        if (!checkServiceRunning())
-            startService(Intent(this, NotificationService::class.java))
-    }
-
-
-    fun checkServiceRunning(): Boolean {
-        val activityManager =
-            getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        activityManager.getRunningServices(Integer.MAX_VALUE).forEach {
-            if (it.service.className == NotificationService::class.java.name)
-                return true
+    private fun adjustFontScale() {
+        val configuration = resources.configuration
+        if (configuration.fontScale != 0.82f) {
+            configuration.fontScale = 0.82f
+            val metrics = resources.displayMetrics
+            val wm = getSystemService(WINDOW_SERVICE) as WindowManager
+            wm.defaultDisplay.getMetrics(metrics)
+            metrics.scaledDensity = configuration.fontScale * metrics.density
+            baseContext.resources.updateConfiguration(configuration, metrics)
         }
-        return false
     }
 
-    private fun settheme() {
+    override fun attachBaseContext(newBase: Context?) {
+        val localeStr = if (SharedPreferencesCenter(newBase!!).getEnglishLanguage())
+            "en"
+        else
+            "fa"
+
+        val newLocale = Locale(localeStr)
+        Locale.setDefault(newLocale)
+        val config = newBase.resources?.configuration
+        var myContext = newBase
+        config?.let {
+            it.setLayoutDirection(Locale(localeStr))
+            it.setLocale(newLocale)
+            myContext = newBase.createConfigurationContext(it) ?: newBase
+        }
+        super.attachBaseContext(myContext)
+    }
+
+    private fun startNotificationJobService() {
+        sendBroadcast(Intent(this, NotificationServiceStarter::class.java))
+    }
+
+    private fun setTheme() {
         if (SharedPreferencesCenter(this).getNightMode()) {
             setTheme(R.style.Theme_ExTracker_dark)
             window.statusBarColor = Color.BLACK
@@ -425,7 +452,11 @@ MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         onPageChange = OnPageChange()
-        registerReceiver(onPageChange, IntentFilter("com.dust.extracker.OnPageChange"))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            registerReceiver(onPageChange, IntentFilter("com.dust.extracker.OnPageChange"),Context.RECEIVER_EXPORTED)
+        }else{
+            registerReceiver(onPageChange, IntentFilter("com.dust.extracker.OnPageChange"))
+        }
     }
 
     override fun onStop() {

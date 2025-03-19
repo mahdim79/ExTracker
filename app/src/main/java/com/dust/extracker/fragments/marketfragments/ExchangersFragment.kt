@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -87,7 +88,7 @@ class ExchangersFragment : Fragment(), OnGetExchangersData, OnExchangerRealmData
     }
 
     private fun setUpApiService() {
-        apiService = ApiCenter(activity!!, object : OnGetAllCryptoList {
+        apiService = ApiCenter(requireActivity(), object : OnGetAllCryptoList {
             override fun onGet(cryptoList: List<CryptoMainData>) {}
 
             override fun onGetByName(price: Double, dataNum: Int) {}
@@ -95,7 +96,7 @@ class ExchangersFragment : Fragment(), OnGetExchangersData, OnExchangerRealmData
     }
 
     private fun setUpRecyclerViewAdapter(data: List<ExchangerObject>) {
-        exchanger_recyclerView.adapter = MarketExchangerRecyclerViewAdapter(activity!!, data)
+        exchanger_recyclerView.adapter = MarketExchangerRecyclerViewAdapter(requireActivity(), data)
         exchanger_progressBar.visibility = View.GONE
     }
 
@@ -106,7 +107,7 @@ class ExchangersFragment : Fragment(), OnGetExchangersData, OnExchangerRealmData
         exchanger_main_nested = view.findViewById(R.id.exchanger_main_nested)
 
         exchanger_recyclerView.layoutManager =
-            LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
 
     }
 
@@ -118,7 +119,7 @@ class ExchangersFragment : Fragment(), OnGetExchangersData, OnExchangerRealmData
     }
 
     private fun checkNetWorkConnectivity(): Boolean {
-        val conn = activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val conn = requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = conn.activeNetworkInfo
         return info != null && info.isConnectedOrConnecting
     }
@@ -141,13 +142,17 @@ class ExchangersFragment : Fragment(), OnGetExchangersData, OnExchangerRealmData
     override fun onStart() {
         super.onStart()
         searchNotifier = SearchNotifier()
-        activity!!.registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"),Context.RECEIVER_EXPORTED)
+        }else{
+            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))        }
 
     }
 
     override fun onStop() {
         super.onStop()
-        activity!!.unregisterReceiver(searchNotifier)
+        requireActivity().unregisterReceiver(searchNotifier)
 
     }
 

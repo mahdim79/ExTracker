@@ -2,6 +2,8 @@ package com.dust.extracker.adapters.recyclerviewadapters
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,19 +19,22 @@ import com.dust.extracker.fragments.blogfragments.ReadNewsFragment
 import com.dust.extracker.realmdb.NewsObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
+import com.dust.extracker.utils.Utils
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import okhttp3.internal.Util
 import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
 
-class NewsRecyclerViewAdapter(var list: List<NewsObject> ,var activity: FragmentManager , var realm:RealmDataBaseCenter , var isBookmarkPage:Boolean = false) :
+class NewsRecyclerViewAdapter(var list: List<NewsDataClass> ,var activity: FragmentManager , var realm:RealmDataBaseCenter , var isBookmarkPage:Boolean = false) :
     RecyclerView.Adapter<NewsRecyclerViewAdapter.MainViewHolder>() {
 
-    var localIs_liked:Boolean = true
     lateinit var context: Context
+    private lateinit var perfCenter:SharedPreferencesCenter
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         this.context = parent.context
+        perfCenter = SharedPreferencesCenter(context)
         return MainViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_news, parent, false)
         )
@@ -42,7 +47,6 @@ class NewsRecyclerViewAdapter(var list: List<NewsObject> ,var activity: Fragment
 
         holder.itemView.setOnClickListener {
 
-
             activity.beginTransaction()
                 .replace(R.id.news_frame_holder, ReadNewsFragment(list[position]))
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -52,7 +56,7 @@ class NewsRecyclerViewAdapter(var list: List<NewsObject> ,var activity: Fragment
         }
         holder.title.text = list[position].title
         holder.news_desc.text = list[position].description
-        holder.news_like_count.text = list[position].likeCount.toString()
+      //  holder.news_like_count.text = list[position].likeCount.toString()
         holder.news_seen_count.text = list[position].seenCount.toString()
 
 
@@ -73,32 +77,30 @@ class NewsRecyclerViewAdapter(var list: List<NewsObject> ,var activity: Fragment
         }
 
 
-        holder.news_date.text = "${convertTimeStamp(list[position].date!!)}"
+        list[position].date.let { ts ->
+            holder.news_date.text = Utils.convertTimestampToDate( ts * 1000L)
+        }
         Picasso.get().load(list[position].imageUrl).into(holder.news_image)
 
-        if (list[position].is_liked == "false") {
+        if (!list[position].is_liked) {
+            holder.news_like_count.text = "0"
             holder.news_like.setImageResource(R.drawable.ic_baseline_news_unliked)
-            localIs_liked = false
+            if (perfCenter.getNightMode())
+                holder.news_like.imageTintList = ColorStateList.valueOf(Color.WHITE)
         }
 
         holder.news_like_count.setOnClickListener {
-            handleLikeEvent(holder)
+            list[position].is_liked = !list[position].is_liked
+            handleLikeEvent(holder,list[position])
         }
 
         holder.news_like.setOnClickListener {
-            handleLikeEvent(holder)
+            list[position].is_liked = !list[position].is_liked
+            handleLikeEvent(holder,list[position])
         }
     }
 
     override fun getItemCount(): Int = list.size
-
-    private fun convertTimeStamp(stampTime:Int):String{
-        var millis = stampTime * 1000
-        val s = Timestamp(millis.toLong())
-        val date = java.util.Date(s.time)
-        val time = "${date.date}/${date.month}/${date.year} ${date.hours}:${date.minutes}"
-        return time
-    }
 
     inner class MainViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -114,16 +116,16 @@ class NewsRecyclerViewAdapter(var list: List<NewsObject> ,var activity: Fragment
     }
 
 
-    private fun handleLikeEvent(holder: MainViewHolder)
-    {
-        if (localIs_liked){
-            localIs_liked = false
-            holder.news_like.setImageResource(R.drawable.ic_baseline_news_unliked)
-            // TODO: 5/28/2021 save like status in db and server
-        } else{
-            localIs_liked = true
+    private fun handleLikeEvent(holder: MainViewHolder,data:NewsDataClass) {
+        realm.setNewsIsLiked(data.ID,data.is_liked)
+        if (data.is_liked){
+            holder.news_like_count.text = "1"
             holder.news_like.setImageResource(R.drawable.ic_baseline_news_liked)
-            // TODO: 5/28/2021 save like status in db and server
+            holder.news_like.imageTintList = ColorStateList.valueOf(Color.RED)
+        } else{
+            holder.news_like_count.text = "0"
+            holder.news_like.setImageResource(R.drawable.ic_baseline_news_unliked)
+            holder.news_like.imageTintList = ColorStateList.valueOf(if (perfCenter.getNightMode()) Color.WHITE else Color.BLACK)
         }
     }
 

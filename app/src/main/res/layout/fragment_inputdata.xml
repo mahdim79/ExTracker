@@ -232,6 +232,7 @@
                             android:inputType="number"
                             android:textColor="?android:textColor"
                             android:textDirection="ltr"
+                            android:text="0"
                             android:backgroundTint="?android:textColor"
                             android:hint="@string/toman"
                             />

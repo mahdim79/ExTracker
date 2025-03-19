@@ -44,7 +44,7 @@ class EditHistoryNameFragment : Fragment() {
         saveButton = view.findViewById(R.id.saveButton)
         backImg = view.findViewById(R.id.backImg)
 
-        portfolioName.editText!!.setText(arguments!!.getString("NAME"))
+        portfolioName.editText!!.setText(requireArguments().getString("NAME"))
         backImg.setOnClickListener {
             fragmentManager?.popBackStack(
                 "EditHistoryNameFragment",
@@ -59,13 +59,13 @@ class EditHistoryNameFragment : Fragment() {
 
     private fun saveData() {
 
-        if (portfolioName.editText!!.text.toString() != "" && portfolioName.editText!!.text.toString() != arguments!!.getString(
+        if (portfolioName.editText!!.text.toString() != "" && portfolioName.editText!!.text.toString() != requireArguments().getString(
                 "NAME"
             )
         ) {
             var lastData:HistoryDataClass? = null
             realmDB.getAllHistoryData().forEach {
-                if (it.portfolioName == arguments!!.getString("NAME"))
+                if (it.portfolioName == requireArguments().getString("NAME"))
                     lastData = it
             }
             lastData!!.portfolioName = portfolioName.editText!!.text.toString()
@@ -74,10 +74,10 @@ class EditHistoryNameFragment : Fragment() {
             return
         }
 
-        if (portfolioName.editText!!.text.toString() == arguments!!.getString("NAME"))
-            portfolioName.editText!!.error = activity!!.resources.getString(R.string.enterNewParameter)
+        if (portfolioName.editText!!.text.toString() == requireArguments().getString("NAME"))
+            portfolioName.editText!!.error = requireActivity().resources.getString(R.string.enterNewParameter)
         else
-            portfolioName.editText!!.error = activity!!.resources.getString(R.string.requireField)
+            portfolioName.editText!!.error = requireActivity().resources.getString(R.string.requireField)
     }
 
     fun newInstance(name: String): EditHistoryNameFragment {

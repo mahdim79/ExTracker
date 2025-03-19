@@ -3,6 +3,7 @@ package com.dust.extracker.fragments.exchangerfragments
 import android.content.*
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -20,6 +21,7 @@ import com.dust.extracker.customviews.CTextView
 import com.dust.extracker.dataclasses.CryptoMainData
 import com.dust.extracker.interfaces.OnGetAllCryptoList
 import com.dust.extracker.realmdb.RealmDataBaseCenter
+import com.dust.extracker.utils.Utils
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
@@ -41,15 +43,15 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     lateinit var dollarPricetxt: CTextView
     lateinit var text_total_price: CTextView
     lateinit var resultOne_edittext: EditText
-    lateinit var resultTwo_textview: TextView
+    lateinit var resultTwo_textview: CTextView
     lateinit var exchanger_progressBar: ProgressBar
     private lateinit var ondataRecieve: onDataRecieve
     private lateinit var ondollarpriceRecieve: onDollarPriceRecieve
 
     var price1: Double? = null
     var price2: Double? = null
-    lateinit var CRYPTO_ONE: String
-    lateinit var CRYPTO_TWO: String
+    var CRYPTO_ONE = ""
+    var CRYPTO_TWO = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,7 +80,9 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     private fun setDollarPrice() {
 
         if (realmDB.checkDollarPriceAvailability()) {
-            dollarPricetxt.text = String.format("%.0f" , realmDB.getDollarPrice().price.toDouble())
+            realmDB.getDollarPrice()?.price?.toDouble()?.let { dollarPrice ->
+                dollarPricetxt.text = Utils.formatPriceNumber(dollarPrice,0)
+            }
         }
     }
 
@@ -95,6 +99,10 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
                     return
                 }
                 resultTwo_textview.text = ""
+                text_total_price.text = "..."
+                dollar_text.text = "..."
+
+
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -104,7 +112,7 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     }
 
     private fun setUpApiCenter() {
-        apiCenter = ApiCenter(activity!!, this)
+        apiCenter = ApiCenter(requireActivity(), this)
     }
 
     private fun setUpDataBase() {
@@ -113,9 +121,9 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     private fun setUpFirstExchange() {
         CRYPTO_ONE =
-            context!!.getSharedPreferences("CRS", Context.MODE_PRIVATE).getString("CR1", "BTC")!!
+            requireContext().getSharedPreferences("CRS", Context.MODE_PRIVATE).getString("CR1", "BTC")!!
         CRYPTO_TWO =
-            context!!.getSharedPreferences("CRS", Context.MODE_PRIVATE).getString("CR2", "ETH")!!
+            requireContext().getSharedPreferences("CRS", Context.MODE_PRIVATE).getString("CR2", "ETH")!!
 
         // setting texts
         first_linear_text.text = CRYPTO_ONE
@@ -146,9 +154,9 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         var tempText = CRYPTO_ONE
         CRYPTO_ONE = CRYPTO_TWO
         CRYPTO_TWO = tempText
-        activity!!.getSharedPreferences("CRS", Context.MODE_PRIVATE).edit()
+        requireActivity().getSharedPreferences("CRS", Context.MODE_PRIVATE).edit()
             .putString("CR1", CRYPTO_ONE).apply()
-        activity!!.getSharedPreferences("CRS", Context.MODE_PRIVATE).edit()
+        requireActivity().getSharedPreferences("CRS", Context.MODE_PRIVATE).edit()
             .putString("CR2", CRYPTO_TWO).apply()
         first_linear_text.text = CRYPTO_ONE
         last_linear_text.text = CRYPTO_TWO
@@ -182,9 +190,9 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
         resultTwo_textview.setOnLongClickListener {
             if (resultTwo_textview.text.toString() != ""){
-                val clipboardManager = activity!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clipboardManager = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 clipboardManager.setPrimaryClip(ClipData.newPlainText("Price" , resultTwo_textview.text.toString()))
-                Toast.makeText(activity!!, activity!!.resources.getString(R.string.Copied), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.Copied), Toast.LENGTH_SHORT).show()
             }
             true
         }
@@ -210,7 +218,7 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
     }
 
     private fun startSearchFragment(postition: Int) {
-        fragmentManager!!.beginTransaction()
+        requireFragmentManager().beginTransaction()
             .replace(
                 R.id.exchanger_holder,
                 ExchnagerChooseCryptoFragment(postition, CRYPTO_ONE, CRYPTO_TWO)
@@ -222,13 +230,15 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     private fun checkNetworkConnection():Boolean{
         val connectivityManager =
-            activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = connectivityManager.activeNetworkInfo
         return info != null && info.isConnectedOrConnecting
     }
 
     private fun startExchange() {
 
+        if (CRYPTO_ONE.isEmpty() || CRYPTO_TWO.isEmpty())
+            return
 
         if (checkNetworkConnection()) {
             apiCenter.getCryptoPriceByName(CRYPTO_ONE, 1)
@@ -236,19 +246,12 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         } else {
             val snackBar = Snackbar.make(
                 ex_nested,
-                activity!!.resources.getString(R.string.connectionFailure),
+                requireActivity().resources.getString(R.string.connectionFailure),
                 Snackbar.LENGTH_LONG
-            ).setAction(
-                activity!!.resources.getString(R.string.connect)
-            ) {
-                val intent = Intent(Intent.ACTION_MAIN)
-                intent.setClassName("com.android.phone", "com.android.phone.NetworkSetting")
-                activity!!.startActivity(intent)
-
-            }
-            snackBar.setTextColor(Color.BLACK)
-            snackBar.setActionTextColor(Color.BLACK)
-            snackBar.view.setBackgroundColor(Color.RED)
+            )
+            snackBar.setTextColor(Color.WHITE)
+            snackBar.setActionTextColor(Color.WHITE)
+            snackBar.view.setBackgroundColor(Color.BLACK)
             snackBar.show()
             exchanger_progressBar.visibility = View.GONE
 
@@ -272,11 +275,12 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         }
 
         val result = (price1!! * resultOne_edittext.text.toString().toDouble()) / price2!!
-        resultTwo_textview.text = String.format(Locale.ENGLISH ,"%.7f", result)
-        dollar_text.text = String.format("%.7f", (price1!! * resultOne_edittext.text.toString().toDouble()))
+        resultTwo_textview.text = Utils.formatPriceNumber(result,7)
+        dollar_text.text = Utils.formatPriceNumber((price1!! * resultOne_edittext.text.toString().toDouble()),7)
         if (dollarPricetxt.text.toString() != "") {
-            text_total_price.text =
-                String.format("%.3f", (realmDB.getDollarPrice().price.toDouble() * String.format(Locale.ENGLISH , "%.7f", (price1!! * resultOne_edittext.text.toString().toDouble())).toDouble()))
+            realmDB.getDollarPrice()?.price?.toDouble()?.let { dollarPrice ->
+                text_total_price.text = Utils.formatPriceNumber((dollarPrice * (price1!! * resultOne_edittext.text.toString().toDouble())),0)
+            }
         }
         exchanger_progressBar.visibility = View.GONE
 
@@ -284,7 +288,7 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     override fun onDestroy() {
         super.onDestroy()
-        activity!!.finishAffinity()
+        requireActivity().finishAffinity()
     }
 
     override fun onGet(cryptoList: List<CryptoMainData>) {}
@@ -307,7 +311,9 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
     inner class onDollarPriceRecieve : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
-            dollarPricetxt.text = String.format("%.0f" , realmDB.getDollarPrice().price.toDouble())
+            realmDB.getDollarPrice()?.price?.toDouble()?.let { dollarPrice ->
+                dollarPricetxt.text = Utils.formatPriceNumber(dollarPrice,0)
+            }
         }
     }
 
@@ -315,17 +321,27 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         super.onStart()
         ondataRecieve = onDataRecieve()
         ondollarpriceRecieve = onDollarPriceRecieve()
-        activity!!.registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"))
-        activity!!.registerReceiver(
-            ondollarpriceRecieve,
-            IntentFilter("com.dust.extracker.onDollarPriceRecieve")
-        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"),Context.RECEIVER_EXPORTED)
+            requireActivity().registerReceiver(
+                ondollarpriceRecieve,
+                IntentFilter("com.dust.extracker.onDollarPriceRecieve")
+                ,Context.RECEIVER_EXPORTED
+            )
+        }else{
+            requireActivity().registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"))
+            requireActivity().registerReceiver(
+                ondollarpriceRecieve,
+                IntentFilter("com.dust.extracker.onDollarPriceRecieve")
+            )
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        activity!!.unregisterReceiver(ondataRecieve)
-        activity!!.unregisterReceiver(ondollarpriceRecieve)
+        requireActivity().unregisterReceiver(ondataRecieve)
+        requireActivity().unregisterReceiver(ondollarpriceRecieve)
     }
 
 }

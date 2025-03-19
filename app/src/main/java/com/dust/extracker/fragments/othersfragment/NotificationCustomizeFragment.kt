@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.dust.extracker.R
+import com.dust.extracker.activities.MainActivity
 import com.dust.extracker.apimanager.ApiCenter
 import com.dust.extracker.customviews.CButton
 import com.dust.extracker.customviews.CTextView
@@ -25,7 +26,6 @@ import com.dust.extracker.dataclasses.PriceDataClass
 import com.dust.extracker.interfaces.OnGetAllCryptoList
 import com.dust.extracker.realmdb.MainRealmObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
-import com.dust.extracker.services.NotificationService
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
 import com.squareup.picasso.Picasso
 import java.util.*
@@ -64,14 +64,14 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
     }
 
     private fun setUpApiService() {
-        apiService = ApiCenter(activity!!, this)
+        apiService = ApiCenter(requireActivity(), this)
     }
 
     private fun setUpSpinner() {
-        val data = listOf(activity!!.resources.getString(R.string.once), activity!!.resources.getString(R.string.always))
+        val data = listOf(requireActivity().resources.getString(R.string.once), requireActivity().resources.getString(R.string.always))
 
         timeingNotificationSpinner.adapter = ArrayAdapter<String>(
-            activity!!,
+            requireActivity(),
             R.layout.custom_spinner_item,
             R.id.textview1,
             data
@@ -85,17 +85,17 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
     }
 
     private fun setData() {
-        // val pData = realmDB.getCryptoDataByName(arguments!!.getString("CoinName", "BTC"))
+        // val pData = realmDB.getCryptoDataByName(requireArguments().getString("CoinName", "BTC"))
         doUpdateAndGetData()
     }
 
     private fun doUpdateAndGetData() {
-        apiService.getCryptoPriceByName(arguments!!.getString("CoinName", "BTC"), 0)
+        apiService.getCryptoPriceByName(requireArguments().getString("CoinName", "BTC"), 0)
     }
 
     private fun setUpBackImage() {
         image_back.setOnClickListener {
-            activity!!.supportFragmentManager.popBackStack(
+            requireActivity().supportFragmentManager.popBackStack(
                 "NotificationCustomizeFragment",
                 FragmentManager.POP_BACK_STACK_INCLUSIVE
             )
@@ -112,7 +112,7 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
         timeingNotificationSpinner = view.findViewById(R.id.timeingNotificationSpinner)
         HigherThanButton = view.findViewById(R.id.HigherThanButton)
         lowerThanButton = view.findViewById(R.id.lowerThanButton)
-        val color = if (SharedPreferencesCenter(activity!!).getNightMode())
+        val color = if (SharedPreferencesCenter(requireActivity()).getNightMode())
             Color.WHITE
         else
             Color.BLACK
@@ -133,14 +133,14 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
     override fun onGet(cryptoList: List<CryptoMainData>) {}
 
     override fun onGetByName(price: Double, dataNum: Int) {
-        realmDB.updatePrice(PriceDataClass(price, arguments!!.getString("CoinName", "BTC")))
+        realmDB.updatePrice(PriceDataClass(price, requireArguments().getString("CoinName", "BTC")))
         startAction()
     }
 
     private fun startAction() {
         notif_save.isEnabled = true
         pbar.visibility = View.GONE
-        data = realmDB.getCryptoDataByName(arguments!!.getString("CoinName", "BTC"))
+        data = realmDB.getCryptoDataByName(requireArguments().getString("CoinName", "BTC"))
         Picasso.get().load("${data.BaseImageUrl}${data.ImageUrl}").into(cryptoImage)
         cryptoName.text = data.Name
         resultOne_edittext.setText(
@@ -173,7 +173,7 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
         })
         notif_save.setOnClickListener {
             if (!lowerThanButton.isEnabled || !HigherThanButton.isEnabled) {
-                SharedPreferencesCenter(activity!!).setNotificationData(
+                SharedPreferencesCenter(requireActivity()).setNotificationData(
                     NotificationDataClass(
                         0,
                         data.Name!!,
@@ -182,31 +182,12 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
                         timeingNotificationSpinner.selectedItemPosition
                     )
                 )
-
-                if (checkServiceRunning()){
-                    val intent = Intent("com.dust.extracker.Update_NotificationData")
-                    intent.putExtra("updateData", "")
-                    activity!!.sendBroadcast(intent)
-                }else{
-                    activity!!.startService(Intent(activity!!, NotificationService::class.java))
-                }
             }
 
-            activity!!.supportFragmentManager.popBackStack(
+            requireActivity().supportFragmentManager.popBackStack(
                 "NotificationChooseCryptoFragment",
                 FragmentManager.POP_BACK_STACK_INCLUSIVE
             )
         }
     }
-
-    fun checkServiceRunning(): Boolean {
-        val activityManager =
-            activity!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        activityManager.getRunningServices(Integer.MAX_VALUE).forEach {
-            if (it.service.className == NotificationService::class.java.name)
-                return true
-        }
-        return false
-    }
-
 }

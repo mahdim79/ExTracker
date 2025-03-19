@@ -64,7 +64,7 @@
                 android:layout_marginHorizontal="@dimen/standardMargin"
                 android:layout_marginTop="@dimen/standardMargin2x"
                 android:foreground="?attr/selectableItemBackground"
-
+                android:visibility="gone"
                 android:gravity="center_vertical"
                 android:layoutDirection="rtl"
                 android:orientation="horizontal">
@@ -95,7 +95,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <com.warkiz.tickseekbar.TickSeekBar
+           <!-- <com.warkiz.tickseekbar.TickSeekBar
                 android:id="@+id/notification_tick_seekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -115,11 +115,12 @@
                 app:tsb_track_background_color="?colorAccent"
                 app:tsb_track_background_size="2dp"
                 app:tsb_track_progress_color="@color/light_orange"
-                app:tsb_track_progress_size="3dp" />
+                app:tsb_track_progress_size="3dp" />-->
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:visibility="gone"
                 android:background="?colorPrimaryVariant"
                 android:layout_marginTop="@dimen/standardMargin"/>
             <LinearLayout

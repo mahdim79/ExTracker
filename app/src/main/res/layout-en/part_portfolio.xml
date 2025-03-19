@@ -1,0 +1,37 @@
+<LinearLayout
+    android:id="@+id/portfolio_part"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginHorizontal="@dimen/standardMargin"
+    android:layout_marginTop="@dimen/standardMargin2x"
+    android:foreground="?attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.dust.extracker.customviews.CTextView
+        android:id="@+id/portfolioName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standardMargin0.5x"
+        android:text="پورتفولیو من"
+        android:textColor="?android:textColor"
+        android:textSize="@dimen/TextSize4x" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/notifications_my"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layoutDirection="ltr"
+            app:thumbTint="@color/light_black"
+            app:trackTint="@color/switcher_selector"
+            />
+    </LinearLayout>
+</LinearLayout>

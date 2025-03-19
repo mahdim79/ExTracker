@@ -88,7 +88,9 @@ class RealmDataBaseCenter() {
         val stop = 50 * PaginationCount
         for (i in start.rangeTo(stop)) {
             val data1 = realmDB.where(MainRealmObject::class.java).equalTo("id", i).findFirst()
-            list.add(data1!!)
+            data1?.let { d ->
+                list.add(d)
+            }
         }
         return list
     }
@@ -159,21 +161,14 @@ class RealmDataBaseCenter() {
         }
     }
 
-    fun getDollarPrice(): DollarObject {
+    fun getDollarPrice(): DollarObject? {
         var result: DollarObject? = null
         realmDB.executeTransaction {
             try {
                 result = realmDB.where(DollarObject::class.java).findFirst()!!
-            } catch (e: Exception) {
-                result = DollarObject()
-                result!!.price = "0.0"
-                result!!.date = "0"
-                result!!.lastDollarPrice = "0.0"
-                result!!.changePct = "0.0"
-                result!!.id = 1
-            }
+            } catch (e: Exception) {}
         }
-        return result!!
+        return result
     }
 
     fun checkDollarPriceAvailability(): Boolean {
@@ -305,7 +300,7 @@ class RealmDataBaseCenter() {
 
     fun deleteUserData() = realmDB.where(UserObject::class.java).findAll().deleteAllFromRealm()
 
-    fun getUserData(): UserObject = realmDB.where(UserObject::class.java).findFirst()!!
+    fun getUserData(): UserObject? = realmDB.where(UserObject::class.java).findFirst()
 
     fun updateUserData(userData: UserDataClass) {
         realmDB.executeTransaction {
@@ -353,17 +348,12 @@ class RealmDataBaseCenter() {
                     popBackStack("SelectCtyptoFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 }
                 if (getAllHistoryData().size == 1) {
-                    fragmentManager.popBackStack(
-                        "EmptyPortfolioFragment",
-                        FragmentManager.POP_BACK_STACK_INCLUSIVE
-                    )
                     fragmentManager.beginTransaction()
                         .replace(R.id.frame_holder, PortfolioFragment())
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .addToBackStack("PortfolioFragment")
                         .commit()
                 }
-                Toast.makeText(context, context.resources.getString(R.string.done), Toast.LENGTH_SHORT).show()
             }
             ,
             {
@@ -568,17 +558,18 @@ class RealmDataBaseCenter() {
         }, {})
     }
 
-    fun getNews(category: String): List<NewsObject> {
-        val resultList = arrayListOf<NewsObject>()
+    fun getNews(category: String): List<NewsDataClass> {
+        val resultList = arrayListOf<NewsDataClass>()
         realmDB.executeTransaction { realm ->
             try {
                 val allData = realm.where(NewsObject::class.java).findAll()!!
                 allData.forEach {
+                    val newsData = NewsDataClass(it.id ?: 0,it.ID ?: 0,it.title,it.description,it.likeCount ?: 0,it.seenCount ?: 0,it.imageUrl,it.is_liked == "true",it.date ?: 0,it.url,it.categories,it.tags)
                     if (category == "ALL")
-                        resultList.add(it!!)
+                        resultList.add(newsData)
                     else
                         if (it.categories.indexOf(category) != -1)
-                            resultList.add(it!!)
+                            resultList.add(newsData)
                 }
 
             } catch (e: Exception) {
@@ -592,6 +583,7 @@ class RealmDataBaseCenter() {
     fun updateNewsData(list: List<NewsDataClass>) {
         realmDB.executeTransaction { realm ->
             val dataList = arrayListOf<NewsObject>()
+            val allCurrentNews = realm.where(NewsObject::class.java).findAll()
             list.forEach {
                 try {
                     val obj = NewsObject()
@@ -607,6 +599,11 @@ class RealmDataBaseCenter() {
                     obj.url = it.url
                     obj.categories = it.categories
                     obj.tags = it.tags
+
+                    allCurrentNews.find { o -> o.ID == it.ID }?.let { currentNews ->
+                        obj.is_liked = currentNews.is_liked
+                    }
+
                     dataList.add(obj)
                 } catch (e: Exception) {
                 }
@@ -615,24 +612,25 @@ class RealmDataBaseCenter() {
         }
     }
 
-    fun getNewsDataById(id: Int): NewsObject =
-        realmDB.where(NewsObject::class.java).equalTo("id", id).findFirst()!!
+    fun setNewsIsLiked(newsId:Int,isLiked:Boolean){
+        realmDB.executeTransactionAsync { realm ->
+            realm.where(NewsObject::class.java).equalTo("ID",newsId).findFirst()?.let { news ->
+                news.is_liked = if (isLiked) "true" else "false"
+                realm.copyToRealmOrUpdate(news)
+            }
+            realm.where(BookmarkObject::class.java).equalTo("ID",newsId).findFirst()?.let{ news ->
+                news.is_liked = if (isLiked) "true" else "false"
+                realm.copyToRealmOrUpdate(news)
+            }
+        }
+    }
 
-    fun insertBookmark(mainData: NewsObject) {
-        val data = NewsDataClass(
-            0,
-            mainData.ID!!,
-            mainData.title,
-            mainData.description,
-            mainData.likeCount!!,
-            mainData.date!!,
-            mainData.imageUrl,
-            mainData.is_liked.toBoolean(),
-            mainData.seenCount!!,
-            mainData.url,
-            mainData.categories,
-            mainData.tags
-        )
+    fun getNewsDataById(id: Int): NewsDataClass {
+        val data = realmDB.where(NewsObject::class.java).equalTo("id", id).findFirst()!!
+        return NewsDataClass(data.id ?: 0,data.ID ?: 0,data.title,data.description,data.likeCount ?: 0,data.seenCount ?: 0,data.imageUrl,data.is_liked == "true",data.date ?: 0,data.url,data.categories,data.tags)
+    }
+
+    fun insertBookmark(data: NewsDataClass) {
         realmDB.executeTransactionAsync({ realm ->
             var max = (realm.where(BookmarkObject::class.java).max("id") ?: -1).toInt()
             max += 1
@@ -654,25 +652,12 @@ class RealmDataBaseCenter() {
         }, {}, {})
     }
 
-    fun getBookmarks(): List<NewsObject> {
-        val list = arrayListOf<NewsObject>()
+    fun getBookmarks(): List<NewsDataClass> {
+        val list = arrayListOf<NewsDataClass>()
         realmDB.executeTransaction { realm ->
             realm.where(BookmarkObject::class.java).findAll().forEach {
-                val obj = NewsObject()
-                obj.id = 0
-                obj.ID = it.ID
-                obj.title = it.title
-                obj.description = it.description
-                obj.url = it.url
-                obj.date = it.date
-                obj.imageUrl = it.imageUrl
-                obj.is_liked = it.is_liked
-                obj.seenCount = it.seenCount
-                obj.likeCount = it.likeCount
-                obj.categories = it.categories
-                obj.tags = it.tags
-
-                list.add(obj)
+                val data = NewsDataClass(0,it.ID ?: 0,it.title,it.description,it.likeCount ?: 0,it.seenCount ?: 0,it.imageUrl,it.is_liked == "true",it.date ?: 0,it.url,it.categories,it.tags)
+                list.add(data)
             }
         }
         return list

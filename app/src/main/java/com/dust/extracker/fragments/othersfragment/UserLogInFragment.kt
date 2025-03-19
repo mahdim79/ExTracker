@@ -68,16 +68,16 @@ class UserLogInFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList, 
     }
 
     private fun setUpSharedPreferences() {
-        sharedPreferencesCenter = SharedPreferencesCenter(activity!!)
+        sharedPreferencesCenter = SharedPreferencesCenter(requireActivity())
     }
 
     private fun setUpApiCenter() {
-        apiCenter = ApiCenter(activity!!, this)
+        apiCenter = ApiCenter(requireActivity(), this)
     }
 
     private fun setUpBackImage() {
         backImage.setOnClickListener {
-            activity!!.supportFragmentManager.popBackStack(
+            requireActivity().supportFragmentManager.popBackStack(
                 "UserLogInFragment",
                 FragmentManager.POP_BACK_STACK_INCLUSIVE
             )
@@ -109,7 +109,7 @@ class UserLogInFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList, 
         timer_txt.isEnabled = false
         phone_number.isEnabled = false
         phoneChangeLinear.visibility = View.VISIBLE
-        submit_login.text = activity!!.resources.getString(R.string.confirm)
+        submit_login.text = requireActivity().resources.getString(R.string.confirm)
         verification_code.visibility = View.VISIBLE
         VERIFICATION_CODE = generateRandomVerificationCode()
         apiCenter.sendVerificationCodeByMessage(
@@ -119,7 +119,7 @@ class UserLogInFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList, 
         )
         countDownTimer = object : CountDownTimer(120000, 1000) {
             override fun onFinish() {
-                timer_txt.text = activity!!.resources.getString(R.string.sendAgain)
+                timer_txt.text = requireActivity().resources.getString(R.string.sendAgain)
                 timer_txt.isEnabled = true
             }
 
@@ -139,7 +139,7 @@ class UserLogInFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList, 
             R.id.edit_number -> {
                 phone_number.isEnabled = true
                 countDownTimer.cancel()
-                timer_txt.text = activity!!.resources.getString(R.string.sendAgain)
+                timer_txt.text = requireActivity().resources.getString(R.string.sendAgain)
                 timer_txt.isEnabled = true
 
             }
@@ -148,7 +148,7 @@ class UserLogInFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList, 
                     if (checkValidNumber(phone_number.text.toString())) {
                         startSendCode()
                     } else {
-                        showErrorSnackBar(activity!!.resources.getString(R.string.invalidNumber), coordinatorlayout)
+                        showErrorSnackBar(requireActivity().resources.getString(R.string.invalidNumber), coordinatorlayout)
                     }
                 } else {
 
@@ -157,7 +157,7 @@ class UserLogInFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList, 
                         logInUser(phone_number.text.toString().toDouble())
 
                     } else {
-                        showErrorSnackBar(activity!!.resources.getString(R.string.invalidCode), coordinatorlayout)
+                        showErrorSnackBar(requireActivity().resources.getString(R.string.invalidCode), coordinatorlayout)
                     }
                 }
             }
@@ -176,7 +176,7 @@ class UserLogInFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList, 
     }
 
     private fun logInUser(phoneNumber: Double) {
-        dialog = Dialog(activity!!)
+        dialog = Dialog(requireActivity())
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.dialog_login_wait)
         dialog.show()
@@ -190,9 +190,9 @@ class UserLogInFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList, 
         val intent = Intent("com.dust.extracker.USER_DATA")
         intent.putExtra("name", data.name)
         intent.putExtra("avatarUrl", data.avatarUrl)
-        activity!!.sendBroadcast(intent)
+        requireActivity().sendBroadcast(intent)
         dialog.dismiss()
-        activity!!.supportFragmentManager.popBackStack(
+        requireActivity().supportFragmentManager.popBackStack(
             "UserLogInFragment",
             FragmentManager.POP_BACK_STACK_INCLUSIVE
         )
@@ -200,7 +200,7 @@ class UserLogInFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList, 
 
     override fun onReceiveFailure() {
         dialog.dismiss()
-        showErrorSnackBar( activity!!.resources.getString(R.string.errorLog), coordinatorlayout)
+        showErrorSnackBar( requireActivity().resources.getString(R.string.errorLog), coordinatorlayout)
     }
 
     private fun generateRandomVerificationCode(): Int =
@@ -213,11 +213,11 @@ class UserLogInFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList, 
 
     override fun onGetByName(price: Double, dataNum: Int) {}
     override fun onSuccess() {
-        showSnackBar(activity!!.resources.getString(R.string.sendingSuccess), coordinatorlayout)
+        showSnackBar(requireActivity().resources.getString(R.string.sendingSuccess), coordinatorlayout)
     }
 
     override fun onFailure() {
-        showErrorSnackBar(activity!!.resources.getString(R.string.errorOrder), coordinatorlayout)
+        showErrorSnackBar(requireActivity().resources.getString(R.string.errorOrder), coordinatorlayout)
     }
 
     private fun showErrorSnackBar(message: String, view: View) {
@@ -228,7 +228,7 @@ class UserLogInFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList, 
         )
             .setTextColor(Color.WHITE)
 
-        snackBar.view.setBackgroundColor(Color.RED)
+        snackBar.view.setBackgroundColor(Color.BLACK)
         snackBar.show()
     }
 
@@ -238,9 +238,9 @@ class UserLogInFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList, 
             message,
             Snackbar.LENGTH_LONG
         )
-            .setTextColor(Color.BLACK)
+            .setTextColor(Color.WHITE)
 
-        snackBar.view.setBackgroundColor(Color.BLUE)
+        snackBar.view.setBackgroundColor(Color.BLACK)
         snackBar.show()
 
     }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:background="?colorPrimary"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+
+    <com.dust.extracker.customviews.CTextView
+        android:id="@+id/dialog_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/standardMargin"
+        android:text="@string/loadingData"
+        android:textDirection="rtl"
+        android:layout_marginVertical="@dimen/standardMargin"
+        android:gravity="center"
+        android:textSize="@dimen/standardMargin1.5x"
+        android:textStyle="bold" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/light_orange"
+        />
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:layout_marginVertical="@dimen/standardMargin"
+        android:indeterminateTint="@color/light_orange"/>
+
+</LinearLayout>

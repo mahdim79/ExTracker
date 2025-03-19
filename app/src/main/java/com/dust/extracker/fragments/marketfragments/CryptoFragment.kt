@@ -1,12 +1,20 @@
 package com.dust.extracker.fragments.marketfragments
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.PowerManager
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +23,7 @@ import android.view.animation.AlphaAnimation
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -56,25 +65,15 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     private var INDEX: Int? = 0
     private var SEARCH_MODE = false
 
-    private val SORT_BY_REFRESH = 0
-    private val SORT_BY_NAME = 1
-    private val SORT_BY_PRICE = 2
-    private val SORT_BY_DAILY_CHANGE = 3
-    private val SORT_BY_COMMENTS = 4
-    private val SORT_ASCENDING = 10
-    private val SORT_DESCENDING = 11
-
-    private var SORT = SORT_BY_REFRESH
-    private var SORT_TYPE = SORT_ASCENDING
-
     var dollarPrice = 0.0
 
-    val priceTotalList = arrayListOf<PriceDataClass>()
-    val PCTTotalList = arrayListOf<LastChangeDataClass>()
+    private val notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
+        if (it)
+            runPermissionCheckProcess()
+    }
 
-    private var RequestNum = 0
-    private var RequestNumPCT = 0
-    private var RequestTotal = 0
+    private val batteryIgnoreLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){}
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -97,7 +96,9 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
 
 
     private fun setDollarPrice() {
-        dollarPrice = realmDB.getDollarPrice().price.toDouble()
+        realmDB.getDollarPrice()?.price?.toDouble()?.let {
+            dollarPrice = it
+        }
     }
 
     fun startTimer() {
@@ -136,14 +137,14 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
             if (checkConnection()) {
                 updateOnline()
             } else {
-                Toast.makeText(activity!!, "No Connection!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), "No Connection!", Toast.LENGTH_SHORT).show()
             }
             crypto_swipe.isRefreshing = false
         }
     }
 
     private fun setUpApiCenter() {
-        apiCenter = ApiCenter(activity!!, this)
+        apiCenter = ApiCenter(requireActivity(), this)
     }
 
     inner class onDataRecieve : BroadcastReceiver() {
@@ -163,7 +164,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
 
     inner class MyTimerTask : TimerTask() {
         override fun run() {
-            activity!!.runOnUiThread {
+            requireActivity().runOnUiThread {
                 if (checkConnection()) {
                     if (INDEX != 0) {
                         Log.i("Update", "xtask")
@@ -181,21 +182,32 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
         searchNotifier = SearchNotifier()
         ondataRecieve = onDataRecieve()
         connectionReceiver = ConnectionReceiver()
-        activity!!.registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"))
-        activity!!.registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))
-        activity!!.registerReceiver(
-            connectionReceiver,
-            IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
-        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"),Context.RECEIVER_EXPORTED)
+            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"),Context.RECEIVER_EXPORTED)
+            requireActivity().registerReceiver(
+                connectionReceiver,
+                IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"),
+                Context.RECEIVER_EXPORTED
+            )
+        }else{
+            requireActivity().registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"))
+            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))
+            requireActivity().registerReceiver(
+                connectionReceiver,
+                IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
+            )
+        }
         if (INDEX != 0)
             startTimer()
     }
 
     override fun onStop() {
         super.onStop()
-        activity!!.unregisterReceiver(ondataRecieve)
-        activity!!.unregisterReceiver(connectionReceiver)
-        activity!!.unregisterReceiver(searchNotifier)
+        requireActivity().unregisterReceiver(ondataRecieve)
+        requireActivity().unregisterReceiver(connectionReceiver)
+        requireActivity().unregisterReceiver(searchNotifier)
         stopTimer()
     }
 
@@ -208,13 +220,13 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
             loadData()
             return
         }
-        val api = ApiCenter(activity!!, this)
+        val api = ApiCenter(requireActivity(), this)
         api.getAllCryptoList()
     }
 
     private fun checkConnection(): Boolean {
         val connectivityManager =
-            activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = connectivityManager.activeNetworkInfo
         return info != null && info.isConnectedOrConnecting
     }
@@ -224,23 +236,21 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
 
         datalist.addAll(realmDB.getPopularCoins())
 
+        updateOffline()
         if (checkConnection()) {
-            market_progressBar.visibility = View.VISIBLE
             apiCenter.getMarketCapSortOrder(object : OnUpdateSortOrder {
                 override fun onUpdateSortOrder(list: List<Pair<String, Int>>) {
                     realmDB.updateSortOrders(list, object : OnRealmDataSorted {
                         override fun onSortFinished() {
                             datalist.clear()
                             datalist.addAll(realmDB.getPopularCoins())
-                            updateOffline()
                             updateOnline()
                         }
                     })
                 }
             })
-        } else {
-            updateOffline()
         }
+        runPermissionCheckProcess()
     }
 
 
@@ -257,7 +267,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
         sort_by_comments = view.findViewById(R.id.sort_by_comments)
 
         market_recyclerView.layoutManager =
-            LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
 
     }
 
@@ -277,9 +287,35 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     }
 
     override fun onAddComplete(list: List<MainRealmObject>) {
-        activity!!.sendBroadcast(Intent("com.dust.extracker.onGetMainData"))
+        requireActivity().sendBroadcast(Intent("com.dust.extracker.onGetMainData"))
         loadData()
+
     }
+
+    private fun runPermissionCheckProcess() {
+
+        // notification
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            if (requireContext().checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                return
+            }
+        }
+
+        // battery optimization
+        if (!isIgnoringBatteryOptimization()){
+            val intent = Intent()
+            intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+            intent.data = Uri.parse("package:${requireContext().packageName}")
+            batteryIgnoreLauncher.launch(intent)
+        }
+    }
+
+    private fun isIgnoringBatteryOptimization(): Boolean {
+        val powerManager = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
+        return powerManager.isIgnoringBatteryOptimizations(requireContext().packageName)
+    }
+
 
     override fun onGetPrices(priceList: List<PriceDataClass>) {
         realmDB.updatePrices(datalist, priceList)
@@ -291,27 +327,28 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
         }catch (e:Exception){}
     }
 
-    fun updatePriceList(list: List<String>) {
-        val prices = realmDB.getPricesByIds(list)
-        val intent = Intent("com.dust.extracker.UPDATE_ITEMS")
-        intent.putExtra("PRICE", realmDB.getDollarPrice().price)
-        for (i in 0 until prices.size) {
-            intent.putExtra(prices[i].name, prices[i].price)
+    private fun updatePriceList(list: List<String>) {
+        realmDB.getDollarPrice()?.price?.let {
+            val prices = realmDB.getPricesByIds(list)
+            val intent = Intent("com.dust.extracker.UPDATE_ITEMS")
+            intent.putExtra("PRICE", it)
+            for (i in prices.indices) {
+                intent.putExtra(prices[i].name, prices[i].price)
+            }
+
+            requireActivity().sendBroadcast(intent)
         }
-
-        activity!!.sendBroadcast(intent)
-
     }
 
     private fun updateDailyChangesList(list: List<String>) {
         val changes = realmDB.getLastDailyChangesByIds(list)
         val intent = Intent("com.dust.extracker.UPDATE_ITEMS")
         intent.putExtra("IS_DAILY_CHANGE", true)
-        for (i in 0 until changes.size) {
+        for (i in changes.indices) {
             intent.putExtra(changes[i].CoinName, changes[i].ChangePercentage)
         }
 
-        activity!!.sendBroadcast(intent)
+        requireActivity().sendBroadcast(intent)
 
     }
 
@@ -337,7 +374,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
         market_recyclerView.adapter =
             MarketRecyclerViewAdapter(
                 datalist,
-                activity!!,
+                requireActivity(),
                 alphaAnimation,
                 dollarPrice
             )
@@ -346,10 +383,11 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
             startTimer()
         market_progressBar.visibility = View.GONE
 
-        val price = realmDB.getDollarPrice()
-        val intent = Intent("com.dust.extracker.onDollarPriceRecieve")
-        intent.putExtra("PRICE", price.price)
-        activity!!.sendBroadcast(intent)
+        realmDB.getDollarPrice()?.let { price ->
+            val intent = Intent("com.dust.extracker.onDollarPriceRecieve")
+            intent.putExtra("PRICE", price.price)
+            requireActivity().sendBroadcast(intent)
+        }
     }
 
     private fun updateSortOrders(list1: List<CryptoMainData>) {
@@ -361,7 +399,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
                             it.SortOrder = pair.second.toString()
                     }
                 }
-                realmDB.insertAllCryptoData(list1, this@CryptoFragment, activity!!)
+                realmDB.insertAllCryptoData(list1, this@CryptoFragment, requireActivity())
             }
         })
     }
@@ -376,7 +414,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
                     market_recyclerView.adapter =
                         MarketRecyclerViewAdapter(
                             arrayListOf(),
-                            activity!!,
+                            requireActivity(),
                             alphaAnimation,
                             dollarPrice
                         )
@@ -386,7 +424,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
                     market_recyclerView.adapter =
                         MarketRecyclerViewAdapter(
                             datalist,
-                            activity!!,
+                            requireActivity(),
                             alphaAnimation,
                             dollarPrice
                         )
@@ -395,7 +433,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
                         market_recyclerView.adapter =
                             MarketRecyclerViewAdapter(
                                 arrayListOf(),
-                                activity!!,
+                                requireActivity(),
                                 alphaAnimation,
                                 dollarPrice
                             )
@@ -413,7 +451,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
                         market_recyclerView.adapter =
                             MarketRecyclerViewAdapter(
                                 pList,
-                                activity!!,
+                                requireActivity(),
                                 alphaAnimation,
                                 dollarPrice
                             )
@@ -422,7 +460,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
                         market_recyclerView.adapter =
                             MarketRecyclerViewAdapter(
                                 results,
-                                activity!!,
+                                requireActivity(),
                                 alphaAnimation,
                                 dollarPrice
                             )

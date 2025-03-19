@@ -17,7 +17,7 @@
             android:layout_width="180dp"
             android:layout_height="180dp"
             android:layout_marginTop="@dimen/standardMargin3x"
-            android:src="@drawable/application_icon" />
+            android:src="@drawable/avatar" />
 
         <com.dust.extracker.customviews.CTextView
             android:id="@+id/others_name"
@@ -32,6 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/standardMargin"
+            android:visibility="gone"
             android:layout_marginTop="@dimen/standardMargin1.5x"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center_vertical"
@@ -55,193 +56,231 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            android:backgroundTint="@color/white_transparent"
+            android:layout_marginHorizontal="@dimen/standardMargin"
+            android:layout_marginTop="@dimen/standardMargin1.5x">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:gravity="center_vertical"
+                android:layoutDirection="rtl"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:tint="?android:textColor"
+                    android:src="@drawable/ic_baseline_notifications" />
+
+                <com.dust.extracker.customviews.CTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/standardMargin0.5x"
+                    android:text="@string/notifications"
+                    android:textColor="?android:textColor"
+                    android:textSize="@dimen/TextSize4x" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layoutDirection="ltr"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/others_notificationSwitcher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layoutDirection="ltr"
+                        app:thumbTint="@color/light_black"
+                        android:checked="true"
+                        app:trackTint="@color/switcher_selector"
+                        />
+
+                    <com.dust.extracker.customviews.CButton
+                        android:id="@+id/others_edit"
+                        android:layout_width="@dimen/standardMargin8x"
+                        android:layout_height="@dimen/standardMargin2x"
+                        android:layout_marginHorizontal="@dimen/standardMargin2x"
+                        android:background="@drawable/comment_answer_button_selector"
+                        android:textColor="@color/black"
+                        android:layout_toStartOf="@+id/comment_text_disslike"
+                        android:layout_alignTop="@+id/comment_img_disslike"
+                        android:layout_alignBottom="@+id/comment_img_disslike"
+                        android:textSize="10dp"
+                        android:text="@string/edit" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
             android:layout_marginHorizontal="@dimen/standardMargin"
             android:layout_marginTop="@dimen/standardMargin1.5x"
-            android:gravity="center_vertical"
-            android:layoutDirection="rtl"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
+            app:cardElevation="0dp"
+            android:backgroundTint="@color/white_transparent">
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:tint="?android:textColor"
-                android:src="@drawable/ic_baseline_notifications" />
+                android:padding="10dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:layoutDirection="rtl"
+                android:orientation="horizontal">
 
-            <com.dust.extracker.customviews.CTextView
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    app:tint="?android:textColor"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_night" />
+
+                <com.dust.extracker.customviews.CTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/standardMargin0.5x"
+                    android:text="@string/nightMode"
+                    android:textColor="?android:textColor"
+                    android:textSize="@dimen/TextSize4x" />
+                <LinearLayout
+                    android:id="@+id/others_nightMode"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layoutDirection="ltr"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/others_nightModeSwitcher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layoutDirection="ltr"
+                        app:thumbTint="@color/light_black"
+                        app:trackTint="@color/switcher_selector"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            android:layout_marginHorizontal="@dimen/standardMargin"
+            android:layout_marginTop="@dimen/standardMargin1.5x"
+            app:cardElevation="0dp"
+            android:backgroundTint="@color/white_transparent">
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/standardMargin0.5x"
-                android:text="@string/notifications"
-                android:textColor="?android:textColor"
-                android:textSize="@dimen/TextSize4x" />
+                android:padding="10dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:layoutDirection="rtl"
+                android:orientation="horizontal">
 
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:tint="?android:textColor"
+                    android:src="@drawable/ic_baseline_language" />
+
+                <com.dust.extracker.customviews.CTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/standardMargin0.5x"
+                    android:text="@string/englishLanguage"
+                    android:textColor="?android:textColor"
+                    android:textSize="@dimen/TextSize4x" />
+                <LinearLayout
+                    android:id="@+id/others_changeLanguage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layoutDirection="ltr"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/others_languageSwitcher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layoutDirection="ltr"
+                        app:thumbTint="@color/light_black"
+                        app:trackTint="@color/switcher_selector"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            android:layout_marginHorizontal="@dimen/standardMargin"
+            android:layout_marginTop="@dimen/standardMargin1.5x"
+            app:cardElevation="0dp"
+            android:backgroundTint="@color/white_transparent">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:foreground="?attr/selectableItemBackground"
                 android:gravity="center_vertical"
-                android:layoutDirection="ltr"
+                android:layoutDirection="rtl"
                 android:orientation="horizontal">
 
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/others_notificationSwitcher"
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layoutDirection="ltr"
-                    app:thumbTint="@color/light_black"
-                    android:checked="true"
-                    app:trackTint="@color/switcher_selector"
-                    />
+                    app:tint="?android:textColor"
+                    android:src="@drawable/ic_baseline_fingerprint_24" />
 
-                <com.dust.extracker.customviews.CButton
-                    android:id="@+id/others_edit"
-                    android:layout_width="@dimen/standardMargin8x"
-                    android:layout_height="@dimen/standardMargin2x"
-                    android:layout_marginHorizontal="@dimen/standardMargin2x"
-                    android:background="@drawable/comment_answer_button_selector"
-                    android:textColor="@color/black"
-                    android:layout_toStartOf="@+id/comment_text_disslike"
-                    android:layout_alignTop="@+id/comment_img_disslike"
-                    android:layout_alignBottom="@+id/comment_img_disslike"
-                    android:textSize="10dp"
-                    android:text="@string/edit" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/standardMargin"
-            android:layout_marginTop="@dimen/standardMargin1.5x"
-            android:foreground="?attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:layoutDirection="rtl"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                app:tint="?android:textColor"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_night" />
-
-            <com.dust.extracker.customviews.CTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/standardMargin0.5x"
-                android:text="@string/nightMode"
-                android:textColor="?android:textColor"
-                android:textSize="@dimen/TextSize4x" />
-            <LinearLayout
-                android:id="@+id/others_nightMode"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:layoutDirection="ltr"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/others_nightModeSwitcher"
+                <com.dust.extracker.customviews.CTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/standardMargin0.5x"
+                    android:text="@string/fingerPrintLock"
+                    android:textColor="?android:textColor"
+                    android:textSize="@dimen/TextSize4x" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
                     android:layoutDirection="ltr"
-                    app:thumbTint="@color/light_black"
-                    app:trackTint="@color/switcher_selector"
-                    />
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/others_fingerPrintSwitcher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layoutDirection="ltr"
+                        app:thumbTint="@color/light_black"
+                        app:trackTint="@color/switcher_selector"
+                        />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/standardMargin"
-            android:layout_marginTop="@dimen/standardMargin1.5x"
-            android:foreground="?attr/selectableItemBackground"
-            android:gravity="center_vertical"
-
-            android:layoutDirection="rtl"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:tint="?android:textColor"
-                android:src="@drawable/ic_baseline_language" />
-
-            <com.dust.extracker.customviews.CTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/standardMargin0.5x"
-                android:text="@string/englishLanguage"
-                android:textColor="?android:textColor"
-                android:textSize="@dimen/TextSize4x" />
-            <LinearLayout
-                android:id="@+id/others_changeLanguage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:layoutDirection="ltr"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/others_languageSwitcher"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layoutDirection="ltr"
-                    app:thumbTint="@color/light_black"
-                    app:trackTint="@color/switcher_selector"
-                    />
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/standardMargin"
-            android:layout_marginTop="@dimen/standardMargin1.5x"
-            android:foreground="?attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:layoutDirection="rtl"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:tint="?android:textColor"
-                android:src="@drawable/ic_baseline_fingerprint_24" />
-
-            <com.dust.extracker.customviews.CTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/standardMargin0.5x"
-                android:text="@string/fingerPrintLock"
-                android:textColor="?android:textColor"
-                android:textSize="@dimen/TextSize4x" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:layoutDirection="ltr"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/others_fingerPrintSwitcher"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layoutDirection="ltr"
-                    app:thumbTint="@color/light_black"
-                    app:trackTint="@color/switcher_selector"
-                    />
-            </LinearLayout>
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <LinearLayout
             android:id="@+id/others_faq"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/standardMargin"
+            android:visibility="gone"
             android:layout_marginTop="@dimen/standardMargin1.5x"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center_vertical"
@@ -269,6 +308,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/standardMargin"
+            android:visibility="gone"
             android:layout_marginTop="@dimen/standardMargin1.5x"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center_vertical"
@@ -297,6 +337,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/standardMargin"
             android:layout_marginTop="@dimen/standardMargin1.5x"
+            android:visibility="gone"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center_vertical"
 
@@ -324,6 +365,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/standardMargin"
             android:layout_marginTop="@dimen/standardMargin1.5x"
+            android:visibility="gone"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center_vertical"
             android:layoutDirection="rtl"
@@ -445,12 +487,12 @@
                 android:layout_width="@dimen/standardMargin4x"
                 android:layout_height="@dimen/standardMargin4x"
                 android:foreground="?attr/selectableItemBackground"
-                android:src="@drawable/telegram_icon"
-                android:layout_marginEnd="@dimen/standardMargin2x"/>
+                android:src="@drawable/telegram_icon"/>
             <ImageView
                 android:id="@+id/others_aparat"
                 android:layout_width="@dimen/standardMargin4x"
                 android:layout_height="@dimen/standardMargin4x"
+                android:visibility="gone"
                 android:foreground="?attr/selectableItemBackground"
                 android:src="@drawable/aparat"
                 android:layout_marginEnd="@dimen/standardMargin2x"/>
@@ -458,6 +500,7 @@
                 android:id="@+id/others_facebook"
                 android:layout_width="@dimen/standardMargin4x"
                 android:layout_height="@dimen/standardMargin4x"
+                android:visibility="gone"
                 android:foreground="?attr/selectableItemBackground"
                 android:src="@drawable/facebook_logo_icon"
                 />

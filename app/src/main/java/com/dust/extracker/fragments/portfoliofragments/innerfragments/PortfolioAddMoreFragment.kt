@@ -30,7 +30,7 @@ class PortfolioAddMoreFragment:Fragment() {
     private fun setUpViews(view: View) {
         add_portfolio = view.findViewById(R.id.add_portfolio)
         add_portfolio.setOnClickListener {
-            activity!!.sendBroadcast(Intent("com.dust.extracker.addMoreHistory"))
+            requireActivity().sendBroadcast(Intent("com.dust.extracker.addMoreHistory"))
         }
     }
 }

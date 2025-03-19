@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,22 +20,19 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dust.extracker.R
+import com.dust.extracker.activities.MainActivity
 import com.dust.extracker.adapters.recyclerviewadapters.NotificationRecyclerViewAdapter
 import com.dust.extracker.customviews.CTextView
 import com.dust.extracker.dataclasses.NotificationDataClass
 import com.dust.extracker.interfaces.OnNotificationRemoved
 import com.dust.extracker.realmdb.RealmDataBaseCenter
-import com.dust.extracker.services.NotificationService
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
-import com.warkiz.tickseekbar.OnSeekChangeListener
-import com.warkiz.tickseekbar.SeekParams
-import com.warkiz.tickseekbar.TickSeekBar
 
 class NotificationFragment : Fragment(), View.OnClickListener {
     private lateinit var image_back: ImageView
     private lateinit var notifications_switcher: SwitchCompat
     private lateinit var notifications_news: SwitchCompat
-    private lateinit var notification_tick_seekBar: TickSeekBar
+   // private lateinit var notification_tick_seekBar: TickSeekBar
     private lateinit var create_customization: Button
     private lateinit var add_Image: ImageView
     private lateinit var container_linear: LinearLayout
@@ -60,7 +58,7 @@ class NotificationFragment : Fragment(), View.OnClickListener {
         setUpRealmDB()
         setUpSharedPreferences()
         setUpContainerLinear()
-        setUpNotificationSwitcher()
+     //   setUpNotificationSwitcher()
         setUpBackButton()
         setUpViewType()
         setUpImportantNewsSwitcher()
@@ -76,7 +74,7 @@ class NotificationFragment : Fragment(), View.OnClickListener {
         if (data.isNotEmpty()) {
             data.forEach {
                 val part =
-                    LayoutInflater.from(activity!!).inflate(R.layout.part_portfolio, viewGroup, false)
+                    LayoutInflater.from(requireActivity()).inflate(R.layout.part_portfolio, viewGroup, false)
                 val text = part.findViewById<CTextView>(R.id.portfolioName)
                 val compat = part.findViewById<SwitchCompat>(R.id.notifications_my)
                 container_linear.addView(part)
@@ -92,7 +90,7 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                     }
                     val intent = Intent("com.dust.extracker.Update_NotificationData")
                     intent.putExtra("EnabledPortfolio" , "")
-                    activity!!.sendBroadcast(intent)
+                    requireActivity().sendBroadcast(intent)
                 }
             }
         }
@@ -107,11 +105,11 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                 intent.putExtra("newsData", true)
             else
                 intent.putExtra("newsData", false)
-            activity!!.sendBroadcast(intent)
+            requireActivity().sendBroadcast(intent)
         }
     }
 
-    private fun setUpNotificationSwitcher() {
+    /*private fun setUpNotificationSwitcher() {
         notification_tick_seekBar.min = 0f
         notification_tick_seekBar.max = 2f
         notifications_switcher.isChecked = shared.getPriceNotificationsEnabled()
@@ -130,7 +128,7 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                 notification_tick_seekBar.visibility = View.GONE
                 intent.putExtra("PriceData", false)
             }
-            activity!!.sendBroadcast(intent)
+            requireActivity().sendBroadcast(intent)
         }
 
         notification_tick_seekBar.onSeekChangeListener = object : OnSeekChangeListener {
@@ -142,10 +140,10 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                 shared.setPriceNotificationsLevel(seekBar!!.progress)
             }
         }
-    }
+    }*/
 
     private fun setUpSharedPreferences() {
-        shared = SharedPreferencesCenter(activity!!)
+        shared = SharedPreferencesCenter(requireActivity())
     }
 
     private fun setUpViewType() {
@@ -166,25 +164,8 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                 override fun onNotificationRemoved(id: Int) {
                     shared.removeNotificationData(id)
                     setUpViewType()
-                    if (checkServiceRunning()) {
-                        val intent = Intent("com.dust.extracker.Update_NotificationData")
-                        intent.putExtra("updateData", "")
-                        activity!!.sendBroadcast(intent)
-                    } else {
-                        activity!!.startService(Intent(activity!!, NotificationService::class.java))
-                    }
                 }
-            }, activity!!)
-    }
-
-    fun checkServiceRunning(): Boolean {
-        val activityManager =
-            activity!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        activityManager.getRunningServices(Integer.MAX_VALUE).forEach {
-            if (it.service.className == NotificationService::class.java.name)
-                return true
-        }
-        return false
+            }, requireActivity())
     }
 
     private fun setUpBackButton() {
@@ -203,12 +184,12 @@ class NotificationFragment : Fragment(), View.OnClickListener {
         notification_customized_recycler = view.findViewById(R.id.notification_customized_recycler)
         notification_Linear = view.findViewById(R.id.notification_Linear)
         notifications_switcher = view.findViewById(R.id.notifications_switcher)
-        notification_tick_seekBar = view.findViewById(R.id.notification_tick_seekBar)
+      //  notification_tick_seekBar = view.findViewById(R.id.notification_tick_seekBar)
         create_customization = view.findViewById(R.id.create_customization)
         container_linear = view.findViewById(R.id.container_linear)
 
         notification_customized_recycler.layoutManager =
-            LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
 
         create_customization.setOnClickListener(this)
         add_Image.setOnClickListener(this)
@@ -216,7 +197,7 @@ class NotificationFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(p0: View?) {
-        fragmentManager!!.beginTransaction()
+        requireFragmentManager().beginTransaction()
             .replace(
                 R.id.others_frame_holder,
                 NotificationChooseCryptoFragment()
@@ -229,15 +210,23 @@ class NotificationFragment : Fragment(), View.OnClickListener {
     override fun onStart() {
         super.onStart()
         onServiceDeleteNotification = OnServiceDeleteNotification()
-        activity!!.registerReceiver(
-            onServiceDeleteNotification,
-            IntentFilter("com.dust.extracker.OnServiceDeleteNotification")
-        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(
+                onServiceDeleteNotification,
+                IntentFilter("com.dust.extracker.OnServiceDeleteNotification"),
+                Context.RECEIVER_EXPORTED
+            )
+        }else{
+            requireActivity().registerReceiver(
+                onServiceDeleteNotification,
+                IntentFilter("com.dust.extracker.OnServiceDeleteNotification")
+            )        }
     }
 
     override fun onStop() {
         super.onStop()
-        activity!!.unregisterReceiver(onServiceDeleteNotification)
+        requireActivity().unregisterReceiver(onServiceDeleteNotification)
     }
 
     inner class OnServiceDeleteNotification : BroadcastReceiver() {

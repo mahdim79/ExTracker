@@ -96,7 +96,7 @@ class ExchnagerChooseCryptoFragment(
         search_nested = view.findViewById(R.id.search_nested)
 
         crypto_recycler_view.layoutManager =
-            LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
     }
 
     private fun setUpPagination() {
@@ -135,7 +135,7 @@ class ExchnagerChooseCryptoFragment(
         crypto_recycler_view.adapter =
             ExchangerRecyclerViewAdapter(
                 positionMain,
-                activity!!,
+                requireActivity(),
                 datalist,
                 fragmentManager!!
             )

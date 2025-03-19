@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -68,12 +69,16 @@ class UserProfileFragment : Fragment() , OnGetAllCryptoList , OnUpdateUserData ,
     override fun onStart() {
         super.onStart()
         val onUpdatePhoneNumber = OnUpdatePhoneNumber()
-        activity!!.registerReceiver(onUpdatePhoneNumber , IntentFilter("com.dust.extracker.UPDATE_PHONE_NUMBER"))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(onUpdatePhoneNumber , IntentFilter("com.dust.extracker.UPDATE_PHONE_NUMBER"),Context.RECEIVER_EXPORTED)
+        }else{
+            requireActivity().registerReceiver(onUpdatePhoneNumber , IntentFilter("com.dust.extracker.UPDATE_PHONE_NUMBER"))        }
+
     }
 
     override fun onStop() {
         super.onStop()
-        activity!!.unregisterReceiver(onUpdatePhoneNumber)
+        requireActivity().unregisterReceiver(onUpdatePhoneNumber)
     }
 
     inner class OnUpdatePhoneNumber:BroadcastReceiver()
@@ -85,28 +90,28 @@ class UserProfileFragment : Fragment() , OnGetAllCryptoList , OnUpdateUserData ,
 
     private fun setUpBackButton() {
         image_back.setOnClickListener {
-            activity!!.supportFragmentManager.popBackStack("UserProfileFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            requireActivity().supportFragmentManager.popBackStack("UserProfileFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
     }
 
     private fun setUpApiService() {
-        apiCenter = ApiCenter(activity!! , this)
+        apiCenter = ApiCenter(requireActivity() , this)
     }
 
     private fun setUpButtons() {
         submit_save.setOnClickListener {
             val userObject = realmDB.getUserData()
-            if (IS_PHOTO_CHANGED || name_text.text.toString() != userObject.name || email_text.text.toString() != userObject.Email){
-                dialog = Dialog(activity!!)
+            if (IS_PHOTO_CHANGED || name_text.text.toString() != userObject?.name || email_text.text.toString() != userObject.Email){
+                dialog = Dialog(requireActivity())
                 dialog.setCancelable(false)
                 dialog.setContentView(R.layout.dialog_login_wait)
                 val message = dialog.findViewById<CTextView>(R.id.dialog_message)
-                message.text = activity!!.resources.getString(R.string.sendingInformation)
+                message.text = requireActivity().resources.getString(R.string.sendingInformation)
                 dialog.show()
                 if (IS_PHOTO_CHANGED){
                     // TODO: 6/7/2021 upload new photo to server
                 }
-                val userData = UserDataClass(userObject.id!! , userObject.userName!! , phone_number.text.toString().toDouble() , email_text.text.toString() , "" , name_text.text.toString())
+                val userData = UserDataClass(userObject?.id!! , userObject.userName!! , phone_number.text.toString().toDouble() , email_text.text.toString() , "" , name_text.text.toString())
                 apiCenter.updateUserData(userData , userObject.phoneNumber!!, this)
             }
         }
@@ -114,11 +119,11 @@ class UserProfileFragment : Fragment() , OnGetAllCryptoList , OnUpdateUserData ,
 
     private fun setDefaultData() {
         val userObject = realmDB.getUserData()
-        if (userObject.avatarUrl != "")
-            Picasso.get().load(userObject.avatarUrl).into(others_profilePhoto)
-        name_text.setText(userObject.name)
-        email_text.setText(userObject.Email)
-        phone_number.setText(userObject.phoneNumber.toString())
+        if (userObject?.avatarUrl != "")
+            Picasso.get().load(userObject?.avatarUrl).into(others_profilePhoto)
+        name_text.setText(userObject?.name)
+        email_text.setText(userObject?.Email)
+        phone_number.setText(userObject?.phoneNumber.toString())
     }
 
     private fun setUpRealmDB() {
@@ -163,7 +168,7 @@ class UserProfileFragment : Fragment() , OnGetAllCryptoList , OnUpdateUserData ,
         )
             .setTextColor(Color.WHITE)
 
-        snackBar.view.setBackgroundColor(Color.RED)
+        snackBar.view.setBackgroundColor(Color.BLACK)
         snackBar.show()
     }
 
@@ -171,18 +176,18 @@ class UserProfileFragment : Fragment() , OnGetAllCryptoList , OnUpdateUserData ,
         realmDB.updateUserData(userData)
         setDefaultData()
         dialog.dismiss()
-        showSnackBar(activity!!.resources.getString(R.string.updateInfoSucces) , coordinatorlayout)
+        showSnackBar(requireActivity().resources.getString(R.string.updateInfoSucces) , coordinatorlayout)
     }
 
     override fun onFailure() {
         dialog.dismiss()
-        showErrorSnackBar(activity!!.resources.getString(R.string.loadingError)  , coordinatorlayout)
+        showErrorSnackBar(requireActivity().resources.getString(R.string.loadingError)  , coordinatorlayout)
     }
 
     override fun onClick(p0: View?) {
         when(p0!!.id){
             R.id.change_phoneNumber ->{
-                activity!!.supportFragmentManager.beginTransaction()
+                requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.others_frame_holder , ChangePhoneNumberFragment())
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack("ChangePhoneNumberFragment")

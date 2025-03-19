@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,11 +28,13 @@ import com.dust.extracker.interfaces.*
 import com.dust.extracker.realmdb.MainRealmObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
+import com.dust.extracker.utils.Utils
 import com.google.android.material.snackbar.Snackbar
 import lecho.lib.hellocharts.formatter.SimpleAxisValueFormatter
 import lecho.lib.hellocharts.model.*
 import lecho.lib.hellocharts.view.LineChartView
 import lecho.lib.hellocharts.view.PieChartView
+import okhttp3.internal.Util
 import kotlin.math.abs
 
 class PortfolioBaseFragment(
@@ -132,7 +135,7 @@ class PortfolioBaseFragment(
             })
             return
         }
-        val dollarResult = realmDB.getDollarPrice()
+        val dollarResult = realmDB.getDollarPrice() ?: return
         dateAndRate.text =
             requireActivity().resources.getString(
                 R.string.DateAndRateText,
@@ -141,12 +144,12 @@ class PortfolioBaseFragment(
             )
         portfolioTomanAsset.text = resources.getString(
             R.string.totalCapital,
-            String.format("%.2f", (dollarResult.price.toDouble() * portfolioDataClass.totalCapital))
+            Utils.formatPriceNumber((dollarResult.price.toDouble() * portfolioDataClass.totalCapital),2)
         )
         if (portfolioDataClass.changePct != null) {
             if (portfolioDataClass.changePct.toDouble() > 0) {
-                portfolioTotalChange.text =
-                    "+${String.format("%.3f", (portfolioDataClass.changePct.toDouble()))}"
+                portfolioTotalChange.text = "+${Utils.formatPriceNumber((portfolioDataClass.changePct.toDouble()),3)}"
+
                 change_pct_linear.background = ResourcesCompat.getDrawable(
                     requireActivity().resources,
                     R.drawable.portfolio_linear_shape_green,
@@ -156,11 +159,10 @@ class PortfolioBaseFragment(
                 val diff =
                     (portfolioDataClass.totalCapital * dollarResult.price.toDouble()) - calculateTomanLastAmount()
                 portfolioTotalChangeToman.text =
-                    "${String.format("%.2f", diff)} ${requireActivity().resources.getString(R.string.toman)} "
+                    "${Utils.formatPriceNumber(diff,2)} ${requireActivity().resources.getString(R.string.toman)} "
 
             } else {
-                portfolioTotalChange.text =
-                    "${String.format("%.3f", (portfolioDataClass.changePct.toDouble()))}"
+                portfolioTotalChange.text = Utils.formatPriceNumber(portfolioDataClass.changePct.toDouble(),3)
                 change_pct_linear.background = ResourcesCompat.getDrawable(
                     requireActivity().resources,
                     R.drawable.portfolio_linear_shape_red,
@@ -170,7 +172,7 @@ class PortfolioBaseFragment(
                 val diff =
                     calculateTomanLastAmount() - (portfolioDataClass.totalCapital * dollarResult.price.toDouble())
                 portfolioTotalChangeToman.text =
-                    "${String.format("%.2f", diff)} ${requireActivity().resources.getString(R.string.toman)} "
+                    "${Utils.formatPriceNumber(diff,2)} ${requireActivity().resources.getString(R.string.toman)} "
             }
         }
         if (checkNetworkConnectivity()) {
@@ -178,13 +180,7 @@ class PortfolioBaseFragment(
         } else {
             val res = realmDB.getCryptoDataByName("BTC")
             if (res.Name != "NULL") {
-                portfolioAsset.text = "$${String.format(
-                    "%.3f",
-                    (portfolioDataClass.totalCapital)
-                )} ~ ${String.format(
-                    "%.7f",
-                    (portfolioDataClass.totalCapital / res.LastPrice!!)
-                )} BTC"
+                portfolioAsset.text = "$${Utils.formatPriceNumber(portfolioDataClass.totalCapital,3)} ~ ${Utils.formatPriceNumber((portfolioDataClass.totalCapital / res.LastPrice!!),7)} BTC"
 
             }
         }
@@ -207,8 +203,9 @@ class PortfolioBaseFragment(
         portfolioDataClass.transactionList.forEach {
             list.add(realmDB.getCryptoDataByName(it.coinName))
         }
+        val dollarPrice = realmDB.getDollarPrice() ?: return
         portfolioCoinRecyclerView.adapter = PortfolioCoinRecyclerViewAdapter(
-            realmDB.getDollarPrice(),
+            dollarPrice,
             list,
             portfolioDataClass,
             requireActivity(),
@@ -220,7 +217,7 @@ class PortfolioBaseFragment(
                             newList.add(it)
                     }
 
-                    if (newList.isNullOrEmpty()) {
+                    if (newList.isEmpty()) {
                         if (realmDB.getHistoryDataCount() == 1) {
                             realmDB.deleteHistoryData(portfolioDataClass.id)
                             requireActivity().sendBroadcast(Intent("com.dust.extracker.DeleteFragment"))
@@ -251,10 +248,7 @@ class PortfolioBaseFragment(
 
             override fun onGetByName(price: Double, dataNum: Int) {
                 if (dataNum == 101)
-                    portfolioAsset.text = "$${String.format(
-                        "%.3f",
-                        (portfolioDataClass.totalCapital)
-                    )} ~ ${String.format("%.7f", (portfolioDataClass.totalCapital / price))} BTC"
+                    portfolioAsset.text = "$${Utils.formatPriceNumber(portfolioDataClass.totalCapital,3)} ~ ${Utils.formatPriceNumber((portfolioDataClass.totalCapital / price),7)} BTC"
             }
         })
     }
@@ -373,11 +367,7 @@ class PortfolioBaseFragment(
                 SliceValue(
                     percentage.toFloat(),
                     colorList[i]
-                ).setLabel(
-                    "%${String.format(
-                        "%.2f",
-                        percentage
-                    )} ${portfolioDataClass.transactionList[i].coinName}"
+                ).setLabel("%${Utils.formatPriceNumber(percentage,2)} ${portfolioDataClass.transactionList[i].coinName}"
                 )
             )
         }
@@ -393,22 +383,24 @@ class PortfolioBaseFragment(
 
     private fun setUpLiveChart(list: List<PointValue>) {
         lineChart.isInteractive = true
-        lineChart.isZoomEnabled = true
+        lineChart.isZoomEnabled = false
         lineChart.setOnClickListener {
             lineChart.setZoomLevelWithAnimation(1f, 1f, 1f)
         }
         lineChart.isValueTouchEnabled = true
         lineChart.isValueSelectionEnabled = true
         val line = Line(list)
-        line.color = Color.LTGRAY
-        line.pointColor = ContextCompat.getColor(requireActivity(), R.color.light_orange)
+        line.color = ContextCompat.getColor(requireActivity(), R.color.dark_green)
+        line.pointColor = ContextCompat.getColor(requireActivity(), R.color.green)
+        line.pointRadius = 1
         line.isCubic = true
         line.strokeWidth = 2
         line.areaTransparency = 60
-        line.pointRadius = 2
-        line.setHasLabels(false)
+        line.setHasLabels(true)
+        line.setHasLabelsOnlyForSelected(true)
         line.setHasPoints(true)
-        val lineList = arrayListOf<Line>(line)
+
+        val lineList = arrayListOf(line)
         val cList = arrayListOf<Double>()
         list.forEach {
             cList.add(it.y.toDouble())
@@ -555,17 +547,10 @@ class PortfolioBaseFragment(
             portfolio_swiprefreshLayout,
             txt,
             Snackbar.LENGTH_LONG
-        ).setAction(
-            requireActivity().resources.getString(R.string.connect)
-        ) {
-            val intent = Intent(Intent.ACTION_MAIN)
-            intent.setClassName("com.android.phone", "com.android.phone.NetworkSetting")
-            requireActivity().startActivity(intent)
-
-        }
-        snackBar.setTextColor(Color.BLACK)
-        snackBar.setActionTextColor(Color.BLACK)
-        snackBar.view.setBackgroundColor(Color.RED)
+        )
+        snackBar.setTextColor(Color.WHITE)
+        snackBar.setActionTextColor(Color.WHITE)
+        snackBar.view.setBackgroundColor(Color.BLACK)
         snackBar.show()
     }
 
@@ -580,6 +565,7 @@ class PortfolioBaseFragment(
 
         // setNewData
 
+        val dollarPrice = realmDB.getDollarPrice()?.price?.toDouble() ?: return
         val list = portfolioDataClass.transactionList
         var totalMoney = 0.toDouble()
         for (j in 0 until list.size) {
@@ -610,9 +596,9 @@ class PortfolioBaseFragment(
 
         // updateChangePct
         val changeValue =
-            abs((calculateTomanLastAmount() - (totalMoney * realmDB.getDollarPrice().price.toDouble())))
+            abs((calculateTomanLastAmount() - (totalMoney * dollarPrice)))
         val pct = (changeValue * 100) / calculateTomanLastAmount()
-        if (calculateTomanLastAmount() > (totalMoney * realmDB.getDollarPrice().price.toDouble()))
+        if (calculateTomanLastAmount() > (totalMoney * dollarPrice))
             portfolioDataClass.changePct = "-$pct"
         else
             portfolioDataClass.changePct = "$pct"
@@ -679,7 +665,7 @@ class PortfolioBaseFragment(
     }
 
     override fun onFailureChartData() {
-        Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.errorLog), Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), requireContext().resources.getString(R.string.errorLog), Toast.LENGTH_SHORT).show()
     }
 
     override fun onClick(p0: View?) {
@@ -771,10 +757,18 @@ class PortfolioBaseFragment(
     override fun onStart() {
         super.onStart()
         ondollarpriceRecieve = onDollarPriceRecieve()
-        requireActivity().registerReceiver(
-            ondollarpriceRecieve,
-            IntentFilter("com.dust.extracker.onDollarPriceRecieve")
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            requireActivity().registerReceiver(
+                ondollarpriceRecieve,
+                IntentFilter("com.dust.extracker.onDollarPriceRecieve"),
+                Context.RECEIVER_EXPORTED
+            )
+        }else{
+            requireActivity().registerReceiver(
+                ondollarpriceRecieve,
+                IntentFilter("com.dust.extracker.onDollarPriceRecieve")
+            )        }
+
     }
 
     override fun onStop() {
