@@ -103,8 +103,9 @@
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="@dimen/standardMargin"
                 android:layout_marginTop="@dimen/standardMargin"
-                android:textDirection="ltr"
-                android:textSize="@dimen/standardMargin1.5x"
+                android:justificationMode="inter_word"
+                android:textDirection="rtl"
+                android:textSize="15dp"
                 />
 
             <TextView

@@ -41,6 +41,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -518,32 +522,42 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
 
     fun getNews(onGetNews: OnGetNews) {
         val request = JsonObjectRequest(Request.Method.GET,
-            "https://min-api.cryptocompare.com/data/v2/news/?lang=EN&api_key={$cryptoCompareApiKey}",
+            "https://newsdata.io/api/1/news?apikey=pub_75401313d1b4e67864e7abdcdbc857925d56a&q=بیت%20کوین&language=fa",
             null,
             {
                 try {
-                    val data = it.getJSONArray("Data")
+                    val data = it.getJSONArray("results")
                     val resultList = arrayListOf<NewsDataClass>()
                     for (i in 0 until data.length()) {
                         try {
                             val obj = data.getJSONObject(i)!!
+
+                            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                            formatter.timeZone = TimeZone.getTimeZone("UTC")
+
+                            var date = 0
+                            formatter.parse(obj.getString("pubDate"))?.let { newsDate ->
+                                date = (newsDate.time / 1000).toInt()
+                            }
+
                             resultList.add(
                                 NewsDataClass(
                                     i,
-                                    obj.getInt("id"),
+                                    obj.getString("article_id"),
                                     obj.getString("title"),
-                                    obj.getString("body"),
+                                    obj.getString("description"),
                                     0,
                                     0,
-                                    obj.getString("imageurl"),
+                                    obj.getString("image_url"),
                                     false,
-                                    obj.getInt("published_on"),
-                                    obj.getString("url"),
-                                    obj.getString("categories"),
-                                    obj.getString("tags")
+                                    date,
+                                    obj.getString("link"),
+                                    getNewsCategory(obj.getString("source_name"),obj.getString("title")),
+                                    obj.getString("source_id")
                                 )
                             )
                         } catch (e: Exception) {
+                            Log.i("afd","adsf")
                         }
                     }
                     onGetNews.onGetNews(resultList)
@@ -559,6 +573,21 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
         Volley.newRequestQueue(context).add(request)
+    }
+
+    private fun getNewsCategory(defaultCategory:String,text:String): String {
+        var category = defaultCategory
+        if (category.isEmpty())
+            category = "any"
+        if (text.contains("بیت کوین"))
+            category += ",BTC"
+        if (text.contains("اتریوم"))
+            category += ",ETH"
+        if (text.contains("تحلیل"))
+            category += ",Trading"
+        if (text.contains("آلتکوین"))
+            category += ",Altcoin"
+        return category
     }
 
 }

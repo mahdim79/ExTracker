@@ -2,7 +2,7 @@ package com.dust.extracker.dataclasses
 
 data class NewsDataClass(
     var id: Int,
-    var ID: Int,
+    var ID: String,
     var title: String,
     var description: String,
     var likeCount: Int,
