@@ -52,7 +52,7 @@ class PortfolioCoinRecyclerViewAdapter(
         holder.tomanAggregation.text = Utils.formatPriceNumber((calculateDollarCapital(position) * dollarObject.price.toDouble()),2)
         val dollarResult = calculateDollarChange(position)
         holder.portfolioChangeDollar.text = dollarResult.first
-        holder.portfolioChangeDollarPct.text = dollarResult.second
+        holder.portfolioChangeDollarPct.text = "${dollarResult.second}%"
 
         val tomanData = calculateTomanData(position)
 
@@ -66,7 +66,7 @@ class PortfolioCoinRecyclerViewAdapter(
             tomanChangePct = "-${Utils.formatPriceNumber(tomanData.second.toDouble(),2)}"
         }
         holder.portfolioChangeToman.text = tomanChange
-        holder.portfolioChangeTomanPct.text = tomanChangePct
+        holder.portfolioChangeTomanPct.text = "${tomanChangePct}%"
 
         if (tomanData.first.toDouble() > 0) {
             holder.tomanChangeLinear.background = ResourcesCompat.getDrawable(

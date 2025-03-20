@@ -148,7 +148,7 @@ class PortfolioBaseFragment(
         )
         if (portfolioDataClass.changePct != null) {
             if (portfolioDataClass.changePct.toDouble() > 0) {
-                portfolioTotalChange.text = "+${Utils.formatPriceNumber((portfolioDataClass.changePct.toDouble()),3)}"
+                portfolioTotalChange.text = "+${Utils.formatPriceNumber((portfolioDataClass.changePct.toDouble()),3)}%"
 
                 change_pct_linear.background = ResourcesCompat.getDrawable(
                     requireActivity().resources,
@@ -162,7 +162,7 @@ class PortfolioBaseFragment(
                     "${Utils.formatPriceNumber(diff,2)} ${requireActivity().resources.getString(R.string.toman)} "
 
             } else {
-                portfolioTotalChange.text = Utils.formatPriceNumber(portfolioDataClass.changePct.toDouble(),3)
+                portfolioTotalChange.text = "${Utils.formatPriceNumber(portfolioDataClass.changePct.toDouble(),3)}%"
                 change_pct_linear.background = ResourcesCompat.getDrawable(
                     requireActivity().resources,
                     R.drawable.portfolio_linear_shape_red,
