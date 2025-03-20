@@ -87,6 +87,12 @@ class NewsRecyclerViewAdapter(var list: List<NewsDataClass> ,var activity: Fragm
             holder.news_like.setImageResource(R.drawable.ic_baseline_news_unliked)
             if (perfCenter.getNightMode())
                 holder.news_like.imageTintList = ColorStateList.valueOf(Color.WHITE)
+            else
+                holder.news_like.imageTintList = ColorStateList.valueOf(Color.BLACK)
+        }else{
+            holder.news_like_count.text = "1"
+            holder.news_like.setImageResource(R.drawable.ic_baseline_news_liked)
+            holder.news_like.imageTintList = ColorStateList.valueOf(Color.RED)
         }
 
         holder.news_like_count.setOnClickListener {

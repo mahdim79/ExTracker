@@ -43,26 +43,15 @@
                             android:layout_weight="7"
                             android:layout_height="wrap_content"
                             android:text="#"
-                            android:gravity="end"
+                            android:gravity="center"
                             android:textSize="@dimen/TextSize2x"
                             android:layout_marginEnd="@dimen/standardMargin0.5x"
                             android:layout_gravity="center"/>
 
                         <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="10"
-                            android:textSize="@dimen/TextSize2x"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:textDirection="ltr"
-                            android:gravity="center_vertical"
-                            android:src="@drawable/btc_icon"
-                            />
-
-                        <TextView
                             android:id="@+id/sort_by_name"
                             android:layout_width="0dp"
-                            android:layout_weight="25"
+                            android:layout_weight="15"
                             android:layout_marginStart="@dimen/standardMargin"
                             android:layout_gravity="center"
                             android:gravity="center_vertical"
@@ -75,6 +64,7 @@
                             android:id="@+id/sort_by_price"
                             android:layout_width="0dp"
                             android:layout_weight="30"
+                            android:paddingEnd="15dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:textSize="@dimen/TextSize2x"
@@ -88,6 +78,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="20"
                             android:gravity="end"
+                            android:paddingEnd="25dp"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="@dimen/standardMargin"
                             android:layout_gravity="center"
@@ -100,6 +91,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="15"
                             android:layout_height="wrap_content"
+                            android:visibility="gone"
                             android:layout_gravity="center"
                             android:textSize="@dimen/TextSize2x"
                             android:gravity="center"

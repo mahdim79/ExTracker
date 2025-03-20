@@ -249,11 +249,11 @@ private lateinit var onUserLogIn: OnUserLogIn
                     .commit()
             }
             R.id.others_profilePhoto -> {
-                try {
-                    getContent.launch("image/*")
-                }catch (e:Exception){
-                    Log.i("setUpUserAvatarImageView",e.message.toString())
-                }
+//                try {
+//                    getContent.launch("image/*")
+//                }catch (e:Exception){
+//                    Log.i("setUpUserAvatarImageView",e.message.toString())
+//                }
             }
             R.id.others_instagram -> {
                 openInstagramAccount()

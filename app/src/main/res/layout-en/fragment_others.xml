@@ -17,7 +17,7 @@
             android:layout_width="180dp"
             android:layout_height="180dp"
             android:layout_marginTop="@dimen/standardMargin3x"
-            android:src="@drawable/avatar" />
+            android:src="@mipmap/ic_launcher" />
 
         <com.dust.extracker.customviews.CTextView
             android:id="@+id/others_name"

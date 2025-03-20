@@ -147,12 +147,14 @@
                 android:layout_height="wrap_content"
                 android:text="10 دیدگاه"
                 android:layout_marginTop="@dimen/standardMargin3x"
+                android:visibility="gone"
                 android:textColor="?android:textColor"
                 android:gravity="center"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
+                android:visibility="gone"
                 android:background="@color/teal_700"
                 android:layout_marginTop="@dimen/standardMargin0.5x"/>
             <LinearLayout
@@ -161,6 +163,7 @@
                 android:orientation="horizontal"
                 android:gravity="end"
                 android:layout_marginHorizontal="@dimen/standardMargin0.5x"
+                android:visibility="gone"
                 android:layout_marginVertical="@dimen/standardMargin2x">
 
                 <com.dust.extracker.customviews.CTextView
@@ -183,6 +186,7 @@
                 android:layout_height="60dp"
                 android:hint="@string/startCommenting"
                 android:textColor="?android:textColor"
+                android:visibility="gone"
                 android:textColorHint="?android:textColor"
                 android:textSize="@dimen/standardMargin"
                 android:background="@drawable/edittext_selector"
@@ -192,6 +196,7 @@
                 android:layout_width="@dimen/standardMargin10x"
                 android:layout_height="@dimen/standardMargin3x"
                 android:layout_marginHorizontal="@dimen/standardMargin0.5x"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/standardMargin0.5x"
                 android:background="@drawable/buy_button_selector"
                 android:enabled="false"
@@ -202,13 +207,14 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/comment_recyclerview"
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/standardMargin3x"
                 android:layout_height="wrap_content"/>
 
             <ProgressBar
                 android:id="@+id/comment_progressBar"
                 android:layout_width="match_parent"
-                android:visibility="invisible"
+                android:visibility="gone"
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>

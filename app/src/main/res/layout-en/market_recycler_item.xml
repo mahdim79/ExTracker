@@ -16,7 +16,7 @@
         <TextView
             android:id="@+id/sort_num"
             android:layout_width="0dp"
-            android:layout_weight="7"
+            android:layout_weight="4"
             android:layout_height="wrap_content"
             android:textColor="?colorAccent"
             android:text="0"
@@ -68,6 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:textSize="12dp"
+                android:textStyle="bold"
                 android:gravity="center_horizontal"
                 tools:text="$34000"/>
             <com.dust.extracker.customviews.CTextView
@@ -84,17 +85,18 @@
         <LinearLayout
             android:id="@+id/change_pct_linear"
             android:layout_width="0dp"
-            android:layout_weight="20"
+            android:layout_weight="40"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/standardMargin"
             android:layout_gravity="center"
-            android:background="@drawable/portfolio_linear_shape_red"
+            android:gravity="end"
             android:orientation="horizontal">
 
             <com.dust.extracker.customviews.CTextView
                 android:id="@+id/dailyChange"
-                android:layout_width="match_parent"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
+                android:background="@drawable/portfolio_linear_shape_red"
                 android:text="بروز نشده"
                 android:gravity="center"
                 android:textColor="@color/black"
@@ -105,6 +107,7 @@
             android:layout_width="0dp"
             android:layout_weight="10"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_gravity="center"
             android:gravity="center"
             android:orientation="vertical">
@@ -122,7 +125,7 @@
                 android:gravity="center_horizontal"
                 android:textColor="?colorAccent"
                 android:textSize="@dimen/standardMargin"
-                 />
+                />
 
 
         </LinearLayout>

@@ -47,9 +47,9 @@
     <string name = "dailyChanges"> Daily changes </string>
     <string name = "dalilyVolume"> Daily trading volume </string>
     <string name = "rate"> Rank </string>
-    <string name = "exchangerName"> exchanger name </string>
-    <string name = "dailyDealVolume"> Daily Trading Volume </string>
-    <string name = "dateStablished"> year and place of establishment </string>
+    <string name = "exchangerName"> Exchanger name </string>
+    <string name = "dailyDealVolume"> Daily Volume </string>
+    <string name = "dateStablished"> Establishment </string>
     <string name = "mobileEdit"> Mobile editing </string>
     <string name = "enterNewNumber"> Enter your new mobile number </string>
     <string name = "verificationCode"> Activation code </string>

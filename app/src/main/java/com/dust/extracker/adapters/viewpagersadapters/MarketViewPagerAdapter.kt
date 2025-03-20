@@ -18,14 +18,14 @@ class MarketViewPagerAdapter(fm:FragmentManager , var context: Context): Fragmen
         {
             0 -> CryptoFragment().newInstance()
             1 -> WatchListFragment().newInstance()
-            2 -> ExchangersFragment().newInstance()
-            else -> AccessibilityFragment().newInstance()
+            else -> ExchangersFragment().newInstance()
+           // else -> AccessibilityFragment().newInstance()
         }
     }
 
-    override fun getCount(): Int = 4
+    override fun getCount(): Int = 3
 
-    override fun getPageTitle(position: Int): CharSequence? {
+    override fun getPageTitle(position: Int): CharSequence {
 
         return when(position)
         {

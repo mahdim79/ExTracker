@@ -588,6 +588,7 @@
                             app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider11"
                             android:padding="8dp"
                             android:gravity="center"
+                            android:visibility="gone"
                             android:text="-"
                             android:textSize="@dimen/standardMargin" />
 
@@ -596,6 +597,7 @@
                             android:layout_height="1dp"
                             app:layout_constraintTop_toBottomOf="@+id/dominance"
                             app:layout_constraintStart_toStartOf="parent"
+                            android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             android:background="?colorPrimaryVariant" />
 
@@ -725,6 +727,7 @@
                             android:layout_height="wrap_content"
                             android:padding="6dp"
                             android:gravity="center"
+                            android:visibility="gone"
                             app:layout_constraintTop_toBottomOf="@+id/view_cryptoDetails_divider11"
                             app:layout_constraintEnd_toEndOf="parent"
                             android:textDirection="rtl"
@@ -744,6 +747,7 @@
                     android:background="@drawable/fullchart_button_selector"
                     android:layout_centerHorizontal="true"
                     android:textStyle="bold"
+                    android:layout_marginBottom="20dp"
                     android:textSize="12dp"
                     android:padding="@dimen/standardMargin"
                     android:layout_marginTop="@dimen/standardMargin"
@@ -753,6 +757,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/fullChart"
+                    android:visibility="gone"
                     android:layout_marginTop="@dimen/standardMargin"
                     android:orientation="vertical">
 

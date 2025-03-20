@@ -85,6 +85,7 @@
             android:layout_height="15dp"
             android:src="@drawable/ic_baseline_news_seen"
             app:tint="?colorAccent"
+            android:visibility="gone"
             android:layout_marginStart="@dimen/standardMargin"
             />
         <TextView
@@ -92,6 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="225"
+            android:visibility="gone"
             android:layout_marginStart="2dp"
             android:textSize="@dimen/standardMargin"
             android:textColor="?colorAccent"
