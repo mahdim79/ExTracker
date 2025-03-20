@@ -157,11 +157,11 @@
             android:id="@+id/marketTabLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:tabIndicatorColor="@color/light_orange"
+            app:tabIndicatorColor="@color/green_primary"
             app:tabIndicatorHeight="4dp"
             android:layoutDirection="ltr"
             app:tabTextAppearance="@style/customTabLayout"
-            app:tabSelectedTextColor="@color/light_orange"
+            app:tabSelectedTextColor="@color/green_primary"
             app:tabTextColor="?colorAccent"
             android:layout_weight="0.1" />
 

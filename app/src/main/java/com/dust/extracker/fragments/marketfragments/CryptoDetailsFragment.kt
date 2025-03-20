@@ -3,15 +3,11 @@ package com.dust.extracker.fragments.marketfragments
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.icu.util.Calendar
 import android.net.ConnectivityManager
-import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,14 +37,9 @@ import de.hdodenhof.circleimageview.CircleImageView
 import lecho.lib.hellocharts.formatter.SimpleAxisValueFormatter
 import lecho.lib.hellocharts.model.*
 import lecho.lib.hellocharts.view.LineChartView
-import okhttp3.internal.Util
-import org.w3c.dom.Text
 import java.util.*
 import androidx.core.net.toUri
-import com.dust.extracker.activities.MainActivity
 import com.dust.extracker.application.MyApplication
-import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener
-import saman.zamani.persiandate.PersianDate
 
 class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     OnDetailsDataReceive {
@@ -215,7 +206,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         oneYear = view.findViewById(R.id.oneYear)
         threeMonth = view.findViewById(R.id.threeMonth)
         all_Time = view.findViewById(R.id.all_Time)
-        twentyFourtime.setTextColor(ContextCompat.getColor(requireActivity(), R.color.light_orange))
+        twentyFourtime.setTextColor(ContextCompat.getColor(requireActivity(), R.color.green_primary))
 
         twentyFourtime.setOnClickListener(this)
         oneWeek.setOnClickListener(this)
@@ -668,7 +659,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     }
 
     fun setCurrentItemTextColor(views: List<View>, view: View) {
-        (view as CTextView).setTextColor(ContextCompat.getColor(requireActivity(), R.color.light_orange))
+        (view as CTextView).setTextColor(ContextCompat.getColor(requireActivity(), R.color.green_primary))
         views.forEach {
             if (it.id != view.id) {
                 if (SharedPreferencesCenter(requireActivity()).getNightMode())

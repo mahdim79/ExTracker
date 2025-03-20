@@ -17,8 +17,6 @@
     <color name="black_normal">#171717</color>
     <color name="white">#FFFFFFFF</color>
     <color name="white_varient">#D8D8D8</color>
-    <color name="light_orange">#E8FF9800</color>
-    <color name="light_orange_low_transparency">#59FF9800</color>
     <color name="linear_gradient_green">#9ffd32</color>
     <color name="linear_gradient_red">#F47279</color>
     <color name="dark_green">#19881D</color>

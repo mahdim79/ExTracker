@@ -210,7 +210,7 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_margin="@dimen/standardMargin0.5x"
-                            android:indeterminateTint="@color/light_orange"
+                            android:indeterminateTint="@color/green_primary"
                             android:visibility="gone" />
 
                     </RelativeLayout>
