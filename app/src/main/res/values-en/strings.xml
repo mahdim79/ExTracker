@@ -169,5 +169,7 @@
     <string name="enterPassword">Please Choose A Password</string>
     <string name="enterPasswordAgain">Please Enter Password Again</string>
     <string name="slogan">Your companion in investing in the cryptocurrency market</string>
+    <string name="testClose">Please Tap Back Button Again To Exit</string>
+    <string name="exchangerSubtitle">Check real-time rates, currency exchange rates, etc.</string>
 
 </resources>

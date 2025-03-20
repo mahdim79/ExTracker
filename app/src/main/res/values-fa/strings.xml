@@ -169,5 +169,7 @@
     <string name="enterPasswordAgain">لطفا پسورد را دوباره وارد کنید</string>
     <string name="nameUsed">این نام قبلا استفاده شده است</string>
     <string name="slogan">همراه شما در سرمایه گذاری بازار رمز ارز</string>
+    <string name="testClose">برای خروج مجدد دکمه برگشت را بزنید</string>
+    <string name="exchangerSubtitle">بررسی لحظه ای نرخ ها،نرخ تبدیل ارز ها و…</string>
 
 </resources>

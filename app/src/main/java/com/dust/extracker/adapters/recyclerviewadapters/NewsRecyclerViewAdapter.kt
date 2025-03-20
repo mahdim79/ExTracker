@@ -42,9 +42,6 @@ class NewsRecyclerViewAdapter(var list: List<NewsDataClass> ,var activity: Fragm
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
 
-        if (position == list.size-1)
-            holder.divider.visibility = View.GONE
-
         holder.itemView.setOnClickListener {
 
             activity.beginTransaction()
@@ -117,7 +114,6 @@ class NewsRecyclerViewAdapter(var list: List<NewsDataClass> ,var activity: Fragm
         var news_like = itemView.findViewById<ImageView>(R.id.news_like)
         var news_like_count = itemView.findViewById<TextView>(R.id.news_like_count)
         var news_seen_count = itemView.findViewById<TextView>(R.id.news_seen_count)
-        var divider = itemView.findViewById<View>(R.id.divider)
         var add_to_bookmark = itemView.findViewById<ImageView>(R.id.add_to_bookmark)
     }
 

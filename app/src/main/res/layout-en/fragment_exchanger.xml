@@ -17,163 +17,187 @@
         <com.dust.extracker.customviews.CTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/standardMargin3x"
+            android:layout_marginTop="@dimen/standardMargin3x"
+            android:textColor="@color/green_primary"
+            android:textSize="22sp"
             android:text="@string/cryptoExchange" />
 
-        <ImageView
-            android:layout_width="match_parent"
+        <com.dust.extracker.customviews.CTextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:src="@drawable/exchanger_header" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/standardMargin4x"
-            android:layout_marginHorizontal="@dimen/standardMargin2x"
-            android:layout_marginTop="@dimen/standardMargin3x"
-            android:background="@drawable/exchanger_input_shape"
-            android:gravity="center_vertical"
-            android:layoutDirection="rtl"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/first_crypto_linear"
-                android:layout_width="wrap_content"
-                android:foreground="?attr/selectableItemBackground"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_height="match_parent">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:tint="?android:textColor"
-                    android:src="@drawable/ic_baseline_arrow_drop_down" />
-
-                <TextView
-                    android:id="@+id/first_linear_text"
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/standardMargin"
-                    android:layout_marginHorizontal="@dimen/standardMargin"
-                    android:text="BTC" />
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/first_img"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_marginEnd="@dimen/standardMargin"
-                    android:src="@drawable/btc_icon" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="?colorAccent" />
-
-            <EditText
-                android:id="@+id/resultOne_edittext"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="?android:textColor"
-                android:inputType="numberDecimal"
-                android:layout_margin="@dimen/standardMargin0.5x"
-                android:textDirection="ltr"
-                android:background="@drawable/exchanger_edittext_shape" />
-
-        </LinearLayout>
+            android:layout_marginTop="10dp"
+            android:textSize="14sp"
+            android:text="@string/exchangerSubtitle" />
 
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_marginTop="@dimen/standardMargin"
-            app:cardElevation="@dimen/standardMargin0.5x"
-            app:cardCornerRadius="@dimen/standardMargin1.5x"
-            android:backgroundTint="?colorPrimaryVariant"
-            android:layout_height="wrap_content">
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/change_linears"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:foreground="?attr/selectableItemBackground"
-                android:src="@drawable/ic_baseline_exchange" />
-        </androidx.cardview.widget.CardView>
-
-        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/standardMargin4x"
-            android:layout_marginHorizontal="@dimen/standardMargin2x"
-            android:layout_marginTop="@dimen/standardMargin"
-            android:background="@drawable/exchanger_input_shape"
-            android:gravity="center_vertical"
-            android:layoutDirection="rtl"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            app:cardElevation="0dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="?colorOnSecondary"
+            app:cardCornerRadius="24dp">
 
             <LinearLayout
-                android:id="@+id/last_crypto_linear"
-                android:layout_width="wrap_content"
-                android:foreground="?attr/selectableItemBackground"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_height="match_parent">
-                <ImageView
-                    android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:orientation="vertical">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:tint="?android:textColor"
-                    android:src="@drawable/ic_baseline_arrow_drop_down" />
+                    android:gravity="center_vertical"
+                    android:layoutDirection="ltr">
 
-                <TextView
-                    android:id="@+id/last_linear_text"
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/standardMargin"
-                    android:layout_marginHorizontal="@dimen/standardMargin"
-                    android:text="Tether" />
+                    <LinearLayout
+                        android:id="@+id/first_crypto_linear"
+                        android:layout_width="wrap_content"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:gravity="center_vertical"
+                        android:layoutDirection="rtl"
+                        android:layout_height="match_parent">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:tint="?android:textColor"
+                            android:src="@drawable/ic_baseline_arrow_drop_down" />
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/last_img"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_marginEnd="@dimen/standardMargin"
-                    android:src="@drawable/tether" />
+                        <TextView
+                            android:id="@+id/first_linear_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14dp"
+                            android:layout_marginHorizontal="@dimen/standardMargin"
+                            android:text="BTC" />
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/first_img"
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:layout_marginEnd="@dimen/standardMargin"
+                            android:src="@drawable/btc_icon" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/resultOne_edittext"
+                        android:layout_width="150dp"
+                        android:layout_height="40dp"
+                        android:gravity="center"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_gravity="end"
+                        android:textColor="?android:textColor"
+                        android:inputType="numberDecimal"
+                        android:textDirection="ltr"
+                        android:background="@drawable/exchanger_edittext_shape" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="15dp"
+                    android:layout_height="wrap_content">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:background="?colorPrimary"
+                        android:layout_gravity="center"
+                        android:layout_height="1dp"/>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center"
+                        app:cardElevation="0dp"
+                        app:cardCornerRadius="22dp"
+                        android:backgroundTint="@color/green_primary"
+                        android:layout_height="wrap_content">
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/change_linears"
+                            android:layout_width="35dp"
+                            android:layout_margin="5dp"
+                            android:layout_height="35dp"
+                            android:src="@drawable/ic_baseline_exchange" />
+                    </androidx.cardview.widget.CardView>
+
+                </FrameLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/standardMargin4x"
+                    android:layout_marginTop="@dimen/standardMargin1.5x"
+                    android:gravity="center_vertical"
+                    android:layoutDirection="rtl"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/last_crypto_linear"
+                        android:layout_width="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_height="match_parent">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:tint="?android:textColor"
+                            android:src="@drawable/ic_baseline_arrow_drop_down" />
+
+                        <TextView
+                            android:id="@+id/last_linear_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14dp"
+                            android:layout_marginHorizontal="@dimen/standardMargin"
+                            android:text="Tether" />
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/last_img"
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:layout_marginEnd="@dimen/standardMargin"
+                            android:src="@drawable/tether" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="150dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:layout_height="40dp">
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/resultTwo_textview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginVertical="1dp"
+                            android:gravity="center"
+                            android:layout_marginEnd="1dp"
+                            android:background="@drawable/exchanger_edittext_shape" />
+                        <ProgressBar
+                            android:id="@+id/exchanger_progressBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:visibility="gone"
+                            android:padding="@dimen/standardMargin"
+                            android:layout_centerVertical="true"/>
+                    </RelativeLayout>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="?colorAccent" />
-
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-
-                <com.dust.extracker.customviews.CTextView
-                    android:id="@+id/resultTwo_textview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginVertical="1dp"
-                    android:gravity="center"
-                    android:layout_marginEnd="1dp"
-                    android:background="@drawable/exchanger_textview_shape" />
-                <ProgressBar
-                    android:id="@+id/exchanger_progressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:padding="@dimen/standardMargin"
-                    android:layout_centerVertical="true"/>
-            </RelativeLayout>
-
-
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:stretchColumns="*"
-            android:background="@drawable/exchanger_tablelayout_shape"
             android:layout_margin="@dimen/standardMargin2x">
 
             <TableRow>
@@ -224,12 +248,6 @@
                         android:layout_marginStart="@dimen/standardMargin0.5x"
                         android:src="@drawable/dollar" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="?colorAccent"
-                        android:layout_alignParentBottom="true"
-                        />
                 </RelativeLayout>
             </TableRow>
 
@@ -238,6 +256,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
                     android:layout_height="@dimen/standardMargin3x">
 
                     <de.hdodenhof.circleimageview.CircleImageView
@@ -282,12 +301,6 @@
                         android:textColor="?android:textColor"
 
                         />
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="?colorAccent"
-                        android:layout_alignParentBottom="true"
-                        />
                 </RelativeLayout>
             </TableRow>
             <TableRow
@@ -295,6 +308,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
                     android:layout_height="@dimen/standardMargin3x">
 
                     <de.hdodenhof.circleimageview.CircleImageView

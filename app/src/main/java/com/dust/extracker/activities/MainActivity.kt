@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -32,6 +33,8 @@ class MainActivity : AppCompatActivity() {
     private var lastFragment: Int = 2
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var viewPager: CViewPager
+
+    private var lastCloseAttemptTime:Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme()
@@ -251,6 +254,16 @@ class MainActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.viewpager_main)
     }
 
+    private fun testCloseApp(){
+
+        if (System.currentTimeMillis() - lastCloseAttemptTime < 2000){
+            finishAffinity()
+        }else{
+            lastCloseAttemptTime = System.currentTimeMillis()
+            Toast.makeText(this,getString(R.string.testClose),Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onBackPressed() {
 
         when (viewPager.currentItem) {
@@ -262,7 +275,7 @@ class MainActivity : AppCompatActivity() {
                     )
                     return
                 }
-                finishAffinity()
+                testCloseApp()
             }
             1 -> {
                 if (checkFragmentAvailability("InputDataFragment")) {
@@ -296,7 +309,7 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
 
-                finishAffinity()
+                testCloseApp()
             }
             2 -> {
                 if (checkFragmentAvailability("TradingViewChartFragment")) {
@@ -331,7 +344,7 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
 
-                finishAffinity()
+                testCloseApp()
 
             }
             3 -> {
@@ -358,7 +371,7 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
 
-                finishAffinity()
+                testCloseApp()
             }
             4 -> {
 
@@ -424,7 +437,7 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
 
-                finishAffinity()
+                testCloseApp()
             }
         }
     }
@@ -463,6 +476,7 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
         unregisterReceiver(onPageChange)
     }
+
 
 
 }

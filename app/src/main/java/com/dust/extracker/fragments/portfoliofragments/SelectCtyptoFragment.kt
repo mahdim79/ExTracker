@@ -150,7 +150,7 @@ class SelectCtyptoFragment : Fragment() {
             SearchRecyclerViewAdapter(
                 PortfolioName,
                 bool,
-                requireActivity(),
+                requireContext(),
                 datalist,
                 object :
                     SearchRecyclerViewAdapter.OnSelectItem {

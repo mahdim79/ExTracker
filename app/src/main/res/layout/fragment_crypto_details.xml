@@ -5,10 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?colorPrimary"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
+        app:liftOnScroll="false"
+        app:elevation="0dp"
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
@@ -84,13 +87,13 @@
 
                 <ImageView
                     android:id="@+id/shareImg"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_alignTop="@+id/coinImg"
                     android:layout_alignBottom="@+id/coinImg"
                     android:layout_alignParentEnd="true"
                     android:layout_margin="@dimen/standardMargin"
-                    android:src="@drawable/ic_baseline_share_24"
+                    android:src="@drawable/share_circle"
                     app:tint="@color/light_black" />
 
                 <FrameLayout
@@ -375,6 +378,8 @@
                             android:id="@+id/view_cryptoDetails_divider1"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
+                            android:layout_marginVertical="5dp"
+                            android:visibility="invisible"
                             app:layout_constraintTop_toBottomOf="@+id/rank"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -395,6 +400,8 @@
                             android:id="@+id/view_cryptoDetails_divider2"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
+                            android:layout_marginVertical="5dp"
+                            android:visibility="invisible"
                             app:layout_constraintTop_toBottomOf="@+id/price"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -414,7 +421,9 @@
                         <View
                             android:id="@+id/view_cryptoDetails_divider3"
                             android:layout_width="match_parent"
+                            android:layout_marginVertical="5dp"
                             android:layout_height="1dp"
+                            android:visibility="invisible"
                             app:layout_constraintTop_toBottomOf="@+id/marketCap"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -435,6 +444,8 @@
                             android:id="@+id/view_cryptoDetails_divider4"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
+                            android:visibility="invisible"
+                            android:layout_marginVertical="5dp"
                             app:layout_constraintTop_toBottomOf="@+id/dailyVolume"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -454,6 +465,8 @@
                         <View
                             android:id="@+id/view_cryptoDetails_divider5"
                             android:layout_width="match_parent"
+                            android:visibility="invisible"
+                            android:layout_marginVertical="5dp"
                             app:layout_constraintTop_toBottomOf="@+id/dailyChange"
                             android:layout_height="1dp"
                             app:layout_constraintStart_toStartOf="parent"
@@ -474,7 +487,9 @@
                         <View
                             android:id="@+id/view_cryptoDetails_divider6"
                             android:layout_width="match_parent"
+                            android:layout_marginVertical="5dp"
                             android:layout_height="1dp"
+                            android:visibility="invisible"
                             app:layout_constraintTop_toBottomOf="@+id/weeklyChange"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -495,6 +510,8 @@
                             android:id="@+id/view_cryptoDetails_divider7"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
+                            android:visibility="invisible"
+                            android:layout_marginVertical="5dp"
                             app:layout_constraintTop_toBottomOf="@+id/monthlyChange"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -515,6 +532,8 @@
                             android:id="@+id/view_cryptoDetails_divider8"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
+                            android:visibility="invisible"
+                            android:layout_marginVertical="5dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/sixmonthChange"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -536,6 +555,8 @@
                             android:layout_width="match_parent"
                             app:layout_constraintTop_toBottomOf="@+id/yearlyChange"
                             android:layout_height="1dp"
+                            android:visibility="invisible"
+                            android:layout_marginVertical="5dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             android:background="?colorPrimaryVariant" />
@@ -554,7 +575,9 @@
                         <View
                             android:id="@+id/view_cryptoDetails_divider10"
                             android:layout_width="match_parent"
+                            android:layout_marginVertical="5dp"
                             app:layout_constraintTop_toBottomOf="@+id/totalSupply"
+                            android:visibility="invisible"
                             android:layout_height="1dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -576,6 +599,8 @@
                             android:layout_width="match_parent"
                             app:layout_constraintTop_toBottomOf="@+id/marketCoins"
                             android:layout_height="1dp"
+                            android:visibility="invisible"
+                            android:layout_marginVertical="5dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             android:background="?colorPrimaryVariant" />

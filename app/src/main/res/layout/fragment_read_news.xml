@@ -136,6 +136,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/standardMargin"
                 android:layout_marginBottom="@dimen/standardMargin0.5x"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/standardMargin"
                 android:text="@string/view_count_news"
                 android:textStyle="bold"
