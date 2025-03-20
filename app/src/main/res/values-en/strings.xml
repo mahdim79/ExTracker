@@ -46,7 +46,7 @@
     <string name = "monthlyChanges"> monthly changes </string>
     <string name = "weeklyChanges"> weekly changes </string>
     <string name = "dailyChanges"> Daily changes </string>
-    <string name = "dalilyVolume"> Daily trading volume </string>
+    <string name = "dalilyVolume"> Daily Volume </string>
     <string name = "rate"> Rank </string>
     <string name = "exchangerName"> Exchanger name </string>
     <string name = "dailyDealVolume"> Daily Volume </string>

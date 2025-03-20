@@ -5,16 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layoutDirection="ltr"
+    android:background="?colorPrimary"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="?colorPrimary">
-
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.09">
-
+        android:layout_weight="0.08">
 
         <com.dust.extracker.customviews.CTextView
             android:id="@+id/access_txt"
@@ -36,17 +34,18 @@
 
             <ImageView
                 android:id="@+id/img_search"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 app:tint="?colorAccent"
                 android:layout_marginStart="@dimen/standardMargin"
-                android:src="@drawable/ic_baseline_search" />
+                android:src="@drawable/search" />
 
             <ImageView
                 android:id="@+id/notificationIcon"
                 android:layout_width="28dp"
                 android:layout_marginStart="@dimen/standardMargin"
                 android:layout_height="28dp"
+                android:visibility="gone"
                 app:tint="?colorAccent"
                 android:layout_toEndOf="@+id/img_search"
                 android:src="@drawable/ic_baseline_notifications" />
@@ -71,7 +70,8 @@
                     android:id="@+id/dollar_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="?colorOnPrimary"
+                    android:textColor="?android:textColor"
+                    android:layout_marginTop="8dp"
                     android:text="_"
                     android:textSize="@dimen/standardMargin"
                     />
@@ -98,7 +98,8 @@
                     android:id="@+id/totalMarketCap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="?colorOnPrimary"
+                    android:layout_marginTop="8dp"
+                    android:textColor="?android:textColor"
                     android:textSize="@dimen/standardMargin" />
             </LinearLayout>
 
@@ -130,10 +131,10 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/search"
                 android:textSize="@dimen/standardMargin1.5x"
-                android:textColorHint="?android:textColor"
+                android:textColorHint="?colorAccent"
                 android:textColor="?android:textColor"
-                android:drawableEnd="@drawable/ic_baseline_drawable_edittext_search"
                 android:drawableTint="?colorAccent"
+                android:padding="6dp"
                 android:background="@drawable/edittext_selector"
                 android:layout_marginHorizontal="@dimen/standardMargin"
                 />
@@ -148,27 +149,26 @@
         android:layout_weight="0.91"
         android:orientation="vertical">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?colorAccent" />
-
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/marketTabLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="50dp"
             app:tabIndicatorColor="@color/green_primary"
-            app:tabIndicatorHeight="4dp"
+            app:tabIndicatorHeight="0dp"
             android:layoutDirection="ltr"
+            android:layout_marginHorizontal="@dimen/standardMargin1.5x"
+            app:tabBackground="@drawable/custom_tab_shape"
             app:tabTextAppearance="@style/customTabLayout"
-            app:tabSelectedTextColor="@color/green_primary"
-            app:tabTextColor="?colorAccent"
-            android:layout_weight="0.1" />
+            app:tabSelectedTextColor="@color/white"
+            app:tabPaddingStart="5dp"
+            app:tabPaddingEnd="5dp"
+            app:tabTextColor="@color/green_light"/>
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/marketViewPager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="10dp"
             android:layoutDirection="ltr"
             android:overScrollMode="never"
             android:layout_weight="0.9" />

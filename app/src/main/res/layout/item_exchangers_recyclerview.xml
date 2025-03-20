@@ -1,139 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:cardElevation="0dp"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginVertical="5dp"
+    app:cardCornerRadius="12dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="horizontal"
+        android:background="?colorOnSecondary"
+        android:gravity="center_vertical"
+        android:padding="@dimen/standardMargin">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/standardMargin"
-            android:background="?colorPrimary">
-
-            <TextView
-                android:id="@+id/exSortNum"
-                android:layout_width="0dp"
-                android:layout_weight="7"
-                android:layout_height="wrap_content"
-                android:textColor="?colorAccent"
-                android:text="0"
-                android:textSize="@dimen/standardMargin"
-                android:layout_marginEnd="@dimen/standardMargin0.5x"
-                android:layout_gravity="center"/>
-
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_marketItem_icon"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            app:cardElevation="0dp"
+            android:backgroundTint="?colorPrimary"
+            app:cardCornerRadius="12dp">
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/exImage"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:padding="4dp"
                 android:layout_weight="10"
-                android:layout_height="30dp"
-                android:src="@drawable/btc_icon"
-                />
+                android:src="@drawable/btc_icon" />
+        </androidx.cardview.widget.CardView>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="25"
-                android:layout_marginStart="@dimen/standardMargin"
-                android:orientation="vertical"
-                android:layout_height="30dp">
-                <TextView
-                    android:id="@+id/exName"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:textSize="12dp"
-                    android:gravity="center_vertical"
-                    tools:text="Binance"/>
+        <TextView
+            android:id="@+id/exSortNum"
+            android:layout_width="0dp"
+            android:layout_weight="7"
+            android:layout_height="wrap_content"
+            android:textColor="?colorAccent"
+            android:text="0"
+            android:visibility="gone"
+            android:textSize="@dimen/standardMargin"
+            android:layout_marginEnd="@dimen/standardMargin0.5x"
+            android:layout_gravity="center"/>
 
-            </LinearLayout>
-
-
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="25"
+            android:layout_marginStart="@dimen/standardMargin"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
             <TextView
-                android:id="@+id/exDailyVol"
-                android:layout_width="0dp"
-                android:layout_weight="30"
+                android:id="@+id/exName"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:gravity="center_horizontal"
-                android:textSize="12dp"
-                android:layout_marginStart="@dimen/standardMargin"
-                tools:text=""/>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="20"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/standardMargin"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
-
-                <com.dust.extracker.customviews.CTextView
-                    android:id="@+id/exYearStabilised"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="-"
-                    android:gravity="center"
-                    android:textSize="@dimen/standardMargin" />
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="10"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:orientation="vertical"
+                android:textSize="20sp"
                 android:gravity="center_vertical"
-                >
-
-                <TextView
-                    android:id="@+id/exRank"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:gravity="center_horizontal"
-                    android:textColor="?colorAccent"
-                    android:textSize="@dimen/standardMargin"
-                    />
-
-
-            </LinearLayout>
+                tools:text="Binance"/>
 
         </LinearLayout>
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?colorPrimaryVariant"/>
+        <LinearLayout
+            android:layout_width="100dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <com.dust.extracker.customviews.CTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textColor="?colorAccent"
+                android:textSize="11dp"
+                android:text="@string/dalilyVolume"/>
+            <TextView
+                android:id="@+id/exDailyVol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textSize="12sp"
+                tools:text="59999"/>
+
+            <com.dust.extracker.customviews.CTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/rate"
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal"
+                android:textColor="?colorAccent"
+                android:textSize="11dp"/>
+            <TextView
+                android:id="@+id/exRank"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/standardMargin"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="100dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <com.dust.extracker.customviews.CTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textColor="?colorAccent"
+                android:textSize="11dp"
+                android:text="@string/dateStablished"/>
+            <com.dust.extracker.customviews.CTextView
+                android:id="@+id/exYearStabilised"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2019"
+                android:gravity="center"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/stars"
+                android:layout_width="@dimen/standardMargin1.5x"
+                android:layout_height="@dimen/standardMargin1.5x"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="2dp"
+                android:src="@drawable/ic_baseline_stars_24"/>
+
+            <TextView
+                android:id="@+id/trust_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:layout_toLeftOf="@+id/stars"
+                android:layout_marginRight="1dp"
+                android:textSize="10dp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/stars"
-        android:layout_width="@dimen/standardMargin"
-        android:layout_height="@dimen/standardMargin"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="2dp"
-        android:layout_marginRight="2dp"
-        android:src="@drawable/ic_baseline_stars_24"/>
-
-    <TextView
-        android:id="@+id/trust_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
-        android:layout_toLeftOf="@+id/stars"
-        android:layout_marginTop="2dp"
-        android:layout_marginRight="1dp"
-        android:textSize="7dp"/>
-
-</RelativeLayout>
+</androidx.cardview.widget.CardView>
 

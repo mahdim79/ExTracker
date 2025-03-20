@@ -46,11 +46,11 @@
     <string name="monthlyChanges">تغییرات ماهانه</string>
     <string name="weeklyChanges">تغییرات هفتگی</string>
     <string name="dailyChanges">تغییرات روزانه</string>
-    <string name="dalilyVolume">حجم معاملات روزانه</string>
+    <string name="dalilyVolume">حجم معاملات</string>
     <string name="rate">رتبه</string>
     <string name="exchangerName">نام صرافی</string>
     <string name="dailyDealVolume">حجم معاملات روزانه</string>
-    <string name="dateStablished">سال و محل تاسیس</string>
+    <string name="dateStablished">تاسیس</string>
     <string name="mobileEdit">ویرایش موبایل</string>
     <string name="enterNewNumber">شماره موبایل جدید خود را وارد کنید</string>
     <string name="verificationCode">کد فعال سازی</string>

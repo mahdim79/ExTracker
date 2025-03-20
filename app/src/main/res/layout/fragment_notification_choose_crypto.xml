@@ -31,12 +31,12 @@
             android:layout_height="wrap_content"
             android:hint="@string/search"
             android:textSize="@dimen/standardMargin1.5x"
+            android:padding="6dp"
             android:maxLines="1"
-            android:drawableEnd="@drawable/ic_baseline_drawable_edittext_search"
             android:drawableTint="?colorAccent"
             android:background="@drawable/edittext_selector"
             android:textColor="?android:textColor"
-            android:textColorHint="?android:textColor"
+            android:textColorHint="?colorAccent"
             android:layout_marginHorizontal="@dimen/standardMargin"
             />
     </LinearLayout>

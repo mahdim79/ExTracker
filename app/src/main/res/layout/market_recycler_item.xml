@@ -1,141 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    xmlns:tools="http://schemas.android.com/tools">
-
+    app:cardElevation="0dp"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginVertical="5dp"
+    app:cardCornerRadius="12dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?colorOnSecondary"
+        android:gravity="center"
         android:orientation="horizontal"
-        android:padding="@dimen/standardMargin"
-        android:background="?colorPrimary">
+        android:padding="@dimen/standardMargin">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_marketItem_icon"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            app:cardElevation="0dp"
+            android:backgroundTint="?colorPrimary"
+            app:cardCornerRadius="12dp">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/item_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:padding="4dp"
+                android:layout_weight="10"
+                android:src="@drawable/btc_icon" />
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/sort_num"
             android:layout_width="0dp"
-            android:layout_weight="4"
             android:layout_height="wrap_content"
-            android:textColor="?colorAccent"
-            android:text="0"
-            android:textSize="@dimen/standardMargin"
+            android:layout_gravity="center"
             android:layout_marginEnd="@dimen/standardMargin0.5x"
-            android:layout_gravity="center"/>
+            android:layout_weight="4"
+            android:visibility="gone"
+            android:text="0"
+            android:textColor="?colorAccent"
+            android:textSize="@dimen/standardMargin" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/item_image"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
-            android:layout_weight="10"
-            android:layout_height="30dp"
-            android:src="@drawable/btc_icon"
-            />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="25"
+            android:layout_height="60dp"
             android:layout_marginStart="@dimen/standardMargin"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:layout_weight="25"
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/item_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                tools:text="Bitcoin"/>
+                android:textSize="20sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/item_text_coinName"
+                tools:text="Bitcoin" />
+
             <TextView
                 android:id="@+id/item_text_coinName"
                 android:layout_width="match_parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_text"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:layout_gravity="center_vertical"
-                android:textSize="@dimen/standardMargin"
                 android:textColor="?colorAccent"
-                tools:text="BTC"/>
-        </LinearLayout>
-
+                android:textSize="12sp"
+                tools:text="BTC" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="30"
-            android:layout_marginStart="@dimen/standardMargin"
-            android:orientation="vertical"
+            android:id="@+id/change_pct_linear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_height="wrap_content">
+            android:layout_weight="15"
+            android:gravity="end"
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/item_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textSize="12dp"
+                android:gravity="end"
+                android:textSize="16dp"
                 android:textStyle="bold"
-                android:gravity="center_horizontal"
-                tools:text="$34000"/>
+                tools:text="$34000" />
+
             <com.dust.extracker.customviews.CTextView
                 android:id="@+id/item_price_toman"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textSize="8dp"
-                android:gravity="center_horizontal"
+                android:gravity="start"
+                android:layout_marginTop="2dp"
+                android:textDirection="rtl"
                 android:textColor="@color/light_black"
-                tools:text="250000 تومان"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/change_pct_linear"
-            android:layout_width="0dp"
-            android:layout_weight="40"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/standardMargin"
-            android:layout_gravity="center"
-            android:gravity="end"
-            android:orientation="horizontal">
+                android:textSize="10dp"
+                tools:text="25000000 تومان" />
 
             <com.dust.extracker.customviews.CTextView
                 android:id="@+id/dailyChange"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
+                android:layout_width="60dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="6dp"
                 android:background="@drawable/portfolio_linear_shape_red"
-                android:text="بروز نشده"
                 android:gravity="center"
-                android:textColor="@color/black"
+                android:text="بروز نشده"
+                android:textColor="@color/white"
                 android:textSize="9dp" />
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="10"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_gravity="center"
+            android:layout_weight="10"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                app:tint="?colorAccent"
                 android:src="@drawable/ic_baseline_comment"
-                />
+                app:tint="?colorAccent" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="23.6K"
                 android:gravity="center_horizontal"
+                android:text="23.6K"
                 android:textColor="?colorAccent"
-                android:textSize="@dimen/standardMargin"
-                 />
-
+                android:textSize="@dimen/standardMargin" />
 
         </LinearLayout>
-
     </LinearLayout>
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?colorPrimaryVariant"/>
-
-</LinearLayout>
+</androidx.cardview.widget.CardView>
