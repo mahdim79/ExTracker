@@ -161,6 +161,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:visibility="invisible"
+                android:layout_marginVertical="15dp"
                 android:background="?colorPrimaryVariant"
                 android:layout_marginTop="@dimen/standardMargin"/>
             <com.dust.extracker.customviews.CTextView
@@ -185,6 +187,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="?colorPrimaryVariant"
+                android:layout_marginVertical="15dp"
+                android:visibility="invisible"
                 android:layout_marginTop="@dimen/standardMargin"/>
             <com.dust.extracker.customviews.CTextView
                 android:layout_width="match_parent"
@@ -226,6 +230,7 @@
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
                         android:text="#"
+                        android:visibility="gone"
                         android:gravity="end"
                         android:textSize="@dimen/TextSize2x"
                         android:layout_marginEnd="@dimen/standardMargin0.5x"
@@ -238,6 +243,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:textDirection="ltr"
+                        android:visibility="gone"
                         android:gravity="center_vertical"
                         android:src="@drawable/btc_icon"
                         />
@@ -247,7 +253,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="25"
                         android:layout_gravity="center"
-                        android:gravity="center_vertical"
+                        android:gravity="center"
                         android:textSize="@dimen/TextSize2x"
                         android:textDirection="ltr"
                         android:layout_height="wrap_content"
@@ -282,7 +288,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:textSize="@dimen/TextSize2x"
-                        android:gravity="start"
+                        android:gravity="center"
                         android:text="تکرار"
                         />
 
@@ -304,14 +310,6 @@
                     android:layout_gravity="center"/>
 
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?colorPrimaryVariant"
-                android:layout_marginTop="@dimen/standardMargin"/>
-
-
 
         </LinearLayout>
 

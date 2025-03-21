@@ -243,6 +243,7 @@
                     android:layout_weight="10"
                     android:layout_height="wrap_content"
                     android:textDirection="ltr"
+                    android:visibility="gone"
                     android:gravity="center"
                     android:textSize="8dp"
                     android:text="@string/transaction"/>

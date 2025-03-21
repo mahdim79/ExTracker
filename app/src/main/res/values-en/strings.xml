@@ -171,5 +171,8 @@
     <string name="slogan">Your companion in investing in the cryptocurrency market</string>
     <string name="testClose">Please Tap Back Button Again To Exit</string>
     <string name="exchangerSubtitle">Check real-time rates, currency exchange rates, etc.</string>
+    <string name="select_crypto">Select Crypto</string>
+    <string name="searchSubtitle">Search or select from the list the coin you want.</string>
+    <string name="dollarPriceToman">Dollar Price (Toman)</string>
 
 </resources>

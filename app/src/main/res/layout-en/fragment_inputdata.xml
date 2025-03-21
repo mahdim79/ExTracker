@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
-
         android:orientation="vertical">
 
         <LinearLayout
@@ -41,12 +40,9 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?colorPrimary"
-
             android:orientation="vertical">
 
             <LinearLayout
@@ -58,7 +54,8 @@
                 <com.dust.extracker.customviews.CButton
                     android:id="@+id/btnSell"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/standardMargin3x"
+                    android:layout_height="40dp"
+                    android:textSize="16sp"
                     android:layout_marginHorizontal="@dimen/standardMargin"
                     android:layout_weight="0.5"
                     android:background="@drawable/sell_button_selector"
@@ -68,7 +65,8 @@
                 <com.dust.extracker.customviews.CButton
                     android:id="@+id/btnBuy"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/standardMargin3x"
+                    android:layout_height="40dp"
+                    android:textSize="16sp"
                     android:layout_marginHorizontal="@dimen/standardMargin"
                     android:layout_weight="0.5"
                     android:background="@drawable/buy_button_selector"
@@ -82,6 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/standardMargin"
+                android:layoutDirection="rtl"
                 android:layout_marginTop="@dimen/standardMargin2x"
                 android:orientation="vertical">
 
@@ -109,19 +108,19 @@
                         android:layout_marginTop="@dimen/standardMargin"
                         android:layout_height="wrap_content"
                         app:errorEnabled="true"
-                        android:textColorHint="?android:textColor"
+                        android:textColorHint="?colorAccent"
                         app:errorTextColor="@color/red">
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/name"
+                            android:padding="12dp"
+                            android:textSize="16sp"
                             android:textColor="?android:textColor"
+                            android:background="@drawable/input_data_edittext_shape"
                             android:inputType="text"
-                            android:backgroundTint="?android:textColor"
                             android:textDirection="rtl" />
                     </com.google.android.material.textfield.TextInputLayout>
-
-
 
                 </RelativeLayout>
 
@@ -149,15 +148,17 @@
                         android:layout_marginTop="@dimen/standardMargin"
                         android:layout_height="wrap_content"
                         app:errorEnabled="true"
-                        android:textColorHint="?android:textColor"
+                        android:textColorHint="?colorAccent"
                         app:errorTextColor="@color/red">
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/count"
+                            android:textSize="16sp"
+                            android:padding="12dp"
                             android:textColor="?android:textColor"
-                            android:backgroundTint="?android:textColor"
                             android:inputType="numberDecimal"
+                            android:background="@drawable/input_data_edittext_shape"
                             android:textDirection="ltr" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -185,16 +186,18 @@
                         android:layout_marginStart="@dimen/standardMargin"
                         android:layout_marginTop="@dimen/standardMargin"
                         android:layout_height="wrap_content"
-                        android:textColorHint="?android:textColor"
+                        android:textColorHint="?colorAccent"
                         app:errorEnabled="true"
                         app:errorTextColor="@color/red">
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="numberDecimal"
+                            android:textSize="16sp"
                             android:textDirection="ltr"
+                            android:padding="12dp"
                             android:textColor="?android:textColor"
-                            android:backgroundTint="?android:textColor"
+                            android:background="@drawable/input_data_edittext_shape"
                             android:hint="USD"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -224,16 +227,18 @@
                         android:layout_marginTop="@dimen/standardMargin"
                         android:layout_height="wrap_content"
                         app:errorEnabled="true"
-                        android:textColorHint="?android:textColor"
+                        android:textColorHint="?colorAccent"
                         app:errorTextColor="@color/red">
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="number"
+                            android:textSize="16sp"
                             android:textColor="?android:textColor"
+                            android:padding="12dp"
                             android:textDirection="ltr"
                             android:text="0"
-                            android:backgroundTint="?android:textColor"
+                            android:background="@drawable/input_data_edittext_shape"
                             android:hint="@string/toman"
                             />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -262,6 +267,8 @@
                         android:layout_width="180dp"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:textSize="16sp"
+                        android:layoutDirection="ltr"
                         android:layout_marginStart="@dimen/standardMargin"
                         android:layout_marginTop="@dimen/standardMargin" />
 
@@ -288,15 +295,17 @@
                         android:id="@+id/descriptions"
                         android:layout_width="180dp"
                         android:layout_marginStart="@dimen/standardMargin"
-                        android:textColorHint="?android:textColor"
+                        android:textColorHint="?colorAccent"
                         android:layout_marginTop="@dimen/standardMargin"
                         android:layout_height="wrap_content">
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="80dp"
                             android:inputType="text"
+                            android:textSize="16sp"
+                            android:padding="12dp"
                             android:textColor="?android:textColor"
-                            android:backgroundTint="?android:textColor"
+                            android:background="@drawable/input_data_edittext_shape"
                             android:hint="@string/description"/>
                     </com.google.android.material.textfield.TextInputLayout>
 

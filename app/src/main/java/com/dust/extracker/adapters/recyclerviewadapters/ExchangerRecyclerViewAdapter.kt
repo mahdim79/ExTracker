@@ -27,7 +27,8 @@ class ExchangerRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        holder.cryptotext.text = list[position].FullName
+        holder.cryptotext.text = "${list[position].CoinName}"
+        holder.item_text_coin.text = " (${list[position].Name})"
         Picasso.get().load("${list[position].BaseImageUrl}${list[position].ImageUrl}").into(holder.cryptoImage)
         holder.itemView.setOnClickListener {
             context.getSharedPreferences("CRS", Context.MODE_PRIVATE).edit()
@@ -42,5 +43,6 @@ class ExchangerRecyclerViewAdapter(
 
         var cryptoImage: ImageView = itemView.findViewById(R.id.item_image)
         var cryptotext: TextView = itemView.findViewById(R.id.item_text)
+        var item_text_coin: TextView = itemView.findViewById(R.id.item_text_coin)
     }
 }

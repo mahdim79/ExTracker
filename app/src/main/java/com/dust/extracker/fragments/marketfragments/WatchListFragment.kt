@@ -240,7 +240,7 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
 
     private fun checkConnection(): Boolean {
         val connectivityManager =
-            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = connectivityManager.activeNetworkInfo
         return info != null && info.isConnectedOrConnecting
     }

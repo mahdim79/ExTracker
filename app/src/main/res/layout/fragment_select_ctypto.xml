@@ -7,44 +7,62 @@
     android:background="?colorPrimary"
     android:orientation="vertical">
 
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:orientation="horizontal"
-       android:gravity="center"
-       android:layoutDirection="ltr"
-       android:paddingTop="@dimen/standardMargin"
-       >
-       <ImageView
-           android:id="@+id/imageView"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:src="@drawable/ic_baseline_arrow_back"
-           android:layout_gravity="center"
-           app:tint="?colorAccent"
-           android:layout_marginStart="@dimen/standardMargin"/>
 
-       <EditText
-           android:id="@+id/crypto_name"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:hint="@string/search"
-           android:textSize="@dimen/standardMargin1.5x"
-           android:maxLines="1"
-           android:padding="6dp"
-           android:drawableTint="?colorAccent"
-           android:background="@drawable/edittext_selector"
-           android:textColor="?android:textColor"
-           android:textColorHint="?colorAccent"
-           android:layout_marginHorizontal="@dimen/standardMargin"
-           />
-   </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="25dp">
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="25dp"
+            android:src="@drawable/close"
+            android:layout_gravity="end"
+            app:tint="?colorAccent"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="@string/select_crypto"
+            android:textColor="?android:textColor"
+            android:layout_marginTop="25dp"
+            android:textStyle="bold"
+            android:layout_gravity="start"
+            android:textSize="26sp"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="@string/searchSubtitle"
+            android:textColor="?android:textColor"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="start"
+            android:textSize="14sp"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/crypto_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search"
+            android:textSize="26sp"
+            android:maxLines="1"
+            android:layout_marginTop="15dp"
+            android:padding="6dp"
+            android:drawableTint="?colorAccent"
+            android:background="@null"
+            android:lineHeight="0dp"
+            android:textColor="?android:textColor"
+            android:textColorHint="?colorAccent"
+            />
+
+    </LinearLayout>
     <androidx.core.widget.NestedScrollView
         android:id="@+id/search_nested"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
