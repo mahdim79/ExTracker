@@ -1,114 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/standardMargin10x"
-    android:background="?colorPrimary"
-    android:layoutDirection="ltr"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:cardElevation="0dp"
+    app:cardCornerRadius="12dp"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginVertical="5dp"
+    android:layout_height="@dimen/standardMargin10x">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/news_image"
-        android:layout_width="@dimen/standardMargin6x"
-        android:layout_margin="@dimen/standardMargin"
-        android:layout_height="@dimen/standardMargin6x"
-        android:src="@drawable/btc_icon"
-        android:scaleType="centerCrop"/>
-    <com.dust.extracker.customviews.CTextView
-        android:id="@+id/news_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="225"
-        android:layout_marginEnd="2dp"
-        android:textSize="@dimen/standardMargin"
-        android:textColor="?colorAccent"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/standardMargin0.5x"
-        android:layout_marginStart="@dimen/standardMargin"
-        />
-    <com.dust.extracker.customviews.CTextView
-        android:id="@+id/news_title"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/news_image"
-        android:layout_marginEnd="@dimen/standardMargin"
-        android:layout_toEndOf="@+id/news_image"
-        android:textDirection="ltr"
-        android:maxLines="2"
-        android:textColor="?android:textColor"
-        android:textSize="@dimen/standardMargin"
-        android:textStyle="bold"
-        tools:text="News Title" />
+        android:layout_height="@dimen/standardMargin10x"
+        android:background="?colorOnSecondary"
+        android:layoutDirection="rtl">
 
-    <com.dust.extracker.customviews.CTextView
-        android:id="@+id/news_desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/news_title"
-        android:layout_marginEnd="@dimen/standardMargin"
-        android:layout_toEndOf="@+id/news_image"
-        android:textDirection="ltr"
-        android:textColor="?colorAccent"
-        android:maxLines="3"
-        android:textSize="@dimen/standardMargin"
-        />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/news_image"
+            android:layout_width="@dimen/standardMargin6x"
+            android:layout_margin="@dimen/standardMargin"
+            android:layout_height="@dimen/standardMargin6x"
+            android:src="@drawable/btc_icon"
+            android:scaleType="centerCrop"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="@dimen/standardMargin"
-        android:layout_marginBottom="@dimen/standardMargin0.5x"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/news_like"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:src="@drawable/ic_baseline_news_liked"
-            />
-
-        <TextView
-            android:id="@+id/news_like_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1"
-            android:layout_marginStart="2dp"
-            android:textSize="@dimen/standardMargin"
-            android:textColor="?colorAccent"
-            />
-
-        <ImageView
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:src="@drawable/ic_baseline_news_seen"
-            app:tint="?colorAccent"
-            android:layout_marginStart="@dimen/standardMargin"
-            />
-        <TextView
-            android:id="@+id/news_seen_count"
+        <com.dust.extracker.customviews.CTextView
+            android:id="@+id/news_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="225"
-            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
             android:textSize="@dimen/standardMargin"
             android:textColor="?colorAccent"
-            />
-        <ImageView
-            android:id="@+id/add_to_bookmark"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:src="@drawable/ic_baseline_bookmark"
-            app:tint="?colorAccent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/standardMargin0.5x"
             android:layout_marginStart="@dimen/standardMargin"
             />
-    </LinearLayout>
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?colorPrimaryVariant"
-        android:layout_alignParentBottom="true"/>
-</RelativeLayout>
+        <com.dust.extracker.customviews.CTextView
+            android:id="@+id/news_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/news_image"
+            android:layout_marginEnd="@dimen/standardMargin"
+            android:layout_toEndOf="@+id/news_image"
+            android:textDirection="rtl"
+            android:maxLines="2"
+            android:textColor="?android:textColor"
+            android:textSize="@dimen/standardMargin"
+            android:textStyle="bold"
+            tools:text="News Title" />
+
+        <com.dust.extracker.customviews.CTextView
+            android:id="@+id/news_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/news_title"
+            android:layout_marginEnd="@dimen/standardMargin"
+            android:layout_toEndOf="@+id/news_image"
+            android:textDirection="rtl"
+            android:textColor="?colorAccent"
+            android:maxLines="3"
+            android:textSize="@dimen/standardMargin"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/standardMargin"
+            android:layout_marginBottom="@dimen/standardMargin0.5x"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/news_like"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/ic_baseline_news_liked"
+                />
+
+            <TextView
+                android:id="@+id/news_like_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:layout_marginStart="2dp"
+                android:textSize="@dimen/standardMargin"
+                android:textColor="?colorAccent"
+                />
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/ic_baseline_news_seen"
+                app:tint="?colorAccent"
+                android:visibility="gone"
+                android:layout_marginStart="@dimen/standardMargin"
+                />
+            <TextView
+                android:id="@+id/news_seen_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="225"
+                android:visibility="gone"
+                android:layout_marginStart="2dp"
+                android:textSize="@dimen/standardMargin"
+                android:textColor="?colorAccent"
+                />
+            <ImageView
+                android:id="@+id/add_to_bookmark"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/ic_baseline_bookmark"
+                app:tint="?colorAccent"
+                android:layout_marginStart="@dimen/standardMargin"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

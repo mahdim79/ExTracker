@@ -68,11 +68,11 @@ class UserLogInFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList, 
     }
 
     private fun setUpSharedPreferences() {
-        sharedPreferencesCenter = SharedPreferencesCenter(requireActivity())
+        sharedPreferencesCenter = SharedPreferencesCenter(requireContext())
     }
 
     private fun setUpApiCenter() {
-        apiCenter = ApiCenter(requireActivity(), this)
+        apiCenter = ApiCenter(requireContext(), this)
     }
 
     private fun setUpBackImage() {

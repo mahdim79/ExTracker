@@ -58,7 +58,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/standardMargin"
+            android:layout_marginHorizontal="15dp"
             android:layoutDirection="rtl"
             android:layout_marginTop="@dimen/standardMargin2x">
 
@@ -143,6 +143,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/standardMargin"
+            android:layoutDirection="rtl"
             android:layout_marginTop="@dimen/standardMargin2x">
 
             <com.dust.extracker.customviews.CTextView
@@ -161,6 +162,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/standardMargin0.5x"
                 android:layout_centerVertical="true"
+                android:layoutDirection="ltr"
                 android:layout_alignParentStart="true"
                 android:textSize="@dimen/TextSize4x" />
 

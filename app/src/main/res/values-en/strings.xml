@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">کریپتولاین</string>
+    <string name="splash_app_name">CryptoLine</string>
     <string name="potfolio_add_btn">Add Transaction History </string>
     <string name="portfolio_title">Digital portfolio </string>
     <string name="portfolio_notation">By entering the amount of your assets in this section, you can instantly monitor the amount of profit and loss, price changes and the rial and dollar value of your assets. </string>
@@ -45,11 +46,11 @@
     <string name = "monthlyChanges"> monthly changes </string>
     <string name = "weeklyChanges"> weekly changes </string>
     <string name = "dailyChanges"> Daily changes </string>
-    <string name = "dalilyVolume"> Daily trading volume </string>
+    <string name = "dalilyVolume"> Daily Volume </string>
     <string name = "rate"> Rank </string>
-    <string name = "exchangerName"> exchanger name </string>
-    <string name = "dailyDealVolume"> Daily Trading Volume </string>
-    <string name = "dateStablished"> year and place of establishment </string>
+    <string name = "exchangerName"> Exchanger name </string>
+    <string name = "dailyDealVolume"> Daily Volume </string>
+    <string name = "dateStablished"> Establishment </string>
     <string name = "mobileEdit"> Mobile editing </string>
     <string name = "enterNewNumber"> Enter your new mobile number </string>
     <string name = "verificationCode"> Activation code </string>
@@ -167,6 +168,11 @@
     <string name="nameUsed">This Name Already Used</string>
     <string name="enterPassword">Please Choose A Password</string>
     <string name="enterPasswordAgain">Please Enter Password Again</string>
-
+    <string name="slogan">Your companion in investing in the cryptocurrency market</string>
+    <string name="testClose">Please Tap Back Button Again To Exit</string>
+    <string name="exchangerSubtitle">Check real-time rates, currency exchange rates, etc.</string>
+    <string name="select_crypto">Select Crypto</string>
+    <string name="searchSubtitle">Search or select from the list the coin you want.</string>
+    <string name="dollarPriceToman">Dollar Price (Toman)</string>
 
 </resources>

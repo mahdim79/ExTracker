@@ -1,11 +1,9 @@
 package com.dust.extracker.fragments.mainviewpagerfragments
 
-import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.inputmethodservice.InputMethodService
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Build
@@ -16,6 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.view.isVisible
@@ -35,7 +34,6 @@ import com.dust.extracker.fragments.othersfragment.NotificationChooseCryptoFragm
 import com.dust.extracker.interfaces.OnGetAllCryptoList
 import com.dust.extracker.interfaces.OnGetDollarPrice
 import com.dust.extracker.interfaces.OnGetTotalMarketCap
-import com.dust.extracker.realmdb.MainRealmObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
 import com.dust.extracker.utils.Utils
@@ -119,6 +117,7 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
 
         img_search.setOnClickListener {
             header_rel.visibility = View.GONE
+            tabLayout.visibility = View.GONE
             search_linear.visibility = View.VISIBLE
             sendSearchBroadcast("", "com.dust.extracker.kdsfjgksdjflasdk.START")
             SEARCHMODE = true
@@ -126,6 +125,7 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
         back_btn.setOnClickListener {
             search_linear.visibility = View.GONE
             header_rel.visibility = View.VISIBLE
+            tabLayout.visibility = View.VISIBLE
             hideKeyBoard()
             sendSearchBroadcast("", "com.dust.extracker.kdsfjgksdjflasdk.STOP")
             SEARCHMODE = false
@@ -238,6 +238,13 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
                     }
                 }
             }
+        }
+
+        for (i in 0 until tabLayout.tabCount) {
+            val tab = (tabLayout.getChildAt(0) as ViewGroup).getChildAt(i)
+            val p = tab.layoutParams as MarginLayoutParams
+            p.setMargins(10, 0, 10, 0)
+            tab.requestLayout()
         }
 
         viewPager.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {

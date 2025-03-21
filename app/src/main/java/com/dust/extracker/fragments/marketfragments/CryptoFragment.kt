@@ -393,13 +393,17 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     private fun updateSortOrders(list1: List<CryptoMainData>) {
         apiCenter.getMarketCapSortOrder(object : OnUpdateSortOrder {
             override fun onUpdateSortOrder(list: List<Pair<String, Int>>) {
+                Log.i("InitLog","initiate sort request success block...")
+
                 list.forEach { pair ->
                     list1.forEach {
                         if (pair.first == it.CoinName)
                             it.SortOrder = pair.second.toString()
                     }
                 }
+                Log.i("InitLog","saving sorted data to db...")
                 realmDB.insertAllCryptoData(list1, this@CryptoFragment, requireActivity())
+                Log.i("InitLog","data saved...")
             }
         })
     }

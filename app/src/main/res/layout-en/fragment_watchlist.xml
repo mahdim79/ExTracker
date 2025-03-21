@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants"
-    >
+    android:background="?colorPrimary"
+    android:descendantFocusability="blocksDescendants">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swiprefreshLayout"
@@ -25,6 +25,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     android:background="?colorPrimary">
 
                     <TextView
@@ -33,26 +34,15 @@
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
                         android:text="#"
-                        android:gravity="end"
+                        android:gravity="center"
                         android:textSize="@dimen/TextSize2x"
                         android:layout_marginEnd="@dimen/standardMargin0.5x"
                         android:layout_gravity="center"/>
 
                     <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="10"
-                        android:textSize="@dimen/TextSize2x"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textDirection="ltr"
-                        android:gravity="center_vertical"
-                        android:src="@drawable/btc_icon"
-                        />
-
-                    <TextView
                         android:id="@+id/sort_by_name"
                         android:layout_width="0dp"
-                        android:layout_weight="25"
+                        android:layout_weight="15"
                         android:layout_marginStart="@dimen/standardMargin"
                         android:layout_gravity="center"
                         android:gravity="center_vertical"
@@ -66,6 +56,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="30"
                         android:layout_height="wrap_content"
+                        android:paddingEnd="15dp"
                         android:layout_gravity="center_vertical"
                         android:textSize="@dimen/TextSize2x"
                         android:gravity="center_horizontal"
@@ -78,6 +69,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="20"
                         android:gravity="end"
+                        android:paddingEnd="25dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/standardMargin"
                         android:layout_gravity="center"
@@ -89,6 +81,7 @@
                         android:id="@+id/sort_by_comments"
                         android:layout_width="0dp"
                         android:layout_weight="15"
+                        android:visibility="gone"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:textSize="@dimen/TextSize2x"

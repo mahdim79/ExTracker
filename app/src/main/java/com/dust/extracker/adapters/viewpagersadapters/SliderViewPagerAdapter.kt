@@ -13,4 +13,5 @@ class SliderViewPagerAdapter(fm: FragmentManager, var list: List<SliderDataClass
     }
 
     override fun getCount(): Int = list.size
+
 }

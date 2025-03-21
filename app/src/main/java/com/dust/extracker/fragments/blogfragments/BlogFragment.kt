@@ -8,11 +8,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
@@ -31,7 +31,8 @@ import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.utils.Utils
 import com.google.android.material.tabs.TabLayout
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
-import java.util.*
+import java.util.Timer
+import java.util.TimerTask
 
 class BlogFragment : Fragment(), OnGetNews {
 
@@ -150,6 +151,13 @@ class BlogFragment : Fragment(), OnGetNews {
             }
         }
 
+        for (i in 0 until newsTabLayout.tabCount) {
+            val tab = (newsTabLayout.getChildAt(0) as ViewGroup).getChildAt(i)
+            val p = tab.layoutParams as MarginLayoutParams
+            p.setMargins(10, 0, 10, 0)
+            tab.requestLayout()
+        }
+
     }
 
     private fun setUpSliderViewPager() {
@@ -178,6 +186,34 @@ class BlogFragment : Fragment(), OnGetNews {
                 childFragmentManager,
                 list
             )
+        /*sliderViewPager.setPageTransformer(true
+        ) { page, position ->
+            val pageWidth = page.width
+            val pageHeight = page.height
+            if (position < -1) { // [-Infinity,-1)
+                // This page is way off-screen to the left.
+                page.setAlpha(0f)
+            } else if (position <= 1) { // [-1,1]
+                val scaleFactor = Math.max(0.85f, 1 - Math.abs(position)) // Zoom out effect
+                val vertMargin = pageHeight * (1 - scaleFactor) / 2
+                val horzMargin = pageWidth * (1 - scaleFactor) / 2
+
+                // Center the page
+                page.pivotX = 0.5f * page.width
+                page.pivotY = 0.5f * page.height
+
+                // Apply transformation
+                page.translationX = horzMargin - vertMargin / 2
+                page.scaleX = scaleFactor
+                page.scaleY = scaleFactor
+
+                // Fade the page out
+                page.alpha = 1 - Math.abs(position)
+            } else { // (1,+Infinity]
+                // This page is off-screen to the right.
+                page.setAlpha(0f)
+            }
+        }*/
         sliderViewPager.offscreenPageLimit = list.size - 1
         dotsIndicator.setViewPager(sliderViewPager)
 
@@ -196,7 +232,7 @@ class BlogFragment : Fragment(), OnGetNews {
                     }
                 }
             }
-        }, 0, 10000)
+        }, 10000, 10000)
 
     }
 

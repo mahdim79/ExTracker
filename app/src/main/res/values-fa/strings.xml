@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">کریپتولاین</string>
+    <string name="splash_app_name">کریپتولاین</string>
     <string name="potfolio_add_btn">افزودن تاریخچه معامله</string>
     <string name="portfolio_title">سبد دارایی دیجیتال</string>
     <string name="portfolio_notation">با وارد کردن میزان دارایی های خود در این بخش میتوانید بر میزان سود و زیان، تغییرات قیمتی و ارزش ریالی و دلاری دارایی های خود نظارت لحظه ای داشته باشید.</string>
@@ -14,7 +15,7 @@
     <string name="dailyChange">نوسان روزانه</string>
     <string name="comments">دیدگاه ها</string>
     <string name="cryptoExchanger">مبدل ارز</string>
-    <string name="portfolio">پورتفولیو</string>
+    <string name="portfolio">پورتفوی</string>
     <string name="market">بازار</string>
     <string name="blog">بلاگ</string>
     <string name="settings">تنظیمات</string>
@@ -45,11 +46,11 @@
     <string name="monthlyChanges">تغییرات ماهانه</string>
     <string name="weeklyChanges">تغییرات هفتگی</string>
     <string name="dailyChanges">تغییرات روزانه</string>
-    <string name="dalilyVolume">حجم معاملات روزانه</string>
+    <string name="dalilyVolume">حجم معاملات</string>
     <string name="rate">رتبه</string>
     <string name="exchangerName">نام صرافی</string>
     <string name="dailyDealVolume">حجم معاملات روزانه</string>
-    <string name="dateStablished">سال و محل تاسیس</string>
+    <string name="dateStablished">تاسیس</string>
     <string name="mobileEdit">ویرایش موبایل</string>
     <string name="enterNewNumber">شماره موبایل جدید خود را وارد کنید</string>
     <string name="verificationCode">کد فعال سازی</string>
@@ -63,7 +64,7 @@
     <string name="anounsement">اطلاعیه ها</string>
     <string name="priceAnounsment">اطلاعیه های قیمت</string>
     <string name="importantNewsAnounsment">اطلاعیه های اخبار مهم</string>
-    <string name="portfolioAnounsment">اطلاعیه های پورتفولیو</string>
+    <string name="portfolioAnounsment">اطلاعیه های پورتفوی</string>
     <string name="customizeAnounsments">شخصی سازی اطلاعیه ها</string>
     <string name="craeteCustomization">ایجاد شخصی سازی</string>
     <string name="edit">ویرایش</string>
@@ -167,5 +168,11 @@
     <string name="enterPassword">لطفا پسوردی را انتخاب کنید</string>
     <string name="enterPasswordAgain">لطفا پسورد را دوباره وارد کنید</string>
     <string name="nameUsed">این نام قبلا استفاده شده است</string>
+    <string name="slogan">همراه شما در سرمایه گذاری بازار رمز ارز</string>
+    <string name="testClose">برای خروج مجدد دکمه برگشت را بزنید</string>
+    <string name="exchangerSubtitle">بررسی لحظه ای نرخ ها،نرخ تبدیل ارز ها و…</string>
+    <string name="select_crypto">انتخاب ارز</string>
+    <string name="searchSubtitle">ارز مورد نظر خود را از لیست انتخاب کنید.</string>
+    <string name="dollarPriceToman">قیمت دلار (تومان)</string>
 
 </resources>

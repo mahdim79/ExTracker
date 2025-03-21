@@ -7,7 +7,7 @@ open class BookmarkObject : RealmObject() {
     @PrimaryKey
     var id: Int? = null
 
-    var ID: Int? = null
+    var ID: String? = null
     lateinit var title: String
     lateinit var description: String
     var likeCount: Int? = null

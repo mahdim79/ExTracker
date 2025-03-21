@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center_horizontal"
+    android:background="?colorPrimary"
     android:layout_height="match_parent">
 
     <RelativeLayout
@@ -27,7 +28,7 @@
             android:layoutDirection="ltr"
             android:layout_centerInParent="true"
             app:dotsColor="@color/light_orange_low_transparency"
-            app:selectedDotColor="@color/light_orange"
+            app:selectedDotColor="@color/green_primary"
             app:dotsCornerRadius="8dp"
             app:dotsSize="10dp"
             app:dotsSpacing="4dp"

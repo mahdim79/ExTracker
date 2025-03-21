@@ -123,194 +123,239 @@
                 android:visibility="gone"
                 android:background="?colorPrimaryVariant"
                 android:layout_marginTop="@dimen/standardMargin"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="0dp"
+                android:padding="15dp"
+                android:backgroundTint="?colorOnSecondary"
+                android:layout_marginHorizontal="@dimen/standardMargin"
+                android:layout_marginTop="@dimen/standardMargin1.5x"
+                app:cardCornerRadius="16dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="20dp"
+                    android:paddingHorizontal="10dp"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:layoutDirection="ltr"
+                    android:orientation="horizontal">
+
+                    <com.dust.extracker.customviews.CTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/standardMargin0.5x"
+                        android:text="@string/importantNewsAnounsment"
+                        android:textColor="?android:textColor"
+                        android:textSize="@dimen/TextSize4x" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:layoutDirection="rtl"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/notifications_news"
+                            android:layout_width="46dp"
+                            android:layout_height="28dp"
+                            android:layoutDirection="ltr"
+                            android:thumb="@drawable/switch_compat_thumb"
+                            app:track="@drawable/switch_compat_track"
+                            />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:visibility="invisible"
+                android:background="?colorPrimaryVariant"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="0dp"
+            android:padding="15dp"
+            android:layout_marginHorizontal="@dimen/standardMargin"
+            android:backgroundTint="?colorOnSecondary"
+            android:layout_marginTop="@dimen/standardMargin1.5x"
+            app:cardCornerRadius="16dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/standardMargin"
-                android:layout_marginTop="@dimen/standardMargin2x"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="10dp"
                 android:foreground="?attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:layoutDirection="ltr"
-                android:orientation="horizontal">
-
+                android:orientation="vertical">
                 <com.dust.extracker.customviews.CTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/standardMargin0.5x"
-                    android:text="@string/importantNewsAnounsment"
-                    android:textColor="?android:textColor"
-                    android:textSize="@dimen/TextSize4x" />
-                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:layoutDirection="rtl"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="?android:textColor"
+                    android:textSize="12dp"
+                    android:layout_marginHorizontal="@dimen/standardMargin"
+                    android:text="@string/portfolioAnounsment"/>
 
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/notifications_news"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layoutDirection="ltr"
-                        app:thumbTint="@color/light_black"
-                        app:trackTint="@color/switcher_selector"
-                        />
+                <LinearLayout
+                    android:id="@+id/container_linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
                 </LinearLayout>
             </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?colorPrimaryVariant"
-                android:layout_marginTop="@dimen/standardMargin"/>
-            <com.dust.extracker.customviews.CTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="?android:textColor"
-                android:textSize="12dp"
-                android:layout_marginHorizontal="@dimen/standardMargin"
-                android:layout_marginTop="@dimen/standardMargin"
-                android:text="@string/portfolioAnounsment"/>
-
-            <LinearLayout
-                android:id="@+id/container_linear"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="?colorPrimaryVariant"
-                android:layout_marginTop="@dimen/standardMargin"/>
-            <com.dust.extracker.customviews.CTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="?android:textColor"
-                android:textSize="12dp"
-                android:layout_marginHorizontal="@dimen/standardMargin"
-                android:layout_marginTop="@dimen/standardMargin"
-                android:text="@string/customizeAnounsments"/>
-            <Button
-                android:id="@+id/create_customization"
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:text="@string/craeteCustomization"
-                android:textColor="@color/button_textcolor_selector"
-                android:layout_marginHorizontal="@dimen/standardMargin4x"
-                android:background="@drawable/main_button_selector"
-                android:layout_marginVertical="@dimen/standardMargin2x"
-                />
+                android:visibility="invisible"/>
 
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="0dp"
+            android:backgroundTint="?colorOnSecondary"
+            android:padding="15dp"
+            android:layout_marginHorizontal="@dimen/standardMargin"
+            android:layout_marginTop="@dimen/standardMargin1.5x"
+            app:cardCornerRadius="16dp">
             <LinearLayout
-                android:id="@+id/notification_Linear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_marginTop="@dimen/standardMargin"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="10dp"
+                android:foreground="?attr/selectableItemBackground"
+                android:layoutDirection="ltr"
                 android:orientation="vertical">
-
-                <LinearLayout
+                <com.dust.extracker.customviews.CTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="?colorPrimary">
+                    android:textStyle="bold"
+                    android:textColor="?android:textColor"
+                    android:textSize="12dp"
+                    android:layout_marginHorizontal="@dimen/standardMargin"
+                    android:text="@string/customizeAnounsments"/>
+                <Button
+                    android:id="@+id/create_customization"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:text="@string/craeteCustomization"
+                    android:elevation="0dp"
+                    android:textColor="@color/button_textcolor_selector"
+                    android:layout_marginHorizontal="@dimen/standardMargin4x"
+                    android:background="@drawable/main_button_selector"
+                    android:layout_marginTop="@dimen/standardMargin2x"
+                    android:layout_marginBottom="10dp"
+                    />
 
-                    <TextView
-                        android:id="@+id/sort_refresh"
-                        android:layout_width="0dp"
-                        android:layout_weight="7"
+                <LinearLayout
+                    android:id="@+id/notification_Linear"
+                    android:layout_width="match_parent"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standardMargin"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="#"
-                        android:gravity="end"
-                        android:textSize="@dimen/TextSize2x"
-                        android:layout_marginEnd="@dimen/standardMargin0.5x"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/sort_refresh"
+                            android:layout_width="0dp"
+                            android:layout_weight="7"
+                            android:visibility="gone"
+                            android:layout_height="wrap_content"
+                            android:text="#"
+                            android:gravity="end"
+                            android:textSize="@dimen/TextSize2x"
+                            android:layout_marginEnd="@dimen/standardMargin0.5x"
+                            android:layout_gravity="center"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="10"
+                            android:textSize="@dimen/TextSize2x"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:layout_gravity="center"
+                            android:textDirection="ltr"
+                            android:gravity="center_vertical"
+                            android:src="@drawable/btc_icon"
+                            />
+
+                        <TextView
+                            android:id="@+id/sort_by_name"
+                            android:layout_width="0dp"
+                            android:layout_weight="25"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:textSize="@dimen/TextSize2x"
+                            android:textDirection="ltr"
+                            android:layout_height="wrap_content"
+                            android:text="نام ارز"/>
+
+                        <TextView
+                            android:id="@+id/sort_by_price"
+                            android:layout_width="0dp"
+                            android:layout_weight="30"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:textSize="@dimen/TextSize2x"
+                            android:gravity="center_horizontal"
+                            android:text="قیمت مد نظر"/>
+
+                        <TextView
+                            android:id="@+id/sort_by_daily_change"
+                            android:layout_width="0dp"
+                            android:layout_weight="20"
+                            android:gravity="center"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/standardMargin"
+                            android:layout_gravity="center"
+                            android:textDirection="ltr"
+                            android:textSize="@dimen/TextSize2x"
+                            android:text="نوع شرط"
+                            />
+                        <TextView
+                            android:id="@+id/sort_by_comments"
+                            android:layout_width="0dp"
+                            android:layout_weight="15"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textSize="@dimen/TextSize2x"
+                            android:gravity="center"
+                            android:text="تکرار"
+                            />
+
+                    </LinearLayout>
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/notification_customized_recycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/standardMargin0.5x"/>
+
+                    <ImageView
+                        android:id="@+id/add_Image"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_baseline_add_circle_outline_24"
+                        android:layout_marginTop="@dimen/standardMargin"
                         android:layout_gravity="center"/>
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="10"
-                        android:textSize="@dimen/TextSize2x"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textDirection="ltr"
-                        android:gravity="center_vertical"
-                        android:src="@drawable/btc_icon"
-                        />
-
-                    <TextView
-                        android:id="@+id/sort_by_name"
-                        android:layout_width="0dp"
-                        android:layout_weight="25"
-                        android:layout_gravity="center"
-                        android:gravity="center_vertical"
-                        android:textSize="@dimen/TextSize2x"
-                        android:textDirection="ltr"
-                        android:layout_height="wrap_content"
-                        android:text="نام ارز"/>
-
-                    <TextView
-                        android:id="@+id/sort_by_price"
-                        android:layout_width="0dp"
-                        android:layout_weight="30"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:textSize="@dimen/TextSize2x"
-                        android:gravity="center_horizontal"
-                        android:text="قیمت مد نظر"/>
-
-                    <TextView
-                        android:id="@+id/sort_by_daily_change"
-                        android:layout_width="0dp"
-                        android:layout_weight="20"
-                        android:gravity="center"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/standardMargin"
-                        android:layout_gravity="center"
-                        android:textDirection="ltr"
-                        android:textSize="@dimen/TextSize2x"
-                        android:text="نوع شرط"
-                        />
-                    <TextView
-                        android:id="@+id/sort_by_comments"
-                        android:layout_width="0dp"
-                        android:layout_weight="15"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textSize="@dimen/TextSize2x"
-                        android:gravity="start"
-                        android:text="تکرار"
-                        />
-
                 </LinearLayout>
-
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/notification_customized_recycler"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/standardMargin0.5x"/>
-
-                <ImageView
-                    android:id="@+id/add_Image"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_baseline_add_circle_outline_24"
-                    android:layout_marginTop="@dimen/standardMargin"
-                    android:layout_gravity="center"/>
-
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?colorPrimaryVariant"
-                android:layout_marginTop="@dimen/standardMargin"/>
-
-
+        </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 

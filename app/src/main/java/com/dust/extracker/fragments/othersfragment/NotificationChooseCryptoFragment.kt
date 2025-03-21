@@ -110,7 +110,7 @@ class NotificationChooseCryptoFragment:Fragment() {
         imageView = view.findViewById(R.id.imageView)
 
         crypto_recycler_view.layoutManager =
-            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
     }
 
     private fun setUpPagination() {

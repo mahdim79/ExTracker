@@ -564,7 +564,7 @@ class RealmDataBaseCenter() {
             try {
                 val allData = realm.where(NewsObject::class.java).findAll()!!
                 allData.forEach {
-                    val newsData = NewsDataClass(it.id ?: 0,it.ID ?: 0,it.title,it.description,it.likeCount ?: 0,it.seenCount ?: 0,it.imageUrl,it.is_liked == "true",it.date ?: 0,it.url,it.categories,it.tags)
+                    val newsData = NewsDataClass(it.id ?: 0,it.ID ?: "",it.title,it.description,it.likeCount ?: 0,it.seenCount ?: 0,it.imageUrl,it.is_liked == "true",it.date ?: 0,it.url,it.categories,it.tags)
                     if (category == "ALL")
                         resultList.add(newsData)
                     else
@@ -612,7 +612,7 @@ class RealmDataBaseCenter() {
         }
     }
 
-    fun setNewsIsLiked(newsId:Int,isLiked:Boolean){
+    fun setNewsIsLiked(newsId:String,isLiked:Boolean){
         realmDB.executeTransactionAsync { realm ->
             realm.where(NewsObject::class.java).equalTo("ID",newsId).findFirst()?.let { news ->
                 news.is_liked = if (isLiked) "true" else "false"
@@ -627,7 +627,7 @@ class RealmDataBaseCenter() {
 
     fun getNewsDataById(id: Int): NewsDataClass {
         val data = realmDB.where(NewsObject::class.java).equalTo("id", id).findFirst()!!
-        return NewsDataClass(data.id ?: 0,data.ID ?: 0,data.title,data.description,data.likeCount ?: 0,data.seenCount ?: 0,data.imageUrl,data.is_liked == "true",data.date ?: 0,data.url,data.categories,data.tags)
+        return NewsDataClass(data.id ?: 0,data.ID ?: "",data.title,data.description,data.likeCount ?: 0,data.seenCount ?: 0,data.imageUrl,data.is_liked == "true",data.date ?: 0,data.url,data.categories,data.tags)
     }
 
     fun insertBookmark(data: NewsDataClass) {
@@ -656,7 +656,7 @@ class RealmDataBaseCenter() {
         val list = arrayListOf<NewsDataClass>()
         realmDB.executeTransaction { realm ->
             realm.where(BookmarkObject::class.java).findAll().forEach {
-                val data = NewsDataClass(0,it.ID ?: 0,it.title,it.description,it.likeCount ?: 0,it.seenCount ?: 0,it.imageUrl,it.is_liked == "true",it.date ?: 0,it.url,it.categories,it.tags)
+                val data = NewsDataClass(0,it.ID ?: "",it.title,it.description,it.likeCount ?: 0,it.seenCount ?: 0,it.imageUrl,it.is_liked == "true",it.date ?: 0,it.url,it.categories,it.tags)
                 list.add(data)
             }
         }

@@ -89,7 +89,6 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
         data = shared.getNotificationData()
         apiService = ApiCenter(this, this)
 
-
         if (checkConn()) {
             if (notificationEnabled) {
                 Log.i(tag, "Request Sending ...")

@@ -90,7 +90,7 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                     }
                     val intent = Intent("com.dust.extracker.Update_NotificationData")
                     intent.putExtra("EnabledPortfolio" , "")
-                    requireActivity().sendBroadcast(intent)
+                    requireContext().sendBroadcast(intent)
                 }
             }
         }

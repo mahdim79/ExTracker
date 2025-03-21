@@ -34,7 +34,6 @@ import lecho.lib.hellocharts.formatter.SimpleAxisValueFormatter
 import lecho.lib.hellocharts.model.*
 import lecho.lib.hellocharts.view.LineChartView
 import lecho.lib.hellocharts.view.PieChartView
-import okhttp3.internal.Util
 import kotlin.math.abs
 
 class PortfolioBaseFragment(
@@ -148,7 +147,7 @@ class PortfolioBaseFragment(
         )
         if (portfolioDataClass.changePct != null) {
             if (portfolioDataClass.changePct.toDouble() > 0) {
-                portfolioTotalChange.text = "+${Utils.formatPriceNumber((portfolioDataClass.changePct.toDouble()),3)}"
+                portfolioTotalChange.text = "+${Utils.formatPriceNumber((portfolioDataClass.changePct.toDouble()),3)}%"
 
                 change_pct_linear.background = ResourcesCompat.getDrawable(
                     requireActivity().resources,
@@ -162,7 +161,7 @@ class PortfolioBaseFragment(
                     "${Utils.formatPriceNumber(diff,2)} ${requireActivity().resources.getString(R.string.toman)} "
 
             } else {
-                portfolioTotalChange.text = Utils.formatPriceNumber(portfolioDataClass.changePct.toDouble(),3)
+                portfolioTotalChange.text = "${Utils.formatPriceNumber(portfolioDataClass.changePct.toDouble(),3)}%"
                 change_pct_linear.background = ResourcesCompat.getDrawable(
                     requireActivity().resources,
                     R.drawable.portfolio_linear_shape_red,
@@ -461,7 +460,7 @@ class PortfolioBaseFragment(
         portfolioCoinRecyclerView.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
 
-        twentyFourtime.setTextColor(ContextCompat.getColor(requireActivity(), R.color.light_orange))
+        twentyFourtime.setTextColor(ContextCompat.getColor(requireActivity(), R.color.green_primary))
 
         twentyFourtime.setOnClickListener(this)
         oneWeek.setOnClickListener(this)
@@ -726,7 +725,7 @@ class PortfolioBaseFragment(
     }
 
     fun setCurrentItemTextColor(views: List<View>, view: View) {
-        (view as CTextView).setTextColor(ContextCompat.getColor(requireActivity(), R.color.light_orange))
+        (view as CTextView).setTextColor(ContextCompat.getColor(requireActivity(), R.color.green_primary))
         views.forEach {
             if (it.id != view.id)
                 if (SharedPreferencesCenter(requireActivity()).getNightMode())

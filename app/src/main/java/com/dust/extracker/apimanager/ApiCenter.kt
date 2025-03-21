@@ -5,14 +5,48 @@ import android.os.AsyncTask
 import android.util.Log
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
+import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.dust.extracker.dataclasses.*
-import com.dust.extracker.interfaces.*
+import com.dust.extracker.dataclasses.ChartDataClass
+import com.dust.extracker.dataclasses.CryptoMainData
+import com.dust.extracker.dataclasses.DetailsDataClass
+import com.dust.extracker.dataclasses.DollarInfoDataClass
+import com.dust.extracker.dataclasses.ExchangerDataClass
+import com.dust.extracker.dataclasses.LastChangeDataClass
+import com.dust.extracker.dataclasses.NewsDataClass
+import com.dust.extracker.dataclasses.PortfotioDataClass
+import com.dust.extracker.dataclasses.PriceDataClass
+import com.dust.extracker.dataclasses.UserDataClass
+import com.dust.extracker.interfaces.OnDetailsDataReceive
+import com.dust.extracker.interfaces.OnGetAllCryptoList
+import com.dust.extracker.interfaces.OnGetChartData
+import com.dust.extracker.interfaces.OnGetDailyChanges
+import com.dust.extracker.interfaces.OnGetDollarPrice
+import com.dust.extracker.interfaces.OnGetExchangersData
+import com.dust.extracker.interfaces.OnGetMainPrices
+import com.dust.extracker.interfaces.OnGetNews
+import com.dust.extracker.interfaces.OnGetPortfolioMainData
+import com.dust.extracker.interfaces.OnGetTotalMarketCap
+import com.dust.extracker.interfaces.OnSmsSend
+import com.dust.extracker.interfaces.OnUpdateSortOrder
+import com.dust.extracker.interfaces.OnUpdateUserData
+import com.dust.extracker.interfaces.OnUserDataReceived
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList) {
 
@@ -20,19 +54,19 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
     val cryptoCompareApiKey2 = "1ee7d718b849a41ecb9a844ae4d9b8167837294ac46ceeb04538125533bc5982"
 
     fun getAllCryptoList() {
-        Log.i("cryptocompareError","call")
-        val request = JsonObjectRequest(Request.Method.GET,
+        Log.i("InitLog","sending first request...")
+        val request = JsonObjectRequest(
+            Request.Method.GET,
             "https://min-api.cryptocompare.com/data/all/coinlist?$cryptoCompareApiKey",
             null,
             {
+                Log.i("InitLog","get all crypto success")
                 if (it.getString("Response") == "Success") {
                     val parseMainData = ParseMainData()
                     parseMainData.execute(it)
                 }
             },
-            {
-                Log.i("cryptocompareError",it.message.toString())
-            })
+            {})
         request.retryPolicy = DefaultRetryPolicy(
             20000,
             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -43,7 +77,8 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
 
     fun getCryptoPriceByName(name: String, dataNum: Int) {
 
-        val request = JsonObjectRequest(Request.Method.GET,
+        val request = JsonObjectRequest(
+            Request.Method.GET,
             "https://min-api.cryptocompare.com/data/price?fsym=$name&tsyms=USD&api_key={$cryptoCompareApiKey}",
             null,
             {
@@ -66,7 +101,8 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
 
     fun getDollarPrice(onGetDollarPrice: OnGetDollarPrice) {
 
-        val request = JsonObjectRequest(Request.Method.GET,
+        val request = JsonObjectRequest(
+            Request.Method.GET,
             "https://brsapi.ir/FreeTsetmcBourseApi/Api_Free_Gold_Currency_v2.json",
             null,
             {
@@ -94,7 +130,8 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
         var url =
             "https://min-api.cryptocompare.com/data/pricemulti?fsyms=$coins&tsyms=USD&api_key={$cryptoCompareApiKey}"
 
-        val request = JsonObjectRequest(Request.Method.GET,
+        val request = JsonObjectRequest(
+            Request.Method.GET,
             url,
             null,
             { response ->
@@ -129,7 +166,8 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
         if (type == 2)
             url =
                 "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=$coinNames&tsyms=USD&api_key={$cryptoCompareApiKey2}"
-        val request = JsonObjectRequest(Request.Method.GET,
+        val request = JsonObjectRequest(
+            Request.Method.GET,
             url,
             null,
             {
@@ -170,7 +208,8 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
 
     fun sendVerificationCodeByMessage(code: Int, phoneNumber: Double, onSmsSend: OnSmsSend) {
         val message = "کاربر عزیز خوش آمدید!\nکد فعال سازی شما:\n$code"
-        val request = JsonObjectRequest(Request.Method.GET,
+        val request = JsonObjectRequest(
+            Request.Method.GET,
             "https://raygansms.com/SendMessageWithCode.ashx?Username=Mahdim79&Password=6520062847Mahdi&Mobile=$phoneNumber&Message=$message",
             null,
             {
@@ -192,7 +231,8 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
         val jsonReqObject = JSONArray()
         jsonReqObject.put(phoneNumber)
 
-        val request = JsonArrayRequest(Request.Method.POST,
+        val request = JsonArrayRequest(
+            Request.Method.POST,
             "",
             jsonReqObject,
             {
@@ -213,7 +253,8 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
         jsonArray.put(data.Email)
         jsonArray.put(data.name)
 
-        val request = JsonArrayRequest(Request.Method.POST,
+        val request = JsonArrayRequest(
+            Request.Method.POST,
             "",
             jsonArray,
             {
@@ -262,21 +303,28 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
         when (format) {
             "24H" -> url =
                 "https://min-api.cryptocompare.com/data/v2/histohour?fsym=$coinName&tsym=USD&limit=23&api_key={$cryptoCompareApiKey}"
+
             "1W" -> url =
                 "https://min-api.cryptocompare.com/data/v2/histoday?fsym=$coinName&tsym=USD&limit=6&api_key={$cryptoCompareApiKey}"
+
             "1M" -> url =
                 "https://min-api.cryptocompare.com/data/v2/histoday?fsym=$coinName&tsym=USD&limit=29&api_key={$cryptoCompareApiKey}"
+
             "3M" -> url =
                 "https://min-api.cryptocompare.com/data/v2/histoday?fsym=$coinName&tsym=USD&limit=89&api_key={$cryptoCompareApiKey}"
+
             "6M" -> url =
                 "https://min-api.cryptocompare.com/data/v2/histoday?fsym=$coinName&tsym=USD&limit=179&api_key={$cryptoCompareApiKey}"
+
             "1Y" -> url =
                 "https://min-api.cryptocompare.com/data/v2/histoday?fsym=$coinName&tsym=USD&limit=364&api_key={$cryptoCompareApiKey}"
+
             "ALL" -> url =
                 "https://min-api.cryptocompare.com/data/v2/histoday?fsym=$coinName&tsym=USD&limit=1900&api_key={$cryptoCompareApiKey}"
         }
 
-        val request = JsonObjectRequest(Request.Method.GET,
+        val request = JsonObjectRequest(
+            Request.Method.GET,
             url,
             null,
             {
@@ -315,7 +363,8 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
     }
 
     fun getPortfolioMainData(coinNames: String, onGetPortfolioMainData: OnGetPortfolioMainData) {
-        val request = JsonObjectRequest(Request.Method.GET,
+        val request = JsonObjectRequest(
+            Request.Method.GET,
             "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=$coinNames&tsyms=USD&api_key={$cryptoCompareApiKey}",
             null,
             {
@@ -356,7 +405,8 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
     }
 
     fun getDetails(coinName: String, onDetailsDataReceive: OnDetailsDataReceive) {
-        val request = JsonObjectRequest(Request.Method.GET,
+        val request = JsonObjectRequest(
+            Request.Method.GET,
             "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=$coinName&tsyms=USD&api_key={$cryptoCompareApiKey}",
             null,
             {
@@ -384,8 +434,9 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
     }
 
     fun getTotalMarketCap(onGetTotalMarketCap: OnGetTotalMarketCap) {
-        Log.i("coingeckoRequest","getTotalMarketCap")
-        val request = JsonObjectRequest(Request.Method.GET,
+        Log.i("coingeckoRequest", "getTotalMarketCap")
+        val request = JsonObjectRequest(
+            Request.Method.GET,
             "https://api.coingecko.com/api/v3/global",
             null,
             {
@@ -405,8 +456,9 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
     }
 
     fun getExchangersData(onGetExchangersData: OnGetExchangersData) {
-        Log.i("coingeckoRequest","getExchangersData")
-        val request = JsonArrayRequest(Request.Method.GET,
+        Log.i("coingeckoRequest", "getExchangersData")
+        val request = JsonArrayRequest(
+            Request.Method.GET,
             "https://api.coingecko.com/api/v3/exchanges?per_page=249",
             null,
             {
@@ -442,11 +494,14 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
     }
 
     fun getMarketCapSortOrder(onUpdateSortOrder: OnUpdateSortOrder) {
-        Log.i("coingeckoRequest","getMarketCapSortOrder")
-        val request = JsonArrayRequest(Request.Method.GET,
+        Log.i("InitLog","sending sort request...")
+
+        val request = JsonArrayRequest(
+            Request.Method.GET,
             "https://api.coingecko.com/api/v3/coins/markets?vs_currency=Usd&order=market_cap_desc&per_page=110&page=1&sparkline=false",
             null,
             {
+                Log.i("InitLog","sort request success...")
                 val list = arrayListOf<Pair<String, Int>>()
                 for (i in 0 until it.length())
                     list.add(
@@ -468,32 +523,42 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
 
     fun getNews(onGetNews: OnGetNews) {
         val request = JsonObjectRequest(Request.Method.GET,
-            "https://min-api.cryptocompare.com/data/v2/news/?lang=EN&api_key={$cryptoCompareApiKey}",
+            "https://newsdata.io/api/1/news?apikey=pub_75401313d1b4e67864e7abdcdbc857925d56a&q=بیت%20کوین&language=fa",
             null,
             {
                 try {
-                    val data = it.getJSONArray("Data")
+                    val data = it.getJSONArray("results")
                     val resultList = arrayListOf<NewsDataClass>()
                     for (i in 0 until data.length()) {
                         try {
                             val obj = data.getJSONObject(i)!!
+
+                            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                            formatter.timeZone = TimeZone.getTimeZone("UTC")
+
+                            var date = 0
+                            formatter.parse(obj.getString("pubDate"))?.let { newsDate ->
+                                date = (newsDate.time / 1000).toInt()
+                            }
+
                             resultList.add(
                                 NewsDataClass(
                                     i,
-                                    obj.getInt("id"),
+                                    obj.getString("article_id"),
                                     obj.getString("title"),
-                                    obj.getString("body"),
+                                    obj.getString("description"),
                                     0,
                                     0,
-                                    obj.getString("imageurl"),
+                                    obj.getString("image_url"),
                                     false,
-                                    obj.getInt("published_on"),
-                                    obj.getString("url"),
-                                    obj.getString("categories"),
-                                    obj.getString("tags")
+                                    date,
+                                    obj.getString("link"),
+                                    getNewsCategory(obj.getString("source_name"),obj.getString("title")),
+                                    obj.getString("source_id")
                                 )
                             )
                         } catch (e: Exception) {
+                            Log.i("afd","adsf")
                         }
                     }
                     onGetNews.onGetNews(resultList)
@@ -509,6 +574,21 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
         Volley.newRequestQueue(context).add(request)
+    }
+
+    private fun getNewsCategory(defaultCategory:String,text:String): String {
+        var category = defaultCategory
+        if (category.isEmpty())
+            category = "any"
+        if (text.contains("بیت کوین") || text.contains("بیت"))
+            category += ",BTC"
+        if (text.contains("اتریوم"))
+            category += ",ETH"
+        if (text.contains("تحلیل"))
+            category += ",Trading"
+        if (text.contains("آلتکوین"))
+            category += ",Altcoin"
+        return category
     }
 
 }

@@ -81,7 +81,7 @@ class SearchNewsFragment : Fragment() {
     private fun setUpSearchViews() {
 
         news_recycler_view.layoutManager =
-            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         news_name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {

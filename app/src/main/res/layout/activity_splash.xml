@@ -6,16 +6,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="?colorPrimary"
+    android:background="@drawable/splash_gradiant"
     android:gravity="center"
     tools:context=".activities.SplashActivity">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/img_splash"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:src="@drawable/application_icon"
-        android:layout_marginBottom="@dimen/standardMargin"
-        />
+    <TextView
+        android:id="@+id/tv_splash_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="42sp"
+        android:text="@string/splash_app_name"/>
+
+    <TextView
+        android:id="@+id/tv_splash_slogan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:text="@string/slogan"/>
 
 </LinearLayout>

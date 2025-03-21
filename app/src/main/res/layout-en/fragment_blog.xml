@@ -18,11 +18,11 @@
 
         <ImageView
             android:id="@+id/search_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/standardMargin"
-            android:src="@drawable/ic_baseline_search"
+            android:src="@drawable/search"
             app:tint="?colorAccent" />
 
         <ImageView
@@ -62,7 +62,9 @@
                     android:id="@+id/slider_viewpager"
                     android:layout_width="match_parent"
                     android:layoutDirection="ltr"
-                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingHorizontal="30dp"
+                    android:layout_height="250dp"
                     android:overScrollMode="never" />
 
                 <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
@@ -74,7 +76,7 @@
                     android:layout_alignParentBottom="true"
                     android:layoutDirection="ltr"
                     android:layout_centerInParent="true"
-                    app:selectedDotColor="@color/light_orange"
+                    app:selectedDotColor="@color/green_primary"
                     app:dotsCornerRadius="8dp"
                     app:dotsSize="10dp"
                     app:dotsSpacing="4dp"
@@ -87,18 +89,23 @@
                 android:id="@+id/news_tablayout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:tabIndicatorColor="@color/light_orange"
-                app:tabIndicatorHeight="4dp"
+                android:layout_marginHorizontal="@dimen/standardMargin1.5x"
+                app:tabIndicatorColor="@color/green_primary"
+                app:tabIndicatorHeight="0dp"
                 android:layoutDirection="ltr"
+                app:tabBackground="@drawable/custom_tab_shape"
                 app:tabTextAppearance="@style/customTabLayout"
-                app:tabSelectedTextColor="@color/light_orange"
-                app:tabTextColor="?colorAccent"
-                android:layout_weight="0.1" />
+                app:tabSelectedTextColor="@color/white"
+                app:tabPaddingStart="5dp"
+                app:tabPaddingEnd="5dp"
+                app:tabTextColor="@color/green_light"
+                android:layout_weight="0.06" />
 
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/news_viewpager"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginTop="10dp"
                 android:layoutDirection="ltr"
                 android:layout_weight="0.4" />
 

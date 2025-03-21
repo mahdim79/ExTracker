@@ -17,6 +17,12 @@ import com.dust.extracker.R
 import com.dust.extracker.adapters.recyclerviewadapters.ExchangerRecyclerViewAdapter
 import com.dust.extracker.realmdb.MainRealmObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
+import io.realm.RealmResults
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class ExchnagerChooseCryptoFragment(
     var positionMain: Int,
@@ -36,6 +42,8 @@ class ExchnagerChooseCryptoFragment(
     lateinit var list1: List<MainRealmObject>
 
     var PaginationCount: Int = 1
+
+    var searchJob:Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,20 +67,11 @@ class ExchnagerChooseCryptoFragment(
         val l = realmDB.getAllCryptoData()
         crypto_name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
-                if (crypto_name.text.toString() == "") {
-                    MODE = 0
-                    PaginationCount = 1
-                    setUpRecyclerView(PaginationCount)
-                    return
+                searchJob?.cancel()
+                searchJob = CoroutineScope(Dispatchers.IO).launch {
+                    delay(1000)
+                    doSearch(l)
                 }
-                MODE = 1
-                val listTemp = arrayListOf<MainRealmObject>()
-                for (i in 0 until l.size){
-                    if (l[i]!!.FullName!!.indexOf(crypto_name.text.toString() , ignoreCase = true) != -1)
-                        listTemp.add(l[i]!!)
-                }
-                tempList = listTemp
-                setUpRecyclerView(PaginationCount)
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -83,6 +82,23 @@ class ExchnagerChooseCryptoFragment(
 
         })
 
+    }
+
+    private fun doSearch(l: RealmResults<MainRealmObject>){
+        if (crypto_name.text.toString() == "") {
+            MODE = 0
+            PaginationCount = 1
+            setUpRecyclerView(PaginationCount)
+            return
+        }
+        MODE = 1
+        val listTemp = arrayListOf<MainRealmObject>()
+        for (i in 0 until l.size){
+            if (l[i]!!.FullName!!.indexOf(crypto_name.text.toString() , ignoreCase = true) != -1)
+                listTemp.add(l[i]!!)
+        }
+        tempList = listTemp
+        setUpRecyclerView(PaginationCount)
     }
 
     private fun setUpDataBase() {
@@ -137,7 +153,7 @@ class ExchnagerChooseCryptoFragment(
                 positionMain,
                 requireActivity(),
                 datalist,
-                fragmentManager!!
+                requireFragmentManager()
             )
     }
 
@@ -145,7 +161,7 @@ class ExchnagerChooseCryptoFragment(
 
         var imageView: ImageView = view.findViewById(R.id.imageView)
         imageView.setOnClickListener {
-            fragmentManager!!.popBackStack("ExchnagerChooseCryptoFragment", 1)
+            requireFragmentManager().popBackStack("ExchnagerChooseCryptoFragment", 1)
         }
     }
 

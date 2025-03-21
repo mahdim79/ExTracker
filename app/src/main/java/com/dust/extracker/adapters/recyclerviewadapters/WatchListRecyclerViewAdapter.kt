@@ -114,13 +114,13 @@ class WatchListRecyclerViewAdapter(
 
         if (list[position].DailyChangePCT != null) {
             if (list[position].DailyChangePCT!! > 0)
-                holder.change_pct_linear.background = ResourcesCompat.getDrawable(
+                holder.dailyChange.background = ResourcesCompat.getDrawable(
                     context.resources,
                     R.drawable.portfolio_linear_shape_green,
                     null
                 )
             else
-                holder.change_pct_linear.background = ResourcesCompat.getDrawable(
+                holder.dailyChange.background = ResourcesCompat.getDrawable(
                     context.resources,
                     R.drawable.portfolio_linear_shape_red,
                     null
@@ -152,7 +152,7 @@ class WatchListRecyclerViewAdapter(
                         ) {
                             holder.dailyChange.text = "${bundle.getDouble(list[position].Name)}%"
 
-                            holder.change_pct_linear.background = ResourcesCompat.getDrawable(
+                            holder.dailyChange.background = ResourcesCompat.getDrawable(
                                 context.resources,
                                 R.drawable.portfolio_linear_shape_green,
                                 null
@@ -161,7 +161,7 @@ class WatchListRecyclerViewAdapter(
                         } else {
                             holder.dailyChange.text = "${bundle.getDouble(list[position].Name)}%"
 
-                            holder.change_pct_linear.background = ResourcesCompat.getDrawable(
+                            holder.dailyChange.background = ResourcesCompat.getDrawable(
                                 context.resources,
                                 R.drawable.portfolio_linear_shape_red,
                                 null
@@ -255,6 +255,5 @@ class WatchListRecyclerViewAdapter(
         var item_text_coinName = itemView.findViewById<TextView>(R.id.item_text_coinName)
         var dailyChange = itemView.findViewById<CTextView>(R.id.dailyChange)
         var item_price_toman = itemView.findViewById<CTextView>(R.id.item_price_toman)
-        var change_pct_linear = itemView.findViewById<LinearLayout>(R.id.change_pct_linear)
     }
 }
