@@ -32,8 +32,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layoutDirection="ltr"
-            app:thumbTint="@color/light_black"
-            app:trackTint="@color/switcher_selector"
+            android:thumb="@drawable/switch_compat_thumb"
+            app:track="@drawable/switch_compat_track"
             />
     </LinearLayout>
 </LinearLayout>

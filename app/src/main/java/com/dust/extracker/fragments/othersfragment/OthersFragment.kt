@@ -50,7 +50,6 @@ class OthersFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
 
 
     private lateinit var others_name: CTextView
-    private lateinit var others_version: CTextView
     private lateinit var userLogInTxt: CTextView
 
     private lateinit var others_edit: CButton
@@ -171,7 +170,6 @@ private lateinit var onUserLogIn: OnUserLogIn
         others_telegram.setOnClickListener(this)
         others_instagram.setOnClickListener(this)
         others_edit.setOnClickListener(this)
-        others_version.setOnClickListener(this)
         others_name.setOnClickListener(this)
         others_profilePhoto.setOnClickListener(this)
         others_profile_edit.setOnClickListener(this)
@@ -324,7 +322,6 @@ private lateinit var onUserLogIn: OnUserLogIn
         others_nightModeSwitcher = view.findViewById(R.id.others_nightModeSwitcher)
         others_notificationSwitcher = view.findViewById(R.id.others_notificationSwitcher)
         others_edit = view.findViewById(R.id.others_edit)
-        others_version = view.findViewById(R.id.others_version)
         others_name = view.findViewById(R.id.others_name)
         others_profilePhoto = view.findViewById(R.id.others_profilePhoto)
         userLogInTxt = view.findViewById(R.id.userLogInTxt)

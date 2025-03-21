@@ -15,7 +15,7 @@
     <string name="dailyChange">نوسان روزانه</string>
     <string name="comments">دیدگاه ها</string>
     <string name="cryptoExchanger">مبدل ارز</string>
-    <string name="portfolio">پورتفولیو</string>
+    <string name="portfolio">پورتفوی</string>
     <string name="market">بازار</string>
     <string name="blog">بلاگ</string>
     <string name="settings">تنظیمات</string>
@@ -64,7 +64,7 @@
     <string name="anounsement">اطلاعیه ها</string>
     <string name="priceAnounsment">اطلاعیه های قیمت</string>
     <string name="importantNewsAnounsment">اطلاعیه های اخبار مهم</string>
-    <string name="portfolioAnounsment">اطلاعیه های پورتفولیو</string>
+    <string name="portfolioAnounsment">اطلاعیه های پورتفوی</string>
     <string name="customizeAnounsments">شخصی سازی اطلاعیه ها</string>
     <string name="craeteCustomization">ایجاد شخصی سازی</string>
     <string name="edit">ویرایش</string>

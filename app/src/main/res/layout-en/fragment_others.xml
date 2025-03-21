@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="?colorPrimary"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <LinearLayout
-
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
@@ -16,16 +18,9 @@
             android:id="@+id/others_profilePhoto"
             android:layout_width="180dp"
             android:layout_height="180dp"
+            android:visibility="gone"
             android:layout_marginTop="@dimen/standardMargin3x"
             android:src="@mipmap/ic_launcher" />
-
-        <com.dust.extracker.customviews.CTextView
-            android:id="@+id/others_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/standardMargin"
-            android:textColor="?android:textColor"
-            android:textSize="@dimen/TextSize3x" />
 
         <LinearLayout
             android:id="@+id/others_profile_edit"
@@ -61,13 +56,14 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
-            android:backgroundTint="?colorPrimary"
+            android:backgroundTint="?colorOnSecondary"
             android:layout_marginHorizontal="@dimen/standardMargin"
-            android:layout_marginTop="@dimen/standardMargin1.5x">
+            android:layout_marginTop="20dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:paddingVertical="20dp"
+                android:paddingHorizontal="10dp"
                 android:gravity="center_vertical"
                 android:layoutDirection="ltr"
                 android:orientation="horizontal">
@@ -111,9 +107,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layoutDirection="ltr"
-                        app:thumbTint="@color/light_black"
+                        android:thumb="@drawable/switch_compat_thumb"
+                        app:track="@drawable/switch_compat_track"
                         android:checked="true"
-                        app:trackTint="@color/switcher_selector"
                         />
                 </LinearLayout>
 
@@ -128,11 +124,12 @@
             android:layout_marginHorizontal="@dimen/standardMargin"
             android:layout_marginTop="@dimen/standardMargin1.5x"
             app:cardElevation="0dp"
-            android:backgroundTint="?colorPrimary">
+            android:backgroundTint="?colorOnSecondary">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:paddingVertical="20dp"
+                android:paddingHorizontal="10dp"
                 android:foreground="?attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:layoutDirection="ltr"
@@ -164,8 +161,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layoutDirection="ltr"
-                        app:thumbTint="@color/light_black"
-                        app:trackTint="@color/switcher_selector"
+                        android:thumb="@drawable/switch_compat_thumb"
+                        app:track="@drawable/switch_compat_track"
                         />
                 </LinearLayout>
             </LinearLayout>
@@ -179,11 +176,12 @@
             android:layout_marginHorizontal="@dimen/standardMargin"
             android:layout_marginTop="@dimen/standardMargin1.5x"
             app:cardElevation="0dp"
-            android:backgroundTint="?colorPrimary">
+            android:backgroundTint="?colorOnSecondary">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:paddingVertical="20dp"
+                android:paddingHorizontal="10dp"
                 android:foreground="?attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:layoutDirection="ltr"
@@ -215,8 +213,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layoutDirection="ltr"
-                        app:thumbTint="@color/light_black"
-                        app:trackTint="@color/switcher_selector"
+                        android:thumb="@drawable/switch_compat_thumb"
+                        app:track="@drawable/switch_compat_track"
                         />
                 </LinearLayout>
             </LinearLayout>
@@ -230,12 +228,13 @@
             android:layout_marginHorizontal="@dimen/standardMargin"
             android:layout_marginTop="@dimen/standardMargin1.5x"
             app:cardElevation="0dp"
-            android:backgroundTint="?colorPrimary">
+            android:backgroundTint="?colorOnSecondary">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:paddingVertical="20dp"
+                android:paddingHorizontal="10dp"
                 android:foreground="?attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:layoutDirection="ltr"
@@ -266,8 +265,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layoutDirection="ltr"
-                        app:thumbTint="@color/light_black"
-                        app:trackTint="@color/switcher_selector"
+                        android:thumb="@drawable/switch_compat_thumb"
+                        app:track="@drawable/switch_compat_track"
                         />
                 </LinearLayout>
             </LinearLayout>
@@ -417,23 +416,33 @@
                 android:layoutDirection="ltr"
                 android:orientation="horizontal">
 
-                <com.dust.extracker.customviews.CTextView
-                    android:id="@+id/others_version"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/standardMargin0.5x"
-                    android:text="@string/version"
-                    android:textColor="?android:textColor"
-                    android:textSize="@dimen/TextSize2x" />
+
             </LinearLayout>
         </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingBottom="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical">
+
+        <com.dust.extracker.customviews.CTextView
+            android:id="@+id/others_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/standardMargin"
+            android:textColor="?android:textColor"
+            android:layout_gravity="center"
+            android:textSize="@dimen/TextSize3x" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/standardMargin3x"
-            android:orientation="horizontal"
-            >
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
             <View
                 android:id="@+id/divider1"
                 android:layout_width="0dp"
@@ -506,7 +515,5 @@
 
 
         </LinearLayout>
-
-
     </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

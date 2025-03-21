@@ -111,11 +111,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="gone"
             android:layoutDirection="ltr"
+            android:visibility="gone"
             android:gravity="center"
-            android:paddingTop="@dimen/standardMargin"
-            >
+            android:paddingTop="@dimen/standardMargin">
             <ImageView
                 android:id="@+id/back_btn"
                 android:layout_width="wrap_content"
@@ -134,8 +133,8 @@
                 android:textColorHint="?colorAccent"
                 android:textColor="?android:textColor"
                 android:drawableTint="?colorAccent"
-                android:padding="6dp"
-                android:background="@drawable/edittext_selector"
+                android:padding="8dp"
+                android:background="@drawable/input_data_edittext_shape"
                 android:layout_marginHorizontal="@dimen/standardMargin"
                 />
         </LinearLayout>
