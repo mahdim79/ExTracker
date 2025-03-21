@@ -47,12 +47,12 @@ class SetPasswordFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         setUpShared()
         coordinator = view.findViewById(R.id.coordinator)
-        vibrator = requireActivity().getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        vibrator = requireContext().getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         setupview(view)
     }
 
     private fun setUpShared() {
-        preferences = SharedPreferencesCenter(requireActivity())
+        preferences = SharedPreferencesCenter(requireContext())
     }
 
     private fun setupview(view: View) {

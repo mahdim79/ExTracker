@@ -75,12 +75,12 @@ class ReadNewsFragment(var newsData: NewsDataClass) : Fragment() {
     }
 
     private fun setUpSharedPreferencesService() {
-        shared = SharedPreferencesCenter(requireActivity())
+        shared = SharedPreferencesCenter(requireContext())
     }
 
     private fun setUpComments() {
         comment_recyclerview.layoutManager =
-            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         // TODO: 5/30/2021 get comments from server
         doApiCallAndSync(COMMENT_PAGINATION_COUNTER)
 
@@ -118,7 +118,7 @@ class ReadNewsFragment(var newsData: NewsDataClass) : Fragment() {
         Picasso.get().load(newsData.imageUrl).into(new_img)
         send_comment.setTextColor(Color.BLACK)
         news_view_count.text =
-            requireActivity().resources.getString(R.string.view_count_news, newsData.likeCount, newsData.seenCount)
+            requireContext().resources.getString(R.string.view_count_news, newsData.likeCount, newsData.seenCount)
         news_tag.text = "#${newsData.tags.replace(" ", "").replace("|", " #")}"
         news_main_source.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(newsData.url))

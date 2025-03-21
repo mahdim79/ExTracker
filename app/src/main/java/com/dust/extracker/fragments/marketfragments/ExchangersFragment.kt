@@ -88,7 +88,7 @@ class ExchangersFragment : Fragment(), OnGetExchangersData, OnExchangerRealmData
     }
 
     private fun setUpApiService() {
-        apiService = ApiCenter(requireActivity(), object : OnGetAllCryptoList {
+        apiService = ApiCenter(requireContext(), object : OnGetAllCryptoList {
             override fun onGet(cryptoList: List<CryptoMainData>) {}
 
             override fun onGetByName(price: Double, dataNum: Int) {}
@@ -96,7 +96,7 @@ class ExchangersFragment : Fragment(), OnGetExchangersData, OnExchangerRealmData
     }
 
     private fun setUpRecyclerViewAdapter(data: List<ExchangerObject>) {
-        exchanger_recyclerView.adapter = MarketExchangerRecyclerViewAdapter(requireActivity(), data)
+        exchanger_recyclerView.adapter = MarketExchangerRecyclerViewAdapter(requireContext(), data)
         exchanger_progressBar.visibility = View.GONE
     }
 
@@ -107,7 +107,7 @@ class ExchangersFragment : Fragment(), OnGetExchangersData, OnExchangerRealmData
         exchanger_main_nested = view.findViewById(R.id.exchanger_main_nested)
 
         exchanger_recyclerView.layoutManager =
-            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
     }
 
@@ -119,7 +119,7 @@ class ExchangersFragment : Fragment(), OnGetExchangersData, OnExchangerRealmData
     }
 
     private fun checkNetWorkConnectivity(): Boolean {
-        val conn = requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val conn = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = conn.activeNetworkInfo
         return info != null && info.isConnectedOrConnecting
     }
@@ -144,15 +144,15 @@ class ExchangersFragment : Fragment(), OnGetExchangersData, OnExchangerRealmData
         searchNotifier = SearchNotifier()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"),Context.RECEIVER_EXPORTED)
+            requireContext().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"),Context.RECEIVER_EXPORTED)
         }else{
-            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))        }
+            requireContext().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))        }
 
     }
 
     override fun onStop() {
         super.onStop()
-        requireActivity().unregisterReceiver(searchNotifier)
+        requireContext().unregisterReceiver(searchNotifier)
 
     }
 

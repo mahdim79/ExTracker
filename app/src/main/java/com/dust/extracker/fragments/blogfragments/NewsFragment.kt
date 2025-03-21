@@ -45,7 +45,7 @@ class NewsFragment : Fragment() {
 
     private fun setUpRecyclerView() {
         newsRecyclerView.layoutManager =
-            LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         newsRecyclerView.adapter = when (arguments?.getInt("position")) {
             0 -> {
                 val data = realmDB.getNews("ALL")

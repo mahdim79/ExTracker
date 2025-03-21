@@ -44,12 +44,14 @@
         app:errorEnabled="true"
         android:textColorHint="?android:textColor"
         app:errorTextColor="@color/red">
+
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/name"
+            android:background="@drawable/input_data_edittext_shape"
             android:inputType="text"
-            android:backgroundTint="?android:textColor"
+            android:padding="12dp"
             android:textColor="?android:textColor"
             android:textDirection="rtl" />
     </com.google.android.material.textfield.TextInputLayout>

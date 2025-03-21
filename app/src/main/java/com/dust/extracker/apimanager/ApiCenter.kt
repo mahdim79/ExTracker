@@ -54,20 +54,19 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
     val cryptoCompareApiKey2 = "1ee7d718b849a41ecb9a844ae4d9b8167837294ac46ceeb04538125533bc5982"
 
     fun getAllCryptoList() {
-        Log.i("cryptocompareError", "call")
+        Log.i("InitLog","sending first request...")
         val request = JsonObjectRequest(
             Request.Method.GET,
             "https://min-api.cryptocompare.com/data/all/coinlist?$cryptoCompareApiKey",
             null,
             {
+                Log.i("InitLog","get all crypto success")
                 if (it.getString("Response") == "Success") {
                     val parseMainData = ParseMainData()
                     parseMainData.execute(it)
                 }
             },
-            {
-                Log.i("cryptocompareError", it.message.toString())
-            })
+            {})
         request.retryPolicy = DefaultRetryPolicy(
             20000,
             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -495,12 +494,14 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
     }
 
     fun getMarketCapSortOrder(onUpdateSortOrder: OnUpdateSortOrder) {
-        Log.i("coingeckoRequest", "getMarketCapSortOrder")
+        Log.i("InitLog","sending sort request...")
+
         val request = JsonArrayRequest(
             Request.Method.GET,
             "https://api.coingecko.com/api/v3/coins/markets?vs_currency=Usd&order=market_cap_desc&per_page=110&page=1&sparkline=false",
             null,
             {
+                Log.i("InitLog","sort request success...")
                 val list = arrayListOf<Pair<String, Int>>()
                 for (i in 0 until it.length())
                     list.add(
@@ -579,7 +580,7 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
         var category = defaultCategory
         if (category.isEmpty())
             category = "any"
-        if (text.contains("بیت کوین"))
+        if (text.contains("بیت کوین") || text.contains("بیت"))
             category += ",BTC"
         if (text.contains("اتریوم"))
             category += ",ETH"
