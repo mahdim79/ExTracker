@@ -126,7 +126,7 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
 
     fun searchCrypto(q:String,callBack:(List<MainRealmObject>) -> Unit){
         val url =
-            "https://data-api.coindesk.com/asset/v1/search?search_string=$q&limit=10"
+            "https://data-api.coindesk.com/asset/v1/search?search_string=$q&limit=20"
 
         val request = JsonObjectRequest(
             Request.Method.GET,
@@ -139,12 +139,14 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
                     val resultList = response.getJSONObject("Data").getJSONArray("LIST")
                     for(i in 0 until resultList.length()){
                         val item = resultList.getJSONObject(i)
-                        val obj = MainRealmObject()
-                        obj.ID = item.getInt("ID").toString()
-                        obj.ImageUrl = item.getString("LOGO_URL")
-                        obj.Name = item.getString("NAME")
-                        obj.Symbol = item.getString("SYMBOL")
-                        list.add(obj)
+                        if (item.getDouble("CIRCULATING_MKT_CAP_USD") != 0.0){
+                            val obj = MainRealmObject()
+                            obj.ID = item.getInt("ID").toString()
+                            obj.ImageUrl = item.getString("LOGO_URL")
+                            obj.Name = item.getString("NAME")
+                            obj.Symbol = item.getString("SYMBOL")
+                            list.add(obj)
+                        }
                     }
                 }catch (e:Exception){}
 

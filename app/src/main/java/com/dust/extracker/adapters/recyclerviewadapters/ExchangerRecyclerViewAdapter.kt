@@ -13,12 +13,12 @@ import com.dust.extracker.realmdb.MainRealmObject
 import com.squareup.picasso.Picasso
 
 class ExchangerRecyclerViewAdapter(
-    var mainPosition: Int,
     var context: Context,
     var list: List<MainRealmObject>,
     var fragmentManager: FragmentManager
 ) : RecyclerView.Adapter<ExchangerRecyclerViewAdapter.MainViewHolder>() {
 
+    private lateinit var onItemClick:(symbol:String) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         return MainViewHolder(
@@ -31,10 +31,16 @@ class ExchangerRecyclerViewAdapter(
         holder.item_text_coin.text = " (${list[position].Symbol})"
         Picasso.get().load(list[position].ImageUrl).into(holder.cryptoImage)
         holder.itemView.setOnClickListener {
-            context.getSharedPreferences("CRS", Context.MODE_PRIVATE).edit()
-                .putString("CR$mainPosition", list[position].Symbol).apply()
-            fragmentManager.popBackStack("ExchnagerChooseCryptoFragment", 1)
+            if (::onItemClick.isInitialized){
+                list[position].Symbol?.let { s ->
+                    onItemClick.invoke(s)
+                }
+            }
         }
+    }
+
+    fun setOnItemClickListener(onItemClick:(symbol:String) -> Unit){
+        this.onItemClick = onItemClick
     }
 
     override fun getItemCount(): Int = list.size

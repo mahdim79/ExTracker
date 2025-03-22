@@ -57,6 +57,30 @@ class RealmDataBaseCenter() {
         })
     }
 
+    fun insertSearchCryptoData(
+        data: CryptoMainData,
+        onRealmDataChanged: OnRealmDataChanged
+    ) {
+        realmDB.executeTransactionAsync({
+            if (it.where(MainRealmObject::class.java).equalTo("Symbol",data.Symbol).findFirst() == null){
+                val objectmain = MainRealmObject()
+                objectmain.id = it.where(MainRealmObject::class.java).findAll().size
+                objectmain.ID = data.Id
+                objectmain.ImageUrl = data.ImageUrl
+                objectmain.Name = data.Name
+                objectmain.Symbol = data.Symbol
+                objectmain.maxSupply = data.maxSupply
+                objectmain.LastPrice = 0.0
+                objectmain.DailyChangePCT = 0.0
+                it.copyToRealmOrUpdate(objectmain)
+            }
+        }, {
+            onRealmDataChanged.onAddComplete()
+        }, {
+
+        })
+    }
+
     fun getCryptoDataCount(): Int = realmDB.where(MainRealmObject::class.java).findAll().size
 
     fun getCryptoData(PaginationCount: Int): List<MainRealmObject> {
@@ -75,7 +99,7 @@ class RealmDataBaseCenter() {
     fun getPopularCoins(): List<MainRealmObject> {
         val list = arrayListOf<MainRealmObject>()
         try {
-            val data = realmDB.where(MainRealmObject::class.java).findAll()
+            val data = realmDB.where(MainRealmObject::class.java).between("id",0,60).findAll()
             list.addAll(data)
         } catch (e: Exception) {
         }
@@ -85,8 +109,9 @@ class RealmDataBaseCenter() {
     fun getCryptoDataByIds(list: List<String>): List<MainRealmObject> {
         val result = arrayListOf<MainRealmObject>()
         list.forEach {
-            val data = realmDB.where(MainRealmObject::class.java).equalTo("ID", it).findFirst()
-            result.add(data!!)
+            realmDB.where(MainRealmObject::class.java).equalTo("ID", it).findFirst()?.let { data ->
+                result.add(data)
+            }
         }
         return result
     }

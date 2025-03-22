@@ -2,6 +2,7 @@ package com.dust.extracker.fragments.portfoliofragments
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,16 +15,19 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.dust.extracker.R
+import com.dust.extracker.apimanager.ApiCenter
 import com.dust.extracker.customviews.CButton
 import com.dust.extracker.customviews.CTextView
+import com.dust.extracker.dataclasses.CryptoMainData
 import com.dust.extracker.dataclasses.HistoryDataClass
 import com.dust.extracker.dataclasses.TransactionDataClass
+import com.dust.extracker.interfaces.OnGetAllCryptoList
 import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 
-class InputDataFragment : Fragment(), View.OnClickListener {
+class InputDataFragment : Fragment(), View.OnClickListener,OnGetAllCryptoList {
     lateinit var btnBuy: CButton
     lateinit var btnSell: CButton
     lateinit var btnAdd: CButton
@@ -50,6 +54,8 @@ class InputDataFragment : Fragment(), View.OnClickListener {
 
     lateinit var viewMain: View
 
+    private lateinit var apiService:ApiCenter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -69,6 +75,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
 
     private fun setUpRealmDb() {
         realmDB = RealmDataBaseCenter()
+        apiService = ApiCenter(requireContext(),this)
     }
 
     private fun syncViews() {
@@ -135,14 +142,13 @@ class InputDataFragment : Fragment(), View.OnClickListener {
             spinnerRelativeLayout.visibility = View.GONE
         }
 
-        mainPrice.editText!!.setText(
-            realmDB.getCryptoDataByName(
-                requireArguments().getString(
-                    "COINNAME",
-                    "BTC"
-                )
-            ).LastPrice!!.toString()
-        )
+        val cachedPrice = realmDB.getCryptoDataByName(requireArguments().getString("COINNAME", "BTC")).LastPrice
+        if (cachedPrice == null || cachedPrice == 0.0){
+            apiService.getCryptoPriceByName(requireArguments().getString("COINNAME", "BTC"), 0)
+        }else{
+            mainPrice.editText!!.setText(cachedPrice.toString())
+        }
+
         realmDB.getDollarPrice()?.price?.let {
             dollarPrice.editText!!.setText(it)
         }
@@ -328,5 +334,11 @@ class InputDataFragment : Fragment(), View.OnClickListener {
 
 
         return result
+    }
+
+    override fun onGet(cryptoList: List<CryptoMainData>) {}
+
+    override fun onGetByName(price: Double, dataNum: Int) {
+        mainPrice.editText!!.setText(price.toString())
     }
 }

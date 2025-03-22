@@ -33,10 +33,8 @@ class ExchangersFragment : Fragment(), OnGetExchangersData, OnExchangerRealmData
     private lateinit var exchanger_progressBar: ProgressBar
     private lateinit var exchanger_main_nested: NestedScrollView
     lateinit var realmDB: RealmDataBaseCenter
-    private lateinit var searchNotifier: SearchNotifier
     lateinit var apiService: ApiCenter
     var list = arrayListOf<ExchangerObject>()
-    var SEARCHMODE = false
 
     var PaginationCount: Int = 1
 
@@ -61,12 +59,10 @@ class ExchangersFragment : Fragment(), OnGetExchangersData, OnExchangerRealmData
     private fun setUpPagination() {
         exchanger_main_nested.setOnScrollChangeListener { view: NestedScrollView?, _: Int, i2: Int, _: Int, _: Int ->
             if (i2 == view!!.getChildAt(0).measuredHeight - view.measuredHeight){
-                if (!SEARCHMODE){
-                    if (PaginationCount != 3){
-                        PaginationCount++
-                        list.addAll(realmDB.getExchangersData(PaginationCount))
-                        setUpRecyclerViewAdapter(list)
-                    }
+                if (PaginationCount != 3){
+                    PaginationCount++
+                    list.addAll(realmDB.getExchangersData(PaginationCount))
+                    setUpRecyclerViewAdapter(list)
                 }
             }
         }
@@ -137,58 +133,6 @@ class ExchangersFragment : Fragment(), OnGetExchangersData, OnExchangerRealmData
         list.clear()
         list.addAll(realmDB.getExchangersData(PaginationCount))
         setUpRecyclerViewAdapter(list)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        searchNotifier = SearchNotifier()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            requireContext().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"),Context.RECEIVER_EXPORTED)
-        }else{
-            requireContext().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))        }
-
-    }
-
-    override fun onStop() {
-        super.onStop()
-        requireContext().unregisterReceiver(searchNotifier)
-
-    }
-
-    inner class SearchNotifier: BroadcastReceiver(){
-        override fun onReceive(p0: Context?, p1: Intent?) {
-            if (p1!!.extras != null && p1.extras!!.containsKey("EXTRA_DATA")){
-                if (p1.extras!!.getString("EXTRA_DATA") == "com.dust.extracker.kdsfjgksdjflasdk.START"){
-                    setUpRecyclerViewAdapter(arrayListOf())
-                    SEARCHMODE = true
-                }else if (p1.extras!!.getString("EXTRA_DATA") == "com.dust.extracker.kdsfjgksdjflasdk.STOP"){
-                    setUpRecyclerViewAdapter(list)
-                    SEARCHMODE = false
-                }else{
-                    if (p1.extras!!.getString("EXTRA_DATA_EXCHANGER") == ""){
-                        setUpRecyclerViewAdapter(arrayListOf())
-                        return
-                    }
-                    val results = realmDB.getExchangerDataByIds(p1.extras!!.getString("EXTRA_DATA_EXCHANGER")!!.split(","))
-
-                    if (results.size > 25){
-                        val pList = arrayListOf<ExchangerObject>()
-                        for (i in 0 until results.size){
-                            if (i < 24)
-                                pList.add(results[i])
-                            else
-                                break
-                        }
-                        setUpRecyclerViewAdapter(pList)
-                    }else{
-                        setUpRecyclerViewAdapter(results)
-                    }
-                }
-            }
-
-        }
-
     }
 
 }

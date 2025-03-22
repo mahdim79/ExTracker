@@ -162,7 +162,6 @@ class PortfolioFragment:Fragment() {
 
     inner class DeleteFragment:BroadcastReceiver(){
         override fun onReceive(p0: Context?, p1: Intent?) {
-            fragmentManager?.popBackStack("PortfolioFragment" , FragmentManager.POP_BACK_STACK_INCLUSIVE)
             fragmentManager?.beginTransaction()!!
                 .replace(R.id.frame_holder, EmptyPortfolioFragment())
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

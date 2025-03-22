@@ -40,12 +40,9 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
     lateinit var apiCenter: ApiCenter
     private lateinit var favlist: List<String>
     private lateinit var alphaAnimation: AlphaAnimation
-    private lateinit var searchNotifier: SearchNotifier
     private var timer: Timer? = null
     private lateinit var swiprefreshLayout: SwipeRefreshLayout
     var dollarPrice = 0.0
-
-
 
     private lateinit var notifyDataChanged: NotifyDataChanged
     override fun onCreateView(
@@ -168,30 +165,26 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
     override fun onStart() {
         super.onStart()
         startTimer()
-        searchNotifier = SearchNotifier()
-
         notifyDataChanged = NotifyDataChanged()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"),Context.RECEIVER_EXPORTED)
             requireActivity().registerReceiver(
                 notifyDataChanged,
                 IntentFilter("com.dust.extracker.notifyDataSetChanged"),
                 Context.RECEIVER_EXPORTED
             )
         }else{
-            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))
             requireActivity().registerReceiver(
                 notifyDataChanged,
                 IntentFilter("com.dust.extracker.notifyDataSetChanged")
-            )        }
+            )
+        }
 
     }
 
     override fun onStop() {
         super.onStop()
         stopTimer()
-        requireActivity().unregisterReceiver(searchNotifier)
         requireActivity().unregisterReceiver(notifyDataChanged)
     }
 
@@ -243,47 +236,6 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
             requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = connectivityManager.activeNetworkInfo
         return info != null && info.isConnectedOrConnecting
-    }
-
-    inner class SearchNotifier: BroadcastReceiver(){
-        override fun onReceive(p0: Context?, p1: Intent?) {
-            if (p1!!.extras != null && p1.extras!!.containsKey("EXTRA_DATA")){
-                val data = p1.extras!!.getString("EXTRA_DATA")
-                if (data == "com.dust.extracker.kdsfjgksdjflasdk.START"){
-                    stopTimer()
-                    setRecyclerAdapter(arrayListOf())
-                }else if (data == "com.dust.extracker.kdsfjgksdjflasdk.STOP"){
-                    startTimer()
-                    setPrimaryDataInRecyclerView()
-                }else{
-                    if (data == ""){
-                        setRecyclerAdapter(arrayListOf())
-                        return
-                    }
-                    val results = realmDB.getCryptoDataByIds(data!!.split(","))
-                    val finalData = arrayListOf<MainRealmObject>()
-                    val favData = realmDB.getCryptoDataByIds(favlist)
-                    results.forEach {res ->
-                        favData.forEach {
-                            if (res.Symbol == it.Symbol)
-                                finalData.add(it)
-                        }
-                    }
-                    if (finalData.size > 25){
-                        val pList = arrayListOf<MainRealmObject>()
-                        for (i in 0 until finalData.size){
-                            if (i < 24)
-                                pList.add(finalData[i])
-                            else
-                                break
-                        }
-                        setRecyclerAdapter(pList)
-                    }else{
-                        setRecyclerAdapter(finalData)
-                    }
-                }
-            }
-        }
     }
 
     override fun onGetPrices(priceList: List<PriceDataClass>) {

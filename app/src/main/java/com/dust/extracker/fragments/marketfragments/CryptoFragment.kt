@@ -62,10 +62,8 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
 
     private lateinit var connectionReceiver: ConnectionReceiver
     private lateinit var alphaAnimation: AlphaAnimation
-    private lateinit var searchNotifier: SearchNotifier
     private var timer: Timer? = null
     private var INDEX: Int? = 0
-    private var SEARCH_MODE = false
 
     var dollarPrice = 0.0
 
@@ -184,13 +182,11 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
 
     override fun onStart() {
         super.onStart()
-        searchNotifier = SearchNotifier()
         ondataRecieve = onDataRecieve()
         connectionReceiver = ConnectionReceiver()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
             requireActivity().registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"),Context.RECEIVER_EXPORTED)
-            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"),Context.RECEIVER_EXPORTED)
             requireActivity().registerReceiver(
                 connectionReceiver,
                 IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"),
@@ -198,7 +194,6 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
             )
         }else{
             requireActivity().registerReceiver(ondataRecieve, IntentFilter("com.dust.extracker.onGetMainData"))
-            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))
             requireActivity().registerReceiver(
                 connectionReceiver,
                 IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
@@ -212,7 +207,6 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
         super.onStop()
         requireActivity().unregisterReceiver(ondataRecieve)
         requireActivity().unregisterReceiver(connectionReceiver)
-        requireActivity().unregisterReceiver(searchNotifier)
         stopTimer()
     }
 
@@ -381,51 +375,4 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
         }
     }
 
-    inner class SearchNotifier : BroadcastReceiver() {
-        override fun onReceive(p0: Context?, p1: Intent?) {
-            if (p1!!.extras != null && p1.extras!!.containsKey("EXTRA_DATA")) {
-                val data = p1.extras!!.getString("EXTRA_DATA")
-                if (data == "com.dust.extracker.kdsfjgksdjflasdk.START") {
-                    SEARCH_MODE = true
-                    stopTimer()
-                    market_recyclerView.adapter =
-                        MarketRecyclerViewAdapter(
-                            arrayListOf(),
-                            requireActivity(),
-                            alphaAnimation,
-                            dollarPrice
-                        )
-                } else if (data == "com.dust.extracker.kdsfjgksdjflasdk.STOP") {
-                    SEARCH_MODE = false
-                    startTimer()
-                    market_recyclerView.adapter =
-                        MarketRecyclerViewAdapter(
-                            datalist,
-                            requireActivity(),
-                            alphaAnimation,
-                            dollarPrice
-                        )
-                } else {
-                    if (data == "") {
-                        market_recyclerView.adapter =
-                            MarketRecyclerViewAdapter(
-                                arrayListOf(),
-                                requireActivity(),
-                                alphaAnimation,
-                                dollarPrice
-                            )
-                        return
-                    }
-                    val results = Gson().fromJson<List<MainRealmObject>>(data!!,object : TypeToken<List<MainRealmObject>>() {}.type)
-                    market_recyclerView.adapter =
-                        MarketRecyclerViewAdapter(
-                            results,
-                            requireActivity(),
-                            alphaAnimation,
-                            dollarPrice
-                        )
-                }
-            }
-        }
-    }
 }

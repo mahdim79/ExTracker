@@ -29,6 +29,7 @@ import com.dust.extracker.customviews.CTextView
 import com.dust.extracker.dataclasses.CryptoMainData
 import com.dust.extracker.dataclasses.DollarInfoDataClass
 import com.dust.extracker.fragments.marketfragments.CryptoDetailsFragment
+import com.dust.extracker.fragments.marketfragments.SearchFragment
 import com.dust.extracker.fragments.marketfragments.TradingViewChartFragment
 import com.dust.extracker.fragments.othersfragment.NotificationChooseCryptoFragment
 import com.dust.extracker.interfaces.OnGetAllCryptoList
@@ -67,9 +68,6 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
     lateinit var apiCenter: ApiCenter
     lateinit var marketCapTimer: Timer
     lateinit var shared: SharedPreferencesCenter
-    var SEARCHMODE = false
-
-    private var searchJob: Job? = null
 
     private lateinit var onClickMainData: OnClickMainData
 
@@ -120,69 +118,15 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
     private fun setUpSearchTool() {
 
         img_search.setOnClickListener {
-            header_rel.visibility = View.GONE
-            tabLayout.visibility = View.GONE
-            search_linear.visibility = View.VISIBLE
-            sendSearchBroadcast("", "com.dust.extracker.kdsfjgksdjflasdk.START")
-            SEARCHMODE = true
+            requireFragmentManager().beginTransaction()
+                .replace(
+                    R.id.main_frame,
+                    SearchFragment()
+                )
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack("SearchFragment")
+                .commit()
         }
-        back_btn.setOnClickListener {
-            search_linear.visibility = View.GONE
-            header_rel.visibility = View.VISIBLE
-            tabLayout.visibility = View.VISIBLE
-            hideKeyBoard()
-            sendSearchBroadcast("", "com.dust.extracker.kdsfjgksdjflasdk.STOP")
-            SEARCHMODE = false
-            edt_search.setText("")
-        }
-
-        val allExchangers = realmDB.getAllExchangerData()
-        edt_search.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-
-                if (!SEARCHMODE)
-                    return
-
-                searchJob?.cancel()
-                searchJob = CoroutineScope(Dispatchers.Main).launch {
-                    delay(1000)
-                    var exchanger = ""
-                    var mainData = ""
-                    if (edt_search.text.toString().trim() == "") {
-                        sendSearchBroadcast(exchanger, mainData)
-                    }else{
-                        apiCenter.searchCrypto(edt_search.text.toString().trim()){ result ->
-                            mainData = Gson().toJson(result,object : TypeToken<List<MainRealmObject>>() {}.type)
-
-                            // set Exchanger Data
-                            val listTemp = arrayListOf<ExchangerObject>()
-                            for (i in 0 until allExchangers.size) {
-                                if (allExchangers[i]!!.name.indexOf(
-                                        edt_search.text.toString(),
-                                        ignoreCase = true
-                                    ) != -1
-                                ) {
-                                    try {
-                                        listTemp.add(allExchangers[i]!!)
-                                    } catch (e: Exception) {
-                                    }
-                                }
-                            }
-                            exchanger = Gson().toJson(listTemp,object : TypeToken<List<ExchangerObject>>() {}.type)
-                            sendSearchBroadcast(exchanger, mainData)
-
-                        }
-                    }
-                }
-
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-        })
-
 
     }
 
@@ -251,26 +195,15 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
 
             override fun onPageSelected(position: Int) {
 
-                if (!SEARCHMODE)
-                    if (position == 3) {
-                        header_rel.visibility = View.GONE
-                        access_txt.visibility = View.VISIBLE
-                    } else {
-                        if (!header_rel.isVisible) {
-                            header_rel.visibility = View.VISIBLE
-                            access_txt.visibility = View.GONE
-                        }
+                if (position == 3) {
+                    header_rel.visibility = View.GONE
+                    access_txt.visibility = View.VISIBLE
+                } else {
+                    if (!header_rel.isVisible) {
+                        header_rel.visibility = View.VISIBLE
+                        access_txt.visibility = View.GONE
                     }
-                else
-                    if (position == 3) {
-                        search_linear.visibility = View.GONE
-                        access_txt.visibility = View.VISIBLE
-                    } else {
-                        if (!search_linear.isVisible) {
-                            search_linear.visibility = View.VISIBLE
-                            access_txt.visibility = View.GONE
-                        }
-                    }
+                }
             }
         })
     }
