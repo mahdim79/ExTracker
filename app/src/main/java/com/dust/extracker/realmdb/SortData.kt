@@ -21,7 +21,7 @@ class SortData {
     private val SORT_BY_COMMENTS by lazy {
         4
     }
-    fun getSortedData(PaginationCount: Int, sortType: Int = SORT_BY_REFRESH, desend: Boolean = true): List<MainRealmObject> {
+   /* fun getSortedData(PaginationCount: Int, sortType: Int = SORT_BY_REFRESH, desend: Boolean = true): List<MainRealmObject> {
         // TODO: 6/6/2021 complete this ,man!
         val listMain = arrayListOf<MainRealmObject>()
         val stop = 50 * PaginationCount
@@ -92,6 +92,6 @@ class SortData {
 
         return listMain
     }
-
+*/
 
 }

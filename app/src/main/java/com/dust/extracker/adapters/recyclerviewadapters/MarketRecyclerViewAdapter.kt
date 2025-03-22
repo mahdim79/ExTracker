@@ -36,6 +36,10 @@ class MarketRecyclerViewAdapter(
 ) :
     RecyclerView.Adapter<MarketRecyclerViewAdapter.MainRecyclerViewHolder>() {
 
+        init {
+            Log.i("MarketRecyclerViewAdapter","create")
+        }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainRecyclerViewHolder {
         return MainRecyclerViewHolder(
             LayoutInflater.from(parent.context)
@@ -44,9 +48,9 @@ class MarketRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: MainRecyclerViewHolder, position: Int) {
-        Picasso.get().load("${list[position].BaseImageUrl}${list[position].ImageUrl}")
+        Picasso.get().load(list[position].ImageUrl)
             .into(holder.item_image)
-        holder.item_text.text = list[position].CoinName
+        holder.item_text.text = list[position].Name
         holder.itemView.setOnLongClickListener {
             val resultList = arrayListOf<String>()
             val sharedPreferences = context.getSharedPreferences("FAV", Context.MODE_PRIVATE)
@@ -58,7 +62,7 @@ class MarketRecyclerViewAdapter(
             }
             var text = ""
             var color: Drawable? = null
-            if (rawData.indexOf(list[position].ID!!) != -1) {
+            if (resultList.contains(list[position].ID!!)) {
                 resultList.remove(list[position].ID!!)
                 text = context.resources.getString(R.string.deletewatch)
                 color = ResourcesCompat.getDrawable(
@@ -78,7 +82,7 @@ class MarketRecyclerViewAdapter(
 
             val dialog = Dialog(context)
             dialog.setContentView(R.layout.dialog_remove_transaction)
-            dialog.setCancelable(false)
+            dialog.setCancelable(true)
             dialog.findViewById<Button>(R.id.btnCancel).setOnClickListener {
                 dialog.dismiss()
             }
@@ -103,13 +107,13 @@ class MarketRecyclerViewAdapter(
         }
         holder.item_price.startAnimation(alphaAnimation)
 
-        holder.sort_num.text = list[position].SortOrder
+     //   holder.sort_num.text = list[position].SortOrder
 
         if (holder.item_price.text.toString() != "")
             holder.item_price_toman.text =
                 "${Utils.formatPriceNumber((list[position].LastPrice!! * dollarPrice),1)} ${context.resources.getString(R.string.toman)}"
 
-        holder.item_text_coinName.text = list[position].Name
+        holder.item_text_coinName.text = list[position].Symbol
 
         holder.dailyChange.text = "${list[position].DailyChangePCT.toString()}%"
 
@@ -130,7 +134,7 @@ class MarketRecyclerViewAdapter(
 
         holder.itemView.setOnClickListener {
             val intent = Intent("com.dust.extracker.OnClickMainData")
-            intent.putExtra("COIN_NAME", list[position].Name)
+            intent.putExtra("Symbol", list[position].Symbol)
             context.sendBroadcast(intent)
         }
 
@@ -151,7 +155,7 @@ class MarketRecyclerViewAdapter(
                         }
                         if (dayChange >= 0
                         ) {
-                            holder.dailyChange.text = "${bundle.getDouble(list[position].Name)}%"
+                            holder.dailyChange.text = "${bundle.getDouble(list[position].Symbol)}%"
 
                             holder.dailyChange.background = ResourcesCompat.getDrawable(
                                 context.resources,
@@ -160,7 +164,7 @@ class MarketRecyclerViewAdapter(
                             )
 
                         } else {
-                            holder.dailyChange.text = "${bundle.getDouble(list[position].Name)}%"
+                            holder.dailyChange.text = "${bundle.getDouble(list[position].Symbol)}%"
 
                             holder.dailyChange.background = ResourcesCompat.getDrawable(
                                 context.resources,
@@ -171,24 +175,24 @@ class MarketRecyclerViewAdapter(
                         holder.dailyChange.startAnimation(alphaAnimation)
 
                     } else {
-                        if (!bundle.isEmpty && bundle.containsKey(list[position].Name)) {
+                        if (!bundle.isEmpty && bundle.containsKey(list[position].Symbol)) {
                             val price = try {
-                                holder.item_price.text.toString().replace("$", "").toDouble()
+                                holder.item_price.text.toString().replace("$", "").replace(",","").toDouble()
                             } catch (e: Exception) {
                                 0.0
                             }
-                            if (price < bundle.getDouble(list[position].Name)
+                            if (price < bundle.getDouble(list[position].Symbol)
                             ) {
-                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Name),4,
+                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Symbol),4,
                                     Locale.ENGLISH)}"
                                 holder.item_price.setTextColor(Color.GREEN)
 
                             } else if (price == 0.0) {
-                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Name),4,
+                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Symbol),4,
                                     Locale.ENGLISH)}"
 
                             } else {
-                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Name),4,
+                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Symbol),4,
                                     Locale.ENGLISH)}"
 
                                 holder.item_price.setTextColor(Color.RED)

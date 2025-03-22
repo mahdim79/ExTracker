@@ -30,15 +30,15 @@ class NotificationChooseRecyclerViewAdapter(
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        holder.cryptotext.text = list[position].FullName
-        Picasso.get().load("${list[position].BaseImageUrl}${list[position].ImageUrl}")
+        holder.cryptotext.text = list[position].Name
+        Picasso.get().load(list[position].ImageUrl)
             .into(holder.cryptoImage)
         holder.itemView.setOnClickListener {
             if (index == 0){
                 fragmentManager.beginTransaction()
                     .replace(
                         R.id.others_frame_holder,
-                        NotificationCustomizeFragment().newInstance(list[position].Name!!)
+                        NotificationCustomizeFragment().newInstance(list[position].Symbol!!)
                     )
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack("NotificationCustomizeFragment")
@@ -47,7 +47,7 @@ class NotificationChooseRecyclerViewAdapter(
                 fragmentManager.beginTransaction()
                     .replace(
                         R.id.main_frame,
-                        NotificationCustomizeFragment().newInstance(list[position].Name!!)
+                        NotificationCustomizeFragment().newInstance(list[position].Symbol!!)
                     )
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack("NotificationCustomizeFragment")

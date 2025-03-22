@@ -150,6 +150,9 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     inner class onDataRecieve : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
             loadData()
+            if (checkConnection()) {
+                updateOnline()
+            }
         }
     }
 
@@ -216,12 +219,12 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     }
 
     private fun setDataRequest() {
-        if (realmDB.getCryptoDataCount() != 0) {
+        if (checkConnection()){
+            val api = ApiCenter(requireActivity(), this)
+            api.getAllCryptoList()
+        }else{
             loadData()
-            return
         }
-        val api = ApiCenter(requireActivity(), this)
-        api.getAllCryptoList()
     }
 
     private fun checkConnection(): Boolean {
@@ -237,19 +240,6 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
         datalist.addAll(realmDB.getPopularCoins())
 
         updateOffline()
-        if (checkConnection()) {
-            apiCenter.getMarketCapSortOrder(object : OnUpdateSortOrder {
-                override fun onUpdateSortOrder(list: List<Pair<String, Int>>) {
-                    realmDB.updateSortOrders(list, object : OnRealmDataSorted {
-                        override fun onSortFinished() {
-                            datalist.clear()
-                            datalist.addAll(realmDB.getPopularCoins())
-                            updateOnline()
-                        }
-                    })
-                }
-            })
-        }
         runPermissionCheckProcess()
     }
 
@@ -279,17 +269,15 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     }
 
     override fun onGet(cryptoList: List<CryptoMainData>) {
-        updateSortOrders(cryptoList)
+        realmDB.insertAllCryptoData(cryptoList, this@CryptoFragment, requireActivity())
     }
 
     override fun onGetByName(price: Double, dataNum: Int) {
 
     }
 
-    override fun onAddComplete(list: List<MainRealmObject>) {
+    override fun onAddComplete() {
         requireActivity().sendBroadcast(Intent("com.dust.extracker.onGetMainData"))
-        loadData()
-
     }
 
     private fun runPermissionCheckProcess() {
@@ -328,6 +316,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     }
 
     private fun updatePriceList(list: List<String>) {
+        Log.i("updatePriceList","call")
         realmDB.getDollarPrice()?.price?.let {
             val prices = realmDB.getPricesByIds(list)
             val intent = Intent("com.dust.extracker.UPDATE_ITEMS")
@@ -365,7 +354,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     private fun updateOnline() {
         val coinList = arrayListOf<String>()
         for (i in 0 until datalist.size)
-            coinList.add(datalist[i].Name!!)
+            coinList.add(datalist[i].Symbol!!)
         apiCenter.getMainPrices(coinList.joinToString(","), this)
         apiCenter.getDailyChanges(coinList.joinToString(","), this)
     }
@@ -388,24 +377,6 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
             intent.putExtra("PRICE", price.price)
             requireActivity().sendBroadcast(intent)
         }
-    }
-
-    private fun updateSortOrders(list1: List<CryptoMainData>) {
-        apiCenter.getMarketCapSortOrder(object : OnUpdateSortOrder {
-            override fun onUpdateSortOrder(list: List<Pair<String, Int>>) {
-                Log.i("InitLog","initiate sort request success block...")
-
-                list.forEach { pair ->
-                    list1.forEach {
-                        if (pair.first == it.CoinName)
-                            it.SortOrder = pair.second.toString()
-                    }
-                }
-                Log.i("InitLog","saving sorted data to db...")
-                realmDB.insertAllCryptoData(list1, this@CryptoFragment, requireActivity())
-                Log.i("InitLog","data saved...")
-            }
-        })
     }
 
     inner class SearchNotifier : BroadcastReceiver() {

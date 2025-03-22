@@ -44,7 +44,7 @@ class PortfolioCoinRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        Picasso.get().load("${list[position].BaseImageUrl}${list[position].ImageUrl}")
+        Picasso.get().load(list[position].ImageUrl)
             .error(R.drawable.ic_baseline_error_24).into(holder.coin_img)
         holder.coin_amount.text = historyDataClass.transactionList[position].dealAmount.toString()
         holder.coinName.text = historyDataClass.transactionList[position].coinName

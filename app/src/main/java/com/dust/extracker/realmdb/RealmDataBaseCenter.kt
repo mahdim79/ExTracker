@@ -35,46 +35,23 @@ class RealmDataBaseCenter() {
         context: Context
     ) {
         realmDB.executeTransactionAsync({
-
-            Collections.sort(list, kotlin.Comparator { t, t2 ->
-                if (t.SortOrder.toInt() > t2.SortOrder.toInt())
-                    1
-                else if (t.SortOrder.toInt() < t2.SortOrder.toInt())
-                    -1
-                else
-                    0
-            })
-            var id = 0
-            for (i in list) {
-                var objectmain = it.createObject(MainRealmObject::class.java, id)
+            val dataToInsert = arrayListOf<MainRealmObject>()
+            for ((id, i) in list.withIndex()) {
+                val objectmain = MainRealmObject()
+                objectmain.id = id
                 objectmain.ID = i.Id
-                objectmain.BaseImageUrl = i.BaseImageUrl
-                objectmain.BaseLinkUrl = i.BaseLinkUrl
-                objectmain.Url = i.Url
+                objectmain.rank = id + 1
                 objectmain.ImageUrl = i.ImageUrl
                 objectmain.Name = i.Name
                 objectmain.Symbol = i.Symbol
-                objectmain.CoinName = i.CoinName
-                objectmain.FullName = i.FullName
-                objectmain.Description = i.Description
-                objectmain.Algorithm = i.Algorithm
-                objectmain.ProofType = i.ProofType
-                objectmain.SortOrder = i.SortOrder
-                objectmain.Sponsored = i.Sponsored
-                objectmain.IsTrading = i.IsTrading
-                objectmain.BlockNumber = i.BlockNumber
-                objectmain.AssetTokenStatus = i.AssetTokenStatus
-                objectmain.MaxSupply = i.MaxSupply
-                objectmain.NetHashesPerSecond = i.NetHashesPerSecond
-                objectmain.MktCapPenalty = i.MktCapPenalty
+                objectmain.maxSupply = i.maxSupply
                 objectmain.LastPrice = 0.0
                 objectmain.DailyChangePCT = 0.0
-                objectmain.PlatformType = i.PlatformType
-                objectmain.AssetLaunchDate = i.AssetLaunchDate
-                id++
+                dataToInsert.add(objectmain)
             }
+            it.copyToRealmOrUpdate(dataToInsert)
         }, {
-            onRealmDataChanged.onAddComplete(getCryptoData(1))
+            onRealmDataChanged.onAddComplete()
         }, {
 
         })
@@ -97,13 +74,10 @@ class RealmDataBaseCenter() {
 
     fun getPopularCoins(): List<MainRealmObject> {
         val list = arrayListOf<MainRealmObject>()
-        for (i in 0.rangeTo(75)) {
-            try {
-                val data1 = realmDB.where(MainRealmObject::class.java).equalTo("SortOrder", "$i")
-                    .findFirst()
-                list.add(data1!!)
-            } catch (e: Exception) {
-            }
+        try {
+            val data = realmDB.where(MainRealmObject::class.java).findAll()
+            list.addAll(data)
+        } catch (e: Exception) {
         }
         return list
     }
@@ -121,7 +95,7 @@ class RealmDataBaseCenter() {
         var result: MainRealmObject? = null
         realmDB.executeTransaction {
             try {
-                result = it.where(MainRealmObject::class.java).equalTo("Name", name).findFirst()!!
+                result = it.where(MainRealmObject::class.java).equalTo("Symbol", name).findFirst()!!
             } catch (e: Exception) {
                 result = MainRealmObject()
                 result!!.Name = "NULL"
@@ -190,52 +164,17 @@ class RealmDataBaseCenter() {
     }
 
     fun updatePrices(realmObjects: List<MainRealmObject>, prices: List<PriceDataClass>) {
+        Log.i("updatePrices","start")
         realmDB.executeTransaction {
-            for (i in 0 until realmObjects.size) {
-                for (j in 0 until prices.size) {
-                    if (realmObjects[i].Name == prices[j].name)
+            for (i in realmObjects.indices) {
+                for (j in prices.indices) {
+                    if (realmObjects[i].Symbol == prices[j].name)
                         realmObjects[i].LastPrice = prices[j].price
                 }
             }
             it.copyToRealmOrUpdate(realmObjects)
         }
-    }
-
-    fun updateSortOrders(list: List<Pair<String, Int>>, onRealmDataSorted: OnRealmDataSorted) {
-        realmDB.executeTransactionAsync({ realm ->
-            try {
-                val listPrimary = arrayListOf<MainRealmObject>()
-                list.forEach {
-                    try {
-                        val obj = realm.where(MainRealmObject::class.java)
-                            .equalTo("SortOrder", "${it.second}").findFirst()
-                        obj!!.SortOrder = "111"
-                        listPrimary.add(obj)
-                    } catch (e: Exception) {
-                    }
-                }
-                realm.copyToRealmOrUpdate(listPrimary)
-
-                listPrimary.clear()
-                list.forEach {
-                    try {
-                        val obj2 = realm.where(MainRealmObject::class.java)
-                            .equalTo("CoinName", "${it.first}").findFirst()
-                        obj2!!.SortOrder = it.second.toString()
-                        listPrimary.add(obj2)
-                    } catch (e: Exception) {
-                    }
-                }
-                realm.copyToRealmOrUpdate(listPrimary)
-
-            } catch (e: Exception) {
-                Log.i("sortError", e.message!!)
-            }
-        }, {
-            onRealmDataSorted.onSortFinished()
-        }, {
-
-        })
+        Log.i("updatePrices","end")
     }
 
     fun updateDailyChanges(
@@ -243,9 +182,9 @@ class RealmDataBaseCenter() {
         changes: List<LastChangeDataClass>
     ) {
         realmDB.executeTransaction {
-            for (i in 0 until realmObjects.size) {
-                for (j in 0 until changes.size) {
-                    if (realmObjects[i].Name == changes[j].CoinName)
+            for (i in realmObjects.indices) {
+                for (j in changes.indices) {
+                    if (realmObjects[i].Symbol == changes[j].CoinName)
                         realmObjects[i].DailyChangePCT = changes[j].ChangePercentage
                 }
             }
@@ -256,11 +195,11 @@ class RealmDataBaseCenter() {
     fun getPricesByIds(idList: List<String>): List<PriceDataClass> {
         val list = arrayListOf<PriceDataClass>()
         realmDB.executeTransaction { realm ->
-            for (i in 0 until idList.size) {
+            for (element in idList) {
                 try {
-                    val obj = realm.where(MainRealmObject::class.java).equalTo("ID", idList[i])
+                    val obj = realm.where(MainRealmObject::class.java).equalTo("ID", element)
                         .findFirst()
-                    list.add(PriceDataClass(obj!!.LastPrice!!, obj.Name!!))
+                    list.add(PriceDataClass(obj!!.LastPrice!!, obj.Symbol!!))
                 } catch (e: Exception) {
                 }
             }
@@ -275,7 +214,7 @@ class RealmDataBaseCenter() {
                 try {
                     val obj = realm.where(MainRealmObject::class.java).equalTo("ID", idList[i])
                         .findFirst()
-                    list.add(LastChangeDataClass(obj!!.Name!!, obj.DailyChangePCT!!))
+                    list.add(LastChangeDataClass(obj!!.Symbol!!, obj.DailyChangePCT!!))
                 } catch (e: Exception) {
                 }
             }
@@ -430,7 +369,7 @@ class RealmDataBaseCenter() {
 
     fun updatePrice(data: PriceDataClass) {
         realmDB.executeTransaction {
-            val obj = it.where(MainRealmObject::class.java).equalTo("Name", data.name).findFirst()
+            val obj = it.where(MainRealmObject::class.java).equalTo("Symbol", data.name).findFirst()
             obj!!.LastPrice = data.price
             it.copyToRealmOrUpdate(obj)
         }
@@ -439,7 +378,7 @@ class RealmDataBaseCenter() {
     fun updateDailyChange(data: LastChangeDataClass) {
         realmDB.executeTransaction {
             val obj =
-                it.where(MainRealmObject::class.java).equalTo("Name", data.CoinName).findFirst()
+                it.where(MainRealmObject::class.java).equalTo("Symbol", data.CoinName).findFirst()
             obj!!.DailyChangePCT = data.ChangePercentage
             it.copyToRealmOrUpdate(obj)
         }

@@ -217,8 +217,8 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
     private fun updateOnline() {
         val coinList = arrayListOf<String>()
         val datalist = realmDB.getCryptoDataByIds(favlist)
-        for (i in 0 until datalist.size)
-            coinList.add(datalist[i].Name!!)
+        for (element in datalist)
+            coinList.add(element.Symbol!!)
         apiCenter.getMainPrices(coinList.joinToString(","), this)
         apiCenter.getDailyChanges(coinList.joinToString(","), this)
     }
@@ -265,7 +265,7 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
                     val favData = realmDB.getCryptoDataByIds(favlist)
                     results.forEach {res ->
                         favData.forEach {
-                            if (res.CoinName == it.CoinName)
+                            if (res.Symbol == it.Symbol)
                                 finalData.add(it)
                         }
                     }
@@ -315,7 +315,7 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
         val changes = realmDB.getLastDailyChangesByIds(list)
         val intent = Intent("com.dust.extracker.UPDATE_ITEMS_WatchList")
         intent.putExtra("IS_DAILY_CHANGE", true)
-        for (i in 0 until changes.size) {
+        for (i in changes.indices) {
             intent.putExtra(changes[i].CoinName, changes[i].ChangePercentage)
         }
         try {

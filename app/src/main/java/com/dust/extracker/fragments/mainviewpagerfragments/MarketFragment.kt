@@ -151,7 +151,7 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
                         //set Main Data
                         val listTemp1 = arrayListOf<String>()
                         for (i in 0 until allData.size) {
-                            if (allData[i]!!.FullName!!.indexOf(
+                            if (allData[i]!!.Name!!.indexOf(
                                     edt_search.text.toString(),
                                     ignoreCase = true
                                 ) != -1
@@ -436,14 +436,14 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
 
     inner class OnClickMainData : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
-            if (p1!!.extras != null && p1.extras!!.containsKey("COIN_NAME")) {
+            if (p1!!.extras != null && p1.extras!!.containsKey("Symbol")) {
 
                 fragmentManager!!.beginTransaction()
                     .replace(
                         R.id.main_frame,
                         CryptoDetailsFragment().newInstance(
                             p1.extras!!.getString(
-                                "COIN_NAME",
+                                "Symbol",
                                 "BTC"
                             ), "CryptoDetailsFragment_MAIN"
                         )

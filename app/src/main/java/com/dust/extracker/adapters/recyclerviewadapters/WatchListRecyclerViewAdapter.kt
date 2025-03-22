@@ -44,9 +44,9 @@ class WatchListRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: MainRecyclerViewHolder, position: Int) {
-        Picasso.get().load("${list[position].BaseImageUrl}${list[position].ImageUrl}")
+        Picasso.get().load(list[position].ImageUrl)
             .into(holder.item_image)
-        holder.item_text.text = list[position].CoinName
+        holder.item_text.text = list[position].Name
         holder.itemView.setOnLongClickListener {
             val resultList = arrayListOf<String>()
             val sharedPreferences = context.getSharedPreferences("FAV", Context.MODE_PRIVATE)
@@ -78,7 +78,7 @@ class WatchListRecyclerViewAdapter(
 
             val dialog = Dialog(context)
             dialog.setContentView(R.layout.dialog_remove_transaction)
-            dialog.setCancelable(false)
+            dialog.setCancelable(true)
             dialog.findViewById<Button>(R.id.btnCancel).setOnClickListener {
                 dialog.dismiss()
             }
@@ -104,11 +104,11 @@ class WatchListRecyclerViewAdapter(
         }
         holder.item_price.startAnimation(alphaAnimation)
 
-        holder.sort_num.text = list[position].SortOrder
+      //  holder.sort_num.text = list[position].SortOrder
 
         holder.item_price_toman.text = "${Utils.formatPriceNumber((list[position].LastPrice!! * dollarPrice),1)} ${context.resources.getString(R.string.toman)}"
 
-        holder.item_text_coinName.text = list[position].Name
+        holder.item_text_coinName.text = list[position].Symbol
 
         holder.dailyChange.text = "${list[position].DailyChangePCT.toString()}%"
 
@@ -129,7 +129,7 @@ class WatchListRecyclerViewAdapter(
 
         holder.itemView.setOnClickListener {
             val intent = Intent("com.dust.extracker.OnClickMainData")
-            intent.putExtra("COIN_NAME", list[position].Name)
+            intent.putExtra("Symbol", list[position].Symbol)
             context.sendBroadcast(intent)
         }
 
@@ -150,7 +150,7 @@ class WatchListRecyclerViewAdapter(
                         }
                         if (dayChange >= 0
                         ) {
-                            holder.dailyChange.text = "${bundle.getDouble(list[position].Name)}%"
+                            holder.dailyChange.text = "${bundle.getDouble(list[position].Symbol)}%"
 
                             holder.dailyChange.background = ResourcesCompat.getDrawable(
                                 context.resources,
@@ -159,7 +159,7 @@ class WatchListRecyclerViewAdapter(
                             )
 
                         } else {
-                            holder.dailyChange.text = "${bundle.getDouble(list[position].Name)}%"
+                            holder.dailyChange.text = "${bundle.getDouble(list[position].Symbol)}%"
 
                             holder.dailyChange.background = ResourcesCompat.getDrawable(
                                 context.resources,
@@ -170,7 +170,7 @@ class WatchListRecyclerViewAdapter(
                         holder.dailyChange.startAnimation(alphaAnimation)
 
                     } else {
-                        if (!bundle.isEmpty && bundle.containsKey(list[position].Name)) {
+                        if (!bundle.isEmpty && bundle.containsKey(list[position].Symbol)) {
                             var price = 0.0
                             try {
                                 price =
@@ -178,18 +178,18 @@ class WatchListRecyclerViewAdapter(
                             } catch (e: Exception) {
                                 price = 0.0
                             }
-                            if (price < bundle.getDouble(list[position].Name)
+                            if (price < bundle.getDouble(list[position].Symbol)
                             ) {
-                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Name),4,
+                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Symbol),4,
                                     Locale.ENGLISH)}"
                                 holder.item_price.setTextColor(Color.GREEN)
 
                             } else if (price == 0.0) {
-                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Name),4,
+                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Symbol),4,
                                     Locale.ENGLISH)}"
 
                             } else {
-                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Name),4,
+                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Symbol),4,
                                     Locale.ENGLISH)}"
 
                                 holder.item_price.setTextColor(Color.RED)

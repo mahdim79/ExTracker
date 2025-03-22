@@ -79,7 +79,7 @@ class NotificationChooseCryptoFragment:Fragment() {
                         MODE = 1
                         val listTemp = arrayListOf<MainRealmObject>()
                         for (i in 0 until l.size){
-                            if (l[i]!!.FullName!!.indexOf(crypto_name.text.toString() , ignoreCase = true) != -1)
+                            if (l[i]!!.Name!!.indexOf(crypto_name.text.toString() , ignoreCase = true) != -1)
                                 listTemp.add(l[i]!!)
                         }
                         tempList = listTemp

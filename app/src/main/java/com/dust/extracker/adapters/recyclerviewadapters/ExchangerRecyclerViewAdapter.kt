@@ -27,12 +27,12 @@ class ExchangerRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        holder.cryptotext.text = "${list[position].CoinName}"
-        holder.item_text_coin.text = " (${list[position].Name})"
-        Picasso.get().load("${list[position].BaseImageUrl}${list[position].ImageUrl}").into(holder.cryptoImage)
+        holder.cryptotext.text = "${list[position].Name}"
+        holder.item_text_coin.text = " (${list[position].Symbol})"
+        Picasso.get().load(list[position].ImageUrl).into(holder.cryptoImage)
         holder.itemView.setOnClickListener {
             context.getSharedPreferences("CRS", Context.MODE_PRIVATE).edit()
-                .putString("CR$mainPosition", list[position].Name).apply()
+                .putString("CR$mainPosition", list[position].Symbol).apply()
             fragmentManager.popBackStack("ExchnagerChooseCryptoFragment", 1)
         }
     }

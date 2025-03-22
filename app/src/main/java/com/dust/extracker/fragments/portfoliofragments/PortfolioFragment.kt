@@ -16,16 +16,18 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.viewpager.widget.ViewPager
 import com.dust.extracker.R
 import com.dust.extracker.adapters.viewpagersadapters.PortfolioBaseViewPagerAdapter
+import com.dust.extracker.customviews.CTextView
 import com.dust.extracker.fragments.marketfragments.CryptoDetailsFragment
 import com.dust.extracker.fragments.portfoliofragments.innerfragments.EditHistoryNameFragment
 import com.dust.extracker.interfaces.OnHistoryFragmentUpdate
 import com.dust.extracker.realmdb.RealmDataBaseCenter
+import com.dust.extracker.utils.Utils
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 
 class PortfolioFragment:Fragment() {
 
     private lateinit var portfolio_main_viewpager:ViewPager
-    private lateinit var totalFund:TextView
+    private lateinit var totalFund:CTextView
     private lateinit var dots_indicator:DotsIndicator
     private lateinit var realmDB:RealmDataBaseCenter
     private lateinit var addmoreFragments:AddMoreFragments
@@ -100,7 +102,7 @@ class PortfolioFragment:Fragment() {
         realmDB.getAllHistoryData().forEach {
             money += it.totalCapital
         }
-        totalFund.text = "${requireActivity().resources.getString(R.string.total_fund)} ${String.format("%.2f" , money)} $"
+        totalFund.text = "${requireActivity().resources.getString(R.string.total_fund)} ${Utils.formatPriceNumber(money,2)} $"
     }
 
     fun newInstance(): PortfolioFragment {
@@ -172,10 +174,10 @@ class PortfolioFragment:Fragment() {
     inner class OnClickTransactionData:BroadcastReceiver(){
         override fun onReceive(p0: Context?, p1: Intent?) {
 
-            if (p1!!.extras != null && p1.extras!!.containsKey("COIN_NAME")){
+            if (p1!!.extras != null && p1.extras!!.containsKey("Symbol")){
 
                 fragmentManager!!.beginTransaction()
-                    .replace(R.id.frame_holder , CryptoDetailsFragment().newInstance(p1.extras!!.getString("COIN_NAME" , "BTC")))
+                    .replace(R.id.frame_holder , CryptoDetailsFragment().newInstance(p1.extras!!.getString("Symbol" , "BTC")))
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack("CryptoDetailsFragment")
                     .commit()

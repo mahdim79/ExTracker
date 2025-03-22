@@ -40,6 +40,7 @@ import lecho.lib.hellocharts.view.LineChartView
 import java.util.*
 import androidx.core.net.toUri
 import com.dust.extracker.application.MyApplication
+import com.dust.extracker.utils.Constants
 
 class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     OnDetailsDataReceive {
@@ -145,7 +146,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
     private fun requestChartData() {
         if (checkNetworkConnectivity()) {
-            apiService.getChartData(mainObject.Name!!, TIME_PERIOD, this)
+            apiService.getChartData(mainObject.Symbol!!, TIME_PERIOD, this)
             chartProgressBar.visibility = View.VISIBLE
         }
     }
@@ -157,7 +158,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     }
 
     private fun setUpCoinList() {
-        mainObject = realmDB.getCryptoDataByName(requireArguments().getString("COIN_NAME")!!)
+        mainObject = realmDB.getCryptoDataByName(requireArguments().getString("Symbol")!!)
     }
 
     private fun setUpRealmDB() {
@@ -300,7 +301,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
             var intent = Intent("com.dust.extracker.OnPageChange")
             intent.putExtra("PAGE", 1)
             requireActivity().sendBroadcast(intent)
-            val coinName = mainObject.Name!!
+            val coinName = mainObject.Symbol!!
             var IS_TRANSACTION = false
             var portfolioName = ""
             if (realmDB.getAllHistoryData().isEmpty()) {
@@ -330,7 +331,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
             requireActivity().sendBroadcast(intent1)
 
             val intent = Intent("com.dust.extracker.OnClickMainData")
-            intent.putExtra("COIN", mainObject.Name)
+            intent.putExtra("COIN", mainObject.Symbol)
             requireActivity().sendBroadcast(intent)
 
         }
@@ -519,10 +520,6 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
         tomanPrice.text = "${Utils.formatPriceNumber((mainObject.LastPrice!!.toDouble() * freshDollarPrice.price.toDouble()),2)} ${requireActivity().resources.getString(R.string.toman)}"
 
-        mainObject.SortOrder?.let { so ->
-            rank.text = "#${Utils.formatPriceNumber(so.toDouble(),0)}"
-        }
-
         mainObject.LastPrice?.let { lp ->
             val decimal = if (lp > 1) 2 else 7
             price.text = "$${Utils.formatPriceNumber(lp,decimal)}"
@@ -534,15 +531,19 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
                 dailyChange.text = "+${dailyChange.text}"
         }
 
-        totalSupply.text = "${Utils.formatPriceNumber(mainObject.MaxSupply ?: 0.0,2)} ${mainObject.Name}"
-
         details_text.text = requireActivity().getString(R.string.details, mainObject.Name)
 
-        details_fullName.text = mainObject.FullName
+        details_fullName.text = mainObject.Name
 
-        Picasso.get().load("${mainObject.BaseImageUrl}${mainObject.ImageUrl}").into(coinImg)
+        mainObject.rank?.let { ra ->
+            rank.text = "#${Utils.formatPriceNumber(ra.toDouble(),0)}"
+        }
 
-        apiService.getDetails(mainObject.Name!!, this)
+         totalSupply.text = "${Utils.formatPriceNumber(mainObject.maxSupply ?: 0.0,2)} ${mainObject.Symbol}"
+
+        Picasso.get().load(mainObject.ImageUrl).into(coinImg)
+
+        apiService.getDetails(mainObject.Symbol!!, this)
 
         calculateChangesPCT("1W")
         calculateChangesPCT("1M")
@@ -573,11 +574,11 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     }
 
     fun newInstance(
-        COIN_NAME: String,
+        Symbol: String,
         Type: String = "CryptoDetailsFragment"
     ): CryptoDetailsFragment {
         val args = Bundle()
-        args.putString("COIN_NAME", COIN_NAME)
+        args.putString("Symbol", Symbol)
         args.putString("Type", Type)
         val fragment = CryptoDetailsFragment()
         fragment.arguments = args
@@ -682,13 +683,13 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
     private fun requestCoinsData() {
         if (checkNetworkConnectivity()) {
-            apiService.getMainPrices("BTC,${mainObject.Name}", object : OnGetMainPrices {
+            apiService.getMainPrices("BTC,${mainObject.Symbol}", object : OnGetMainPrices {
                 override fun onGetPrices(priceList: List<PriceDataClass>) {
                     priceList.forEach {
                         realmDB.updatePrice(it)
                     }
                     apiService.getDailyChanges(
-                        "BTC,${mainObject.Name}",
+                        "BTC,${mainObject.Symbol}",
                         object : OnGetDailyChanges {
                             override fun onGetDailyChanges(list: List<LastChangeDataClass>) {
                                 list.forEach {
@@ -713,12 +714,12 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     override fun onReceive(data: DetailsDataClass) {
         marketCap.text = "$ ${Utils.formatPriceNumber(data.marketCap.toDouble(),2)}"
         dailyVolume.text =
-            "${Utils.formatPriceNumber(data.dailyVolume.toDouble(),2)} ${mainObject.Name}"
-        marketCoins.text = "${Utils.formatPriceNumber(data.supply.toDouble(),2)} ${mainObject.Name}"
+            "${Utils.formatPriceNumber(data.dailyVolume.toDouble(),2)} ${mainObject.Symbol}"
+        marketCoins.text = "${Utils.formatPriceNumber(data.supply.toDouble(),2)} ${mainObject.Symbol}"
     }
 
     private fun calculateChangesPCT(P: String) {
-        apiService.getChartData(mainObject.Name!!, P, object : OnGetChartData {
+        apiService.getChartData(mainObject.Symbol!!, P, object : OnGetChartData {
             override fun onGetChartData(data: List<ChartDataClass>) {
                 val list = arrayListOf<PointValue>()
                 list.add(PointValue(data.first().time.toFloat(), data.first().closePrice.toFloat()))

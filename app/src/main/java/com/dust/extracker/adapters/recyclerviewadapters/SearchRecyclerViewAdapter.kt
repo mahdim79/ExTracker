@@ -19,11 +19,11 @@ class SearchRecyclerViewAdapter(var PortfolioName:String ,var IS_TRANSACTION:Boo
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        holder.cryptotext.text = list[position].CoinName
-        holder.item_text_coin.text = " (${list[position].Name})"
-        Picasso.get().load("${list[position].BaseImageUrl}${list[position].ImageUrl}").into(holder.cryptoImage)
+        holder.cryptotext.text = list[position].Name
+        holder.item_text_coin.text = " (${list[position].Symbol})"
+        Picasso.get().load(list[position].ImageUrl).into(holder.cryptoImage)
         holder.itemView.setOnClickListener {
-            onSelectItem.onSelect(list[position].Name!! , IS_TRANSACTION , PortfolioName)
+            onSelectItem.onSelect(list[position].Symbol!! , IS_TRANSACTION , PortfolioName)
         }
     }
 

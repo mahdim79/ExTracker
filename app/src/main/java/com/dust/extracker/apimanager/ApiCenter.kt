@@ -57,14 +57,11 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
         Log.i("InitLog","sending first request...")
         val request = JsonObjectRequest(
             Request.Method.GET,
-            "https://min-api.cryptocompare.com/data/all/coinlist?$cryptoCompareApiKey",
+            "https://data-api.coindesk.com/asset/v1/top/list?page=1&page_size=60&sort_by=CIRCULATING_MKT_CAP_USD&sort_direction=DESC&groups=ID,BASIC,SUPPLY,PRICE,MKT_CAP,VOLUME,CHANGE,TOPLIST_RANK&toplist_quote_asset=USD",
             null,
             {
-                Log.i("InitLog","get all crypto success")
-                if (it.getString("Response") == "Success") {
-                    val parseMainData = ParseMainData()
-                    parseMainData.execute(it)
-                }
+                val parseMainData = ParseMainData()
+                parseMainData.execute(it)
             },
             {})
         request.retryPolicy = DefaultRetryPolicy(
@@ -127,8 +124,9 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
     }
 
     fun getMainPrices(coins: String, onGetMainPrices: OnGetMainPrices) {
-        var url =
-            "https://min-api.cryptocompare.com/data/pricemulti?fsyms=$coins&tsyms=USD&api_key={$cryptoCompareApiKey}"
+        Log.i("getMainPrices","call")
+        val url =
+            "https://min-api.cryptocompare.com/data/pricemulti?fsyms=$coins&tsyms=USD"
 
         val request = JsonObjectRequest(
             Request.Method.GET,
@@ -161,11 +159,11 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
 
     fun getDailyChanges(coinNames: String, onGetDailyChanges: OnGetDailyChanges, type: Int = 1) {
         var url =
-            "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=$coinNames&tsyms=USD&api_key={$cryptoCompareApiKey}"
+            "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=$coinNames&tsyms=USD"
 
         if (type == 2)
             url =
-                "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=$coinNames&tsyms=USD&api_key={$cryptoCompareApiKey2}"
+                "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=$coinNames&tsyms=USD"
         val request = JsonObjectRequest(
             Request.Method.GET,
             url,
@@ -274,21 +272,18 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
 
     inner class ParseMainData : AsyncTask<JSONObject, String, List<CryptoMainData>>() {
         override fun doInBackground(vararg obj: JSONObject?): List<CryptoMainData> {
-            val mainObject = obj[0]?.getJSONObject("Data")
             val list = arrayListOf<CryptoMainData>()
 
-            val gson = Gson()
-            mainObject?.keys()?.forEach {
-                val data = gson.fromJson(
-                    mainObject.getJSONObject(it).toString(),
-                    CryptoMainData::class.java
-                )
-                data.SortOrder = "111"
-                data.BaseImageUrl = "https://www.cryptocompare.com"
-                data.BaseLinkUrl = "https://www.cryptocompare.com"
-                list.add(data)
+            try {
+                obj[0]?.getJSONObject("Data")?.getJSONArray("LIST")?.let { dataArray ->
+                    for (i in 0 until dataArray.length()){
+                        val coinObj = dataArray.getJSONObject(i)
+                        val data = CryptoMainData(coinObj.getInt("ID").toString(),coinObj.getString("LOGO_URL"),coinObj.getString("NAME"),coinObj.getString("SYMBOL"),coinObj.getDouble("SUPPLY_MAX"))
+                        list.add(data)
+                    }
+                }
+            }catch (e:Exception){}
 
-            }
             return list
         }
 

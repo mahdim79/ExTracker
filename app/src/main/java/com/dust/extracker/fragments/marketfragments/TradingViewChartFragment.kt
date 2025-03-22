@@ -133,12 +133,12 @@ class TradingViewChartFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setCoinImages() {
-        val list = arrayListOf("BTC", "ETH", "LTC", "XRP", "DASH", "DOGE", "ADA", "BNB")
+        val list = arrayListOf("BTC", "ETH", "LTC", "XRP", "TRX", "DOGE", "ADA", "BNB")
         val listLinks = arrayListOf<String>()
         val db = RealmDataBaseCenter()
         list.forEach {
             val data = db.getCryptoDataByName(it)
-            listLinks.add("${data.BaseImageUrl}${data.ImageUrl}")
+            listLinks.add(data.ImageUrl ?: "")
         }
         Picasso.get().load(listLinks[0]).into(img1)
         Picasso.get().load(listLinks[1]).into(img2)
@@ -165,7 +165,7 @@ class TradingViewChartFragment : Fragment(), View.OnClickListener {
                 R.id.img2 -> setUpWebView("ETH")
                 R.id.img3 -> setUpWebView("LTC")
                 R.id.img4 -> setUpWebView("XRP")
-                R.id.img5 -> setUpWebView("DASH")
+                R.id.img5 -> setUpWebView("TRX")
                 R.id.img6 -> setUpWebView("DOGE")
                 R.id.img7 -> setUpWebView("ADA")
                 R.id.img8 -> setUpWebView("BNB")
