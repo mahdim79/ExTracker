@@ -34,6 +34,7 @@ import com.dust.extracker.interfaces.OnSmsSend
 import com.dust.extracker.interfaces.OnUpdateSortOrder
 import com.dust.extracker.interfaces.OnUpdateUserData
 import com.dust.extracker.interfaces.OnUserDataReceived
+import com.dust.extracker.realmdb.MainRealmObject
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -121,6 +122,44 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
         Volley.newRequestQueue(context).add(request)
+    }
+
+    fun searchCrypto(q:String,callBack:(List<MainRealmObject>) -> Unit){
+        val url =
+            "https://data-api.coindesk.com/asset/v1/search?search_string=$q&limit=10"
+
+        val request = JsonObjectRequest(
+            Request.Method.GET,
+            url,
+            null,
+            { response ->
+                val list = arrayListOf<MainRealmObject>()
+
+                try {
+                    val resultList = response.getJSONObject("Data").getJSONArray("LIST")
+                    for(i in 0 until resultList.length()){
+                        val item = resultList.getJSONObject(i)
+                        val obj = MainRealmObject()
+                        obj.ID = item.getInt("ID").toString()
+                        obj.ImageUrl = item.getString("LOGO_URL")
+                        obj.Name = item.getString("NAME")
+                        obj.Symbol = item.getString("SYMBOL")
+                        list.add(obj)
+                    }
+                }catch (e:Exception){}
+
+                callBack.invoke(list)
+            },
+            {
+            }
+        )
+        request.retryPolicy = DefaultRetryPolicy(
+            6000,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+        Volley.newRequestQueue(context).add(request)
+
     }
 
     fun getMainPrices(coins: String, onGetMainPrices: OnGetMainPrices) {

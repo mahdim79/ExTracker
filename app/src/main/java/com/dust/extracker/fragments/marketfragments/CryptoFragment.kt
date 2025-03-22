@@ -39,6 +39,8 @@ import com.dust.extracker.dataclasses.PriceDataClass
 import com.dust.extracker.interfaces.*
 import com.dust.extracker.realmdb.MainRealmObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.util.*
 
 class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGetMainPrices,
@@ -414,32 +416,14 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
                             )
                         return
                     }
-                    val results = realmDB.getCryptoDataByIds(data!!.split(","))
-                    if (results.size > 25) {
-                        val pList = arrayListOf<MainRealmObject>()
-                        for (i in 0 until results.size) {
-                            if (i < 24)
-                                pList.add(results[i])
-                            else
-                                break
-                        }
-                        market_recyclerView.adapter =
-                            MarketRecyclerViewAdapter(
-                                pList,
-                                requireActivity(),
-                                alphaAnimation,
-                                dollarPrice
-                            )
-
-                    } else {
-                        market_recyclerView.adapter =
-                            MarketRecyclerViewAdapter(
-                                results,
-                                requireActivity(),
-                                alphaAnimation,
-                                dollarPrice
-                            )
-                    }
+                    val results = Gson().fromJson<List<MainRealmObject>>(data!!,object : TypeToken<List<MainRealmObject>>() {}.type)
+                    market_recyclerView.adapter =
+                        MarketRecyclerViewAdapter(
+                            results,
+                            requireActivity(),
+                            alphaAnimation,
+                            dollarPrice
+                        )
                 }
             }
         }

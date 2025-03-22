@@ -34,10 +34,14 @@ import com.dust.extracker.fragments.othersfragment.NotificationChooseCryptoFragm
 import com.dust.extracker.interfaces.OnGetAllCryptoList
 import com.dust.extracker.interfaces.OnGetDollarPrice
 import com.dust.extracker.interfaces.OnGetTotalMarketCap
+import com.dust.extracker.realmdb.ExchangerObject
+import com.dust.extracker.realmdb.MainRealmObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
 import com.dust.extracker.utils.Utils
 import com.google.android.material.tabs.TabLayout
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -132,7 +136,6 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
             edt_search.setText("")
         }
 
-        val allData = realmDB.getAllCryptoData()
         val allExchangers = realmDB.getAllExchangerData()
         edt_search.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
@@ -145,41 +148,30 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
                     delay(1000)
                     var exchanger = ""
                     var mainData = ""
-                    if (edt_search.text.toString() == "") {
+                    if (edt_search.text.toString().trim() == "") {
                         sendSearchBroadcast(exchanger, mainData)
                     }else{
-                        //set Main Data
-                        val listTemp1 = arrayListOf<String>()
-                        for (i in 0 until allData.size) {
-                            if (allData[i]!!.Name!!.indexOf(
-                                    edt_search.text.toString(),
-                                    ignoreCase = true
-                                ) != -1
-                            ) {
-                                try {
-                                    listTemp1.add(allData[i]!!.ID!!)
-                                } catch (e: Exception) {
-                                }
-                            }
-                        }
-                        mainData = listTemp1.joinToString(",")
+                        apiCenter.searchCrypto(edt_search.text.toString().trim()){ result ->
+                            mainData = Gson().toJson(result,object : TypeToken<List<MainRealmObject>>() {}.type)
 
-                        // set Exchanger Data
-                        val listTemp = arrayListOf<Int>()
-                        for (i in 0 until allExchangers.size) {
-                            if (allExchangers[i]!!.name.indexOf(
-                                    edt_search.text.toString(),
-                                    ignoreCase = true
-                                ) != -1
-                            ) {
-                                try {
-                                    listTemp.add(allExchangers[i]!!.id!!)
-                                } catch (e: Exception) {
+                            // set Exchanger Data
+                            val listTemp = arrayListOf<ExchangerObject>()
+                            for (i in 0 until allExchangers.size) {
+                                if (allExchangers[i]!!.name.indexOf(
+                                        edt_search.text.toString(),
+                                        ignoreCase = true
+                                    ) != -1
+                                ) {
+                                    try {
+                                        listTemp.add(allExchangers[i]!!)
+                                    } catch (e: Exception) {
+                                    }
                                 }
                             }
+                            exchanger = Gson().toJson(listTemp,object : TypeToken<List<ExchangerObject>>() {}.type)
+                            sendSearchBroadcast(exchanger, mainData)
+
                         }
-                        exchanger = listTemp.joinToString(",")
-                        sendSearchBroadcast(exchanger, mainData)
                     }
                 }
 
