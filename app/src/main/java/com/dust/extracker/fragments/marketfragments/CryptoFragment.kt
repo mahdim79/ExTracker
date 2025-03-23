@@ -65,6 +65,8 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     private var timer: Timer? = null
     private var INDEX: Int? = 0
 
+    private lateinit var recyclerAdapter:MarketRecyclerViewAdapter
+
     var dollarPrice = 0.0
 
     private val notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
@@ -215,11 +217,10 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     }
 
     private fun setDataRequest() {
+        loadData()
         if (checkConnection()){
             val api = ApiCenter(requireActivity(), this)
             api.getAllCryptoList()
-        }else{
-            loadData()
         }
     }
 
@@ -236,7 +237,6 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
         datalist.addAll(realmDB.getPopularCoins())
 
         updateOffline()
-        runPermissionCheckProcess()
     }
 
 
@@ -254,6 +254,14 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
 
         market_recyclerView.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+
+        recyclerAdapter = MarketRecyclerViewAdapter(
+            requireActivity(),
+            alphaAnimation,
+            dollarPrice
+        )
+        market_recyclerView.adapter = recyclerAdapter
+
 
     }
 
@@ -274,6 +282,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
 
     override fun onAddComplete() {
         requireActivity().sendBroadcast(Intent("com.dust.extracker.onGetMainData"))
+        runPermissionCheckProcess()
     }
 
     private fun runPermissionCheckProcess() {
@@ -356,13 +365,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     }
 
     private fun updateOffline() {
-        market_recyclerView.adapter =
-            MarketRecyclerViewAdapter(
-                datalist,
-                requireActivity(),
-                alphaAnimation,
-                dollarPrice
-            )
+        recyclerAdapter.submitList(datalist)
         INDEX = 1
         if (timer == null)
             startTimer()

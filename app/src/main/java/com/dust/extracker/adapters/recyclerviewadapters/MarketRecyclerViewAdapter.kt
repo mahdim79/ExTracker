@@ -18,6 +18,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dust.extracker.R
 import com.dust.extracker.customviews.CTextView
@@ -28,18 +30,33 @@ import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
 import kotlin.Exception
 
-class MarketRecyclerViewAdapter(
-    var list: List<MainRealmObject>,
-    var context: Context,
+class MarketRecyclerViewAdapter(var context: Context,
     var alphaAnimation: AlphaAnimation,
     var dollarPrice: Double
-) :
-    RecyclerView.Adapter<MarketRecyclerViewAdapter.MainRecyclerViewHolder>() {
+) : ListAdapter<MainRealmObject,MarketRecyclerViewAdapter.MainRecyclerViewHolder>(callBack){
 
-        init {
-            Log.i("MarketRecyclerViewAdapter","create")
+    companion object{
+        private val callBack = object :DiffUtil.ItemCallback<MainRealmObject>(){
+            override fun areItemsTheSame(
+                oldItem: MainRealmObject,
+                newItem: MainRealmObject
+            ): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(
+                oldItem: MainRealmObject,
+                newItem: MainRealmObject
+            ): Boolean {
+                return oldItem.id == newItem.id &&
+                        oldItem.Symbol.equals(newItem.Symbol) &&
+                        oldItem.ID.equals(newItem.ID) &&
+                        oldItem.rank == newItem.rank
+            }
+
         }
-
+    }
+    
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainRecyclerViewHolder {
         return MainRecyclerViewHolder(
             LayoutInflater.from(parent.context)
@@ -48,9 +65,10 @@ class MarketRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: MainRecyclerViewHolder, position: Int) {
-        Picasso.get().load(list[position].ImageUrl)
+        val itemData = getItem(position)
+        Picasso.get().load(itemData.ImageUrl)
             .into(holder.item_image)
-        holder.item_text.text = list[position].Name
+        holder.item_text.text = itemData.Name
         holder.itemView.setOnLongClickListener {
             val resultList = arrayListOf<String>()
             val sharedPreferences = context.getSharedPreferences("FAV", Context.MODE_PRIVATE)
@@ -62,8 +80,8 @@ class MarketRecyclerViewAdapter(
             }
             var text = ""
             var color: Drawable? = null
-            if (resultList.contains(list[position].ID!!)) {
-                resultList.remove(list[position].ID!!)
+            if (resultList.contains(itemData.ID!!)) {
+                resultList.remove(itemData.ID!!)
                 text = context.resources.getString(R.string.deletewatch)
                 color = ResourcesCompat.getDrawable(
                     context.resources!!,
@@ -71,7 +89,7 @@ class MarketRecyclerViewAdapter(
                     null
                 )
             } else {
-                resultList.add(list[position].ID!!)
+                resultList.add(itemData.ID!!)
                 text = context.resources.getString(R.string.addwatch)
                 color = ResourcesCompat.getDrawable(
                     context.resources!!,
@@ -98,26 +116,26 @@ class MarketRecyclerViewAdapter(
             true
         }
         try {
-            val decimalCount = calculateDecimalByPrice(list[position].LastPrice!!)
-            if (list[position].LastPrice!! == 0.0)
+            val decimalCount = calculateDecimalByPrice(itemData.LastPrice!!)
+            if (itemData.LastPrice!! == 0.0)
                 holder.item_price.text = ""
             else
-                holder.item_price.text = "$${Utils.formatPriceNumber(list[position].LastPrice!!,decimalCount, Locale.ENGLISH)}"
-            holder.item_price_toman.text = "${Utils.formatPriceNumber((list[position].LastPrice!! * dollarPrice),decimalCount)} ${context.resources.getString(R.string.toman)}"
+                holder.item_price.text = "$${Utils.formatPriceNumber(itemData.LastPrice!!,decimalCount, Locale.ENGLISH)}"
+            holder.item_price_toman.text = "${Utils.formatPriceNumber((itemData.LastPrice!! * dollarPrice),decimalCount)} ${context.resources.getString(R.string.toman)}"
 
         } catch (e: Exception) {
             holder.item_price.text = ""
         }
         holder.item_price.startAnimation(alphaAnimation)
 
-     //   holder.sort_num.text = list[position].SortOrder
+     //   holder.sort_num.text = itemData.SortOrder
 
-        holder.item_text_coinName.text = list[position].Symbol
+        holder.item_text_coinName.text = itemData.Symbol
 
-        holder.dailyChange.text = "${list[position].DailyChangePCT.toString()}%"
+        holder.dailyChange.text = "${itemData.DailyChangePCT.toString()}%"
 
-        if (list[position].DailyChangePCT != null) {
-            if (list[position].DailyChangePCT!! > 0)
+        if (itemData.DailyChangePCT != null) {
+            if (itemData.DailyChangePCT!! > 0)
                 holder.dailyChange.background = ResourcesCompat.getDrawable(
                     context.resources,
                     R.drawable.portfolio_linear_shape_green,
@@ -133,7 +151,7 @@ class MarketRecyclerViewAdapter(
 
         holder.itemView.setOnClickListener {
             val intent = Intent("com.dust.extracker.OnClickMainData")
-            intent.putExtra("Symbol", list[position].Symbol)
+            intent.putExtra("Symbol", itemData.Symbol)
             context.sendBroadcast(intent)
         }
 
@@ -154,7 +172,7 @@ class MarketRecyclerViewAdapter(
                         }
                         if (dayChange >= 0
                         ) {
-                            holder.dailyChange.text = "${bundle.getDouble(list[position].Symbol)}%"
+                            holder.dailyChange.text = "${bundle.getDouble(itemData.Symbol)}%"
 
                             holder.dailyChange.background = ResourcesCompat.getDrawable(
                                 context.resources,
@@ -163,7 +181,7 @@ class MarketRecyclerViewAdapter(
                             )
 
                         } else {
-                            holder.dailyChange.text = "${bundle.getDouble(list[position].Symbol)}%"
+                            holder.dailyChange.text = "${bundle.getDouble(itemData.Symbol)}%"
 
                             holder.dailyChange.background = ResourcesCompat.getDrawable(
                                 context.resources,
@@ -174,13 +192,13 @@ class MarketRecyclerViewAdapter(
                         holder.dailyChange.startAnimation(alphaAnimation)
 
                     } else {
-                        if (!bundle.isEmpty && bundle.containsKey(list[position].Symbol)) {
+                        if (!bundle.isEmpty && bundle.containsKey(itemData.Symbol)) {
                             val price = try {
                                 holder.item_price.text.toString().replace("$", "").replace(",","").toDouble()
                             } catch (e: Exception) {
                                 0.0
                             }
-                            val bundlePrice = bundle.getDouble(list[position].Symbol)
+                            val bundlePrice = bundle.getDouble(itemData.Symbol)
                             val decimalCount = calculateDecimalByPrice(bundlePrice)
 
                             if (price < bundlePrice) {
@@ -220,7 +238,7 @@ class MarketRecyclerViewAdapter(
 
         class UpdateTomanData : BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
-                val tomanPrice = (list[position].LastPrice!! * (p1!!.extras!!.getString("PRICE")!!.toDouble()))
+                val tomanPrice = (itemData.LastPrice!! * (p1!!.extras!!.getString("PRICE")!!.toDouble()))
                 val decimal = calculateDecimalByPrice(tomanPrice)
                 holder.item_price_toman.text = "${Utils.formatPriceNumber(tomanPrice,decimal)} تومان"
                 holder.item_price_toman.startAnimation(alphaAnimation)
@@ -251,9 +269,7 @@ class MarketRecyclerViewAdapter(
             12
         }
     }
-
-    override fun getItemCount(): Int = list.size
-
+    
     inner class MainRecyclerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var item_image = itemView.findViewById<CircleImageView>(R.id.item_image)
         var item_text = itemView.findViewById<TextView>(R.id.item_text)

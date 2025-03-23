@@ -17,7 +17,7 @@
     <string name = "cryptoExchanger"> Currency Converter </string>
     <string name = "portfolio"> portfolio </string>
     <string name = "market"> Market </string>
-    <string name = "blog"> Blog </string>
+    <string name = "blog"> News </string>
     <string name = "settings"> Settings </string>
     <string name = "newContents"> Latest Content </string>
     <string name = "savedNews"> Saved news </string>

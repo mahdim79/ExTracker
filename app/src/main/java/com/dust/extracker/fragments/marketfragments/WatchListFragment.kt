@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dust.extracker.R
-import com.dust.extracker.adapters.recyclerviewadapters.MarketRecyclerViewAdapter
 import com.dust.extracker.adapters.recyclerviewadapters.WatchListRecyclerViewAdapter
 import com.dust.extracker.apimanager.ApiCenter
 import com.dust.extracker.dataclasses.CryptoMainData
