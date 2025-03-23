@@ -98,20 +98,19 @@ class MarketRecyclerViewAdapter(
             true
         }
         try {
+            val decimalCount = calculateDecimalByPrice(list[position].LastPrice!!)
             if (list[position].LastPrice!! == 0.0)
                 holder.item_price.text = ""
             else
-                holder.item_price.text = "$${Utils.formatPriceNumber(list[position].LastPrice!!,4, Locale.ENGLISH)}"
+                holder.item_price.text = "$${Utils.formatPriceNumber(list[position].LastPrice!!,decimalCount, Locale.ENGLISH)}"
+            holder.item_price_toman.text = "${Utils.formatPriceNumber((list[position].LastPrice!! * dollarPrice),decimalCount)} ${context.resources.getString(R.string.toman)}"
+
         } catch (e: Exception) {
             holder.item_price.text = ""
         }
         holder.item_price.startAnimation(alphaAnimation)
 
      //   holder.sort_num.text = list[position].SortOrder
-
-        if (holder.item_price.text.toString() != "")
-            holder.item_price_toman.text =
-                "${Utils.formatPriceNumber((list[position].LastPrice!! * dollarPrice),1)} ${context.resources.getString(R.string.toman)}"
 
         holder.item_text_coinName.text = list[position].Symbol
 
@@ -181,24 +180,28 @@ class MarketRecyclerViewAdapter(
                             } catch (e: Exception) {
                                 0.0
                             }
-                            if (price < bundle.getDouble(list[position].Symbol)
-                            ) {
-                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Symbol),4,
+                            val bundlePrice = bundle.getDouble(list[position].Symbol)
+                            val decimalCount = calculateDecimalByPrice(bundlePrice)
+
+                            if (price < bundlePrice) {
+                                holder.item_price.text = "$${Utils.formatPriceNumber(bundlePrice,decimalCount,
                                     Locale.ENGLISH)}"
                                 holder.item_price.setTextColor(Color.GREEN)
 
                             } else if (price == 0.0) {
-                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Symbol),4,
+                                holder.item_price.text = "$${Utils.formatPriceNumber(bundlePrice,decimalCount,
                                     Locale.ENGLISH)}"
 
                             } else {
-                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Symbol),4,
+                                holder.item_price.text = "$${Utils.formatPriceNumber(bundlePrice,decimalCount,
                                     Locale.ENGLISH)}"
 
                                 holder.item_price.setTextColor(Color.RED)
 
                             }
-                            holder.item_price_toman.text = "${Utils.formatPriceNumber(((holder.item_price.text.toString().replace("$", "").replace(",", "").toDouble()) * (p1!!.extras!!.getString("PRICE")!!.toDouble())),1)} ${context.resources.getString(R.string.toman)}"
+                            val tomanPrice = ((holder.item_price.text.toString().replace("$", "").replace(",", "").toDouble()) * (p1!!.extras!!.getString("PRICE")!!.toDouble()))
+                            val decimal = calculateDecimalByPrice(tomanPrice)
+                            holder.item_price_toman.text = "${Utils.formatPriceNumber(tomanPrice,decimal)} ${context.resources.getString(R.string.toman)}"
 
                             holder.item_price.startAnimation(alphaAnimation)
                         }
@@ -217,7 +220,9 @@ class MarketRecyclerViewAdapter(
 
         class UpdateTomanData : BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
-                holder.item_price_toman.text = "${Utils.formatPriceNumber((list[position].LastPrice!! * (p1!!.extras!!.getString("PRICE")!!.toDouble())),1)} تومان"
+                val tomanPrice = (list[position].LastPrice!! * (p1!!.extras!!.getString("PRICE")!!.toDouble()))
+                val decimal = calculateDecimalByPrice(tomanPrice)
+                holder.item_price_toman.text = "${Utils.formatPriceNumber(tomanPrice,decimal)} تومان"
                 holder.item_price_toman.startAnimation(alphaAnimation)
             }
         }
@@ -235,6 +240,16 @@ class MarketRecyclerViewAdapter(
             )
         }
 
+    }
+
+    private fun calculateDecimalByPrice(price:Double):Int{
+        return if (price > 1){
+            2
+        }else if (price >0.00001){
+            7
+        }else{
+            12
+        }
     }
 
     override fun getItemCount(): Int = list.size

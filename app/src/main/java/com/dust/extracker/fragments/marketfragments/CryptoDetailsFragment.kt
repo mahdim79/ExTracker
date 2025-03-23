@@ -249,7 +249,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         fullChart.setTextColor(Color.WHITE)
 
         val sharedPreferences1 = requireActivity().getSharedPreferences("FAV", Context.MODE_PRIVATE)
-        if (sharedPreferences1.getString("fav", "")!!.indexOf(mainObject.ID!!) != -1) {
+        if (sharedPreferences1.getString("fav", "")!!.split(',').contains(mainObject.ID)) {
             addToeWatchListbtn.text = requireActivity().resources.getString(R.string.deleteFromWatchlist)
             addToeWatchListbtn.background = ResourcesCompat.getDrawable(
                 requireActivity().resources,
@@ -274,7 +274,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
                 listRawData = rawData!!.split(',')
                 resultList.addAll(listRawData)
             }
-            if (rawData.indexOf("${mainObject.ID!!}") != -1) {
+            if (resultList.contains(mainObject.ID)) {
                 resultList.remove(mainObject.ID!!)
                 addToeWatchListbtn.text = requireActivity().resources.getString(R.string.addToWatchlist)
                 addToeWatchListbtn.background = ResourcesCompat.getDrawable(
@@ -298,7 +298,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         }
 
         addTransactionbtn.setOnClickListener {
-            var intent = Intent("com.dust.extracker.OnPageChange")
+            val intent = Intent("com.dust.extracker.OnPageChange")
             intent.putExtra("PAGE", 1)
             requireActivity().sendBroadcast(intent)
             val coinName = mainObject.Symbol!!
@@ -512,17 +512,21 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
         setUpTotalChange()
 
-        coinPrice.text = "$${Utils.formatPriceNumber(mainObject.LastPrice!!,6)}"
-
         date.text = "${requireActivity().resources.getString(R.string.time)} ${freshDollarPrice.date}"
 
         dollarPrice.text = "${requireActivity().resources.getString(R.string.dollarPrice)} ${Utils.formatPriceNumber(freshDollarPrice.price.toDouble(),0)}"
 
-        tomanPrice.text = "${Utils.formatPriceNumber((mainObject.LastPrice!!.toDouble() * freshDollarPrice.price.toDouble()),2)} ${requireActivity().resources.getString(R.string.toman)}"
-
         mainObject.LastPrice?.let { lp ->
-            val decimal = if (lp > 1) 2 else 7
+            val decimal = if (lp > 1){
+                2
+            }else if (lp > 0.0001){
+                7
+            }else{
+                13
+            }
             price.text = "$${Utils.formatPriceNumber(lp,decimal)}"
+            coinPrice.text = price.text.toString()
+            tomanPrice.text = "${Utils.formatPriceNumber((lp * freshDollarPrice.price.toDouble()),decimal)} ${requireActivity().resources.getString(R.string.toman)}"
         }
 
         mainObject.DailyChangePCT?.let { pct ->
@@ -539,7 +543,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
             rank.text = "#${Utils.formatPriceNumber(ra.toDouble(),0)}"
         }
 
-         totalSupply.text = "${Utils.formatPriceNumber(mainObject.maxSupply ?: 0.0,2)} ${mainObject.Symbol}"
+        totalSupply.text = "${Utils.formatPriceNumber(mainObject.maxSupply ?: 0.0,2)} ${mainObject.Symbol}"
 
         Picasso.get().load(mainObject.ImageUrl).into(coinImg)
 
@@ -659,7 +663,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         }
     }
 
-    fun setCurrentItemTextColor(views: List<View>, view: View) {
+    private fun setCurrentItemTextColor(views: List<View>, view: View) {
         (view as CTextView).setTextColor(ContextCompat.getColor(requireActivity(), R.color.green_primary))
         views.forEach {
             if (it.id != view.id) {
@@ -683,31 +687,31 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
     private fun requestCoinsData() {
         if (checkNetworkConnectivity()) {
-            apiService.getMainPrices("BTC,${mainObject.Symbol}", object : OnGetMainPrices {
-                override fun onGetPrices(priceList: List<PriceDataClass>) {
-                    priceList.forEach {
-                        realmDB.updatePrice(it)
-                    }
-                    apiService.getDailyChanges(
-                        "BTC,${mainObject.Symbol}",
-                        object : OnGetDailyChanges {
-                            override fun onGetDailyChanges(list: List<LastChangeDataClass>) {
-                                list.forEach {
-                                    realmDB.updateDailyChange(it)
-                                }
-                                setUpCoinList()
-                                try {
-                                    setData()
-                                }catch (e:Exception){}
-                                val time = java.util.Calendar.getInstance().time.toString()
-                                foreign_date.text = "${time.substring(0, 10)}-${time.substring(
-                                    (time.length - 5),
-                                    time.length
-                                )}"
-                            }
-                        })
+            apiService.getCoinFullDetails("BTC,${mainObject.Symbol}"){ detailsList ->
+
+                detailsList.forEach {
+                    realmDB.updateCryptoDetails(it)
                 }
-            })
+
+                apiService.getDailyChanges(
+                    "BTC,${mainObject.Symbol}",
+                    object : OnGetDailyChanges {
+                        override fun onGetDailyChanges(list: List<LastChangeDataClass>) {
+                            list.forEach {
+                                realmDB.updateDailyChange(it)
+                            }
+                            setUpCoinList()
+                            try {
+                                setData()
+                            }catch (e:Exception){}
+                            val time = Calendar.getInstance().time.toString()
+                            foreign_date.text = "${time.substring(0, 10)}-${time.substring(
+                                (time.length - 5),
+                                time.length
+                            )}"
+                        }
+                    })
+            }
         }
     }
 

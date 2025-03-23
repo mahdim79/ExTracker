@@ -344,6 +344,14 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
 
+                if (checkFragmentAvailability("SearchFragment")) {
+                    supportFragmentManager.popBackStack(
+                        "SearchFragment",
+                        FragmentManager.POP_BACK_STACK_INCLUSIVE
+                    )
+                    return
+                }
+
                 testCloseApp()
 
             }

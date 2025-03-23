@@ -24,8 +24,10 @@ import com.dust.extracker.dataclasses.TransactionDataClass
 import com.dust.extracker.interfaces.OnGetAllCryptoList
 import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
+import com.dust.extracker.utils.Utils
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import java.util.Locale
 
 class InputDataFragment : Fragment(), View.OnClickListener,OnGetAllCryptoList {
     lateinit var btnBuy: CButton
@@ -146,11 +148,25 @@ class InputDataFragment : Fragment(), View.OnClickListener,OnGetAllCryptoList {
         if (cachedPrice == null || cachedPrice == 0.0){
             apiService.getCryptoPriceByName(requireArguments().getString("COINNAME", "BTC"), 0)
         }else{
-            mainPrice.editText!!.setText(cachedPrice.toString())
+            setMainPrice(cachedPrice)
         }
 
         realmDB.getDollarPrice()?.price?.let {
             dollarPrice.editText!!.setText(it)
+        }
+    }
+
+    private fun setMainPrice(price:Double){
+        mainPrice.editText!!.setText(Utils.formatPriceNumber(price,calculateDecimal(price), Locale.ENGLISH))
+    }
+
+    private fun calculateDecimal(price:Double):Int{
+        return if (price > 1){
+            2
+        }else if (price > 0.00001){
+            7
+        }else{
+            12
         }
     }
 
@@ -339,6 +355,6 @@ class InputDataFragment : Fragment(), View.OnClickListener,OnGetAllCryptoList {
     override fun onGet(cryptoList: List<CryptoMainData>) {}
 
     override fun onGetByName(price: Double, dataNum: Int) {
-        mainPrice.editText!!.setText(price.toString())
+        setMainPrice(price)
     }
 }

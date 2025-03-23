@@ -392,6 +392,17 @@ class RealmDataBaseCenter() {
         }
     }
 
+    fun updateCryptoDetails(data:FullDetailsDataClass){
+        realmDB.executeTransaction {
+            it.where(MainRealmObject::class.java).equalTo("Symbol", data.symbol).findFirst()?.let { obj ->
+                obj.LastPrice = data.price
+                obj.maxSupply = data.maxSupply
+                obj.rank = data.rank
+                it.copyToRealmOrUpdate(obj)
+            }
+        }
+    }
+
     fun updatePrice(data: PriceDataClass) {
         realmDB.executeTransaction {
             val obj = it.where(MainRealmObject::class.java).equalTo("Symbol", data.name).findFirst()
