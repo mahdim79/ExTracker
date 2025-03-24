@@ -176,7 +176,7 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
                 SharedPreferencesCenter(requireActivity()).setNotificationData(
                     NotificationDataClass(
                         0,
-                        data.Name!!,
+                        data.Symbol!!,
                         data.LastPrice!!,
                         resultOne_edittext.text.toString().toDouble(),
                         timeingNotificationSpinner.selectedItemPosition

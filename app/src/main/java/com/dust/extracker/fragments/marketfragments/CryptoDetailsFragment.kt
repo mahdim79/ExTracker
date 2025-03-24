@@ -41,6 +41,7 @@ import java.util.*
 import androidx.core.net.toUri
 import com.dust.extracker.application.MyApplication
 import com.dust.extracker.utils.Constants
+import kotlin.math.abs
 
 class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
     OnDetailsDataReceive {
@@ -368,15 +369,11 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
             dailychange = mainObject.DailyChangePCT!!
         } else {
             if (list.isNotEmpty()) {
-
                 val lastPrice = list.first().y.toDouble()
                 val currentPrice = list.last().y.toDouble()
-
-                if (currentPrice > lastPrice) {
-                    dailychange = ((currentPrice - lastPrice) / lastPrice) * 100
-                } else {
-                    dailychange = ((lastPrice - currentPrice) / lastPrice) * 100
-                }
+                dailychange = (abs((currentPrice - lastPrice)) / lastPrice) * 100
+                if (currentPrice < lastPrice)
+                    dailychange *= -1
 
             } else {
                 return
@@ -729,27 +726,20 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
                 list.add(PointValue(data.first().time.toFloat(), data.first().closePrice.toFloat()))
                 list.add(PointValue(data.last().time.toFloat(), data.last().closePrice.toFloat()))
 
-                var dailychange: Double? = null
+                var changeStr = ""
                 if (list.isNotEmpty()) {
-
                     val lastPrice = list.first().y.toDouble()
                     val currentPrice = list.last().y.toDouble()
-
-                    if (currentPrice > lastPrice) {
-                        dailychange = ((currentPrice - lastPrice) / lastPrice) * 100
-                    } else {
-                        dailychange = ((lastPrice - currentPrice) / lastPrice) * 100
+                    val changePercentage = (abs((currentPrice - lastPrice)) / lastPrice) * 100
+                    changeStr = if (currentPrice > lastPrice) {
+                        "+${Utils.formatPriceNumber(changePercentage,2)}"
+                    } else if (currentPrice < lastPrice){
+                        "-${Utils.formatPriceNumber(changePercentage,2)}"
+                    }else{
+                        "${Utils.formatPriceNumber(changePercentage,2)}"
                     }
-
                 } else {
                     return
-                }
-
-                var changeStr = ""
-                if (dailychange > 0) {
-                    changeStr = "+${Utils.formatPriceNumber(dailychange,2)}"
-                } else {
-                    changeStr = "${Utils.formatPriceNumber(dailychange,2)}"
                 }
 
                 when (P) {
