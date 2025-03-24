@@ -421,8 +421,8 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         line.strokeWidth = 2
         line.areaTransparency = 80
         line.pointRadius = 1
-        line.setHasLabels(true)
-        line.setHasLabelsOnlyForSelected(true)
+        line.setHasLabels(false)
+        line.setHasLabelsOnlyForSelected(false)
         line.setHasPoints(true)
 
         val lineList = arrayListOf(line)
@@ -544,6 +544,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         }
 
         totalSupply.text = "${Utils.formatPriceNumber(mainObject.maxSupply ?: 0.0,2)} ${mainObject.Symbol}"
+        marketCoins.text = "${Utils.formatPriceNumber(mainObject.circulatingSupply ?: 0.0,2)} ${mainObject.Symbol}"
 
         Picasso.get().load(mainObject.ImageUrl).into(coinImg)
 
@@ -719,7 +720,6 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
         marketCap.text = "$ ${Utils.formatPriceNumber(data.marketCap.toDouble(),2)}"
         dailyVolume.text =
             "${Utils.formatPriceNumber(data.dailyVolume.toDouble(),2)} ${mainObject.Symbol}"
-        marketCoins.text = "${Utils.formatPriceNumber(data.supply.toDouble(),2)} ${mainObject.Symbol}"
     }
 
     private fun calculateChangesPCT(P: String) {

@@ -71,6 +71,8 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
 
     private lateinit var recyclerAdapter:MarketRecyclerViewAdapter
 
+    private var lastRefreshTime = 0L
+
     var dollarPrice = 0.0
 
     private val notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
@@ -92,11 +94,11 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpAlphaAnimation()
-        setUpViews(view)
-        setUpSwipeRefreshLayOut()
         setUpApiCenter()
         setUpDataBase()
         setDollarPrice()
+        setUpViews(view)
+        setUpSwipeRefreshLayOut()
         setDataRequest()
     }
 
@@ -140,10 +142,13 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
             Color.CYAN
         )
         crypto_swipe.setOnRefreshListener {
-            if (checkConnection()) {
-                updateOnline()
-            } else {
-                Toast.makeText(requireActivity(), "No Connection!", Toast.LENGTH_SHORT).show()
+            if (System.currentTimeMillis() - lastRefreshTime > 5000){
+                lastRefreshTime = System.currentTimeMillis()
+                if (checkConnection()) {
+                    updateOnline()
+                } else {
+                    Toast.makeText(requireActivity(), "No Connection!", Toast.LENGTH_SHORT).show()
+                }
             }
             crypto_swipe.isRefreshing = false
         }
@@ -174,14 +179,16 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     inner class MyTimerTask : TimerTask() {
         override fun run() {
             requireActivity().runOnUiThread {
-                if (checkConnection()) {
-                    if (INDEX != 0) {
-                        Log.i("Update", "xtask")
-                        updateOnline()
+                try {
+                    if (checkConnection()) {
+                        if (INDEX != 0) {
+                            Log.i("Update", "xtask")
+                            updateOnline()
+                        }
+                    } else {
+                        stopTimer()
                     }
-                } else {
-                    stopTimer()
-                }
+                }catch (e:Exception){}
             }
         }
     }
@@ -230,7 +237,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
 
     private fun checkConnection(): Boolean {
         val connectivityManager =
-            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = connectivityManager.activeNetworkInfo
         return info != null && info.isConnectedOrConnecting
     }

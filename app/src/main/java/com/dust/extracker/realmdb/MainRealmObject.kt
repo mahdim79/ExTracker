@@ -15,4 +15,5 @@ open class MainRealmObject:RealmObject() {
     var LastPrice: Double? = null //
     var DailyChangePCT: Double? = null //
     var maxSupply:Double? = null
+    var circulatingSupply:Double? = null
 }

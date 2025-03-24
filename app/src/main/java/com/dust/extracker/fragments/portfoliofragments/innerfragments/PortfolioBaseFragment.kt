@@ -395,8 +395,8 @@ class PortfolioBaseFragment(
         line.isCubic = true
         line.strokeWidth = 2
         line.areaTransparency = 60
-        line.setHasLabels(true)
-        line.setHasLabelsOnlyForSelected(true)
+        line.setHasLabels(false)
+        line.setHasLabelsOnlyForSelected(false)
         line.setHasPoints(true)
 
         val lineList = arrayListOf(line)

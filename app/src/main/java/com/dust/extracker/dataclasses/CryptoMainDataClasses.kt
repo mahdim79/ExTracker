@@ -13,6 +13,7 @@ data class CryptoMainData(
     var ImageUrl: String,
     var Name: String,
     var Symbol: String,
-    var maxSupply:Double
+    var maxSupply:Double,
+    var circulatingSupply:Double
 )
 

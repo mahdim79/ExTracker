@@ -47,6 +47,7 @@ class RealmDataBaseCenter() {
                 objectmain.maxSupply = i.maxSupply
                 objectmain.LastPrice = 0.0
                 objectmain.DailyChangePCT = 0.0
+                objectmain.circulatingSupply = i.circulatingSupply
                 dataToInsert.add(objectmain)
             }
             it.copyToRealmOrUpdate(dataToInsert)
@@ -398,6 +399,7 @@ class RealmDataBaseCenter() {
                 obj.LastPrice = data.price
                 obj.maxSupply = data.maxSupply
                 obj.rank = data.rank
+                obj.circulatingSupply = data.totalSupply
                 it.copyToRealmOrUpdate(obj)
             }
         }

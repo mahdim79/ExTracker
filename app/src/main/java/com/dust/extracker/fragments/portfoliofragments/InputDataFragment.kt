@@ -152,7 +152,7 @@ class InputDataFragment : Fragment(), View.OnClickListener,OnGetAllCryptoList {
         }
 
         realmDB.getDollarPrice()?.price?.let {
-            dollarPrice.editText!!.setText(it)
+            dollarPrice.editText!!.setText(Utils.formatPriceNumber(it.toDouble(),0, Locale.ENGLISH))
         }
     }
 
@@ -237,8 +237,8 @@ class InputDataFragment : Fragment(), View.OnClickListener,OnGetAllCryptoList {
                                 requireArguments().getString("COINNAME", "BTC"),
                                 dealType,
                                 count.editText!!.text.toString().toDouble(),
-                                dollarPrice.editText!!.text.toString().toDouble(),
-                                mainPrice.editText!!.text.toString().toDouble(),
+                                dollarPrice.editText!!.text.toString().replace(",","").toDouble(),
+                                mainPrice.editText!!.text.toString().replace(",","").toDouble(),
                                 0.toDouble(),
                                 "null"
                             )
@@ -282,8 +282,8 @@ class InputDataFragment : Fragment(), View.OnClickListener,OnGetAllCryptoList {
                 requireArguments().getString("COINNAME", "BTC"),
                 dealType,
                 count.editText!!.text.toString().toDouble(),
-                dollarPrice.editText!!.text.toString().toDouble(),
-                mainPrice.editText!!.text.toString().toDouble(),
+                dollarPrice.editText!!.text.toString().replace(",","").toDouble(),
+                mainPrice.editText!!.text.toString().replace(",","").toDouble(),
                 0.toDouble(),
                 "null"
             )
@@ -299,9 +299,9 @@ class InputDataFragment : Fragment(), View.OnClickListener,OnGetAllCryptoList {
             portfolioName.editText!!.text.toString(),
             transactionDataList,
             desc,
-            (mainPrice.editText!!.text.toString().toDouble() * count.editText!!.text.toString()
+            (mainPrice.editText!!.text.toString().replace(",","").toDouble() * count.editText!!.text.toString()
                 .toDouble()),
-            (mainPrice.editText!!.text.toString().toDouble() * count.editText!!.text.toString()
+            (mainPrice.editText!!.text.toString().replace(",","").toDouble() * count.editText!!.text.toString()
                 .toDouble()),
             "0"
         )

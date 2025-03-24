@@ -133,7 +133,8 @@ class NotificationChooseCryptoFragment : Fragment(), OnGetAllCryptoList {
                             selectedCrypto.ImageUrl!!,
                             selectedCrypto.Name!!,
                             selectedCrypto.Symbol!!,
-                            selectedCrypto.maxSupply ?: 0.0
+                            selectedCrypto.maxSupply ?: 0.0,
+                            selectedCrypto.circulatingSupply ?: 0.0
                         ), object : OnRealmDataChanged {
                             override fun onAddComplete() {
                                 if (index == 0){

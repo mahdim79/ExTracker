@@ -241,14 +241,9 @@ class MarketFragment : Fragment(), OnGetDollarPrice, OnGetAllCryptoList {
     }
 
     private fun loadDollarPrice() {
-        val connectivityManager =
-            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = connectivityManager.activeNetworkInfo
-        val res = networkInfo != null && networkInfo.isConnectedOrConnecting
-        if (res) {
+        setDollarPrice()
+        if (checkNetWorkConnectivity()) {
             apiCenter.getDollarPrice(this)
-        } else {
-            setDollarPrice()
         }
     }
 

@@ -43,6 +43,8 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
     private lateinit var swiprefreshLayout: SwipeRefreshLayout
     var dollarPrice = 0.0
 
+    private var lastRefreshTime = 0L
+
     private lateinit var notifyDataChanged: NotifyDataChanged
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -124,10 +126,13 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
             Color.CYAN
         )
         swiprefreshLayout.setOnRefreshListener {
-            if (checkConnection()) {
-                updateOnline()
-            } else {
-                Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.connectionFailure), Toast.LENGTH_SHORT).show()
+            if (System.currentTimeMillis() - lastRefreshTime > 5000){
+                lastRefreshTime = System.currentTimeMillis()
+                if (checkConnection()) {
+                    updateOnline()
+                } else {
+                    Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.connectionFailure), Toast.LENGTH_SHORT).show()
+                }
             }
             swiprefreshLayout.isRefreshing = false
         }
@@ -219,11 +224,13 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
     inner class MyTimerTask : TimerTask() {
         override fun run() {
             requireActivity().runOnUiThread {
-                if (checkConnection()) {
+                try {
+                    if (checkConnection()) {
                         updateOnline()
-                } else {
-                    stopTimer()
-                }
+                    } else {
+                        stopTimer()
+                    }
+                }catch (e:Exception){}
             }
         }
 

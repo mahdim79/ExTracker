@@ -180,12 +180,13 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
                     val dataObj = response.getJSONObject("Data")
                     dataObj.keys().forEach { cName ->
                         val obj = dataObj.getJSONObject(cName)
+
                         resulList.add(
                             FullDetailsDataClass(
                                 cName,
                                 obj.getDouble("PRICE_USD"),
+                                obj.getDouble("SUPPLY_CIRCULATING"),
                                 obj.getDouble("SUPPLY_TOTAL"),
-                                obj.getDouble("SUPPLY_MAX"),
                                 obj.getJSONObject("TOPLIST_BASE_RANK").getInt("CIRCULATING_MKT_CAP_USD")
                             )
                         )
@@ -361,12 +362,14 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
                 obj[0]?.getJSONObject("Data")?.getJSONArray("LIST")?.let { dataArray ->
                     for (i in 0 until dataArray.length()) {
                         val coinObj = dataArray.getJSONObject(i)
+
                         val data = CryptoMainData(
                             coinObj.getInt("ID").toString(),
                             coinObj.getString("LOGO_URL"),
                             coinObj.getString("NAME"),
                             coinObj.getString("SYMBOL"),
-                            coinObj.getDouble("SUPPLY_MAX")
+                            coinObj.getDouble("SUPPLY_TOTAL"),
+                            coinObj.getDouble("SUPPLY_CIRCULATING")
                         )
                         list.add(data)
                     }
