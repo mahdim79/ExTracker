@@ -174,5 +174,7 @@
     <string name="select_crypto">Select Crypto</string>
     <string name="searchSubtitle">Search or select from the list the coin you want.</string>
     <string name="dollarPriceToman">Dollar Price (Toman)</string>
+    <string name="grant_permission">Please grant permissions to continue.</string>
+    <string name="continu">Continue</string>
 
 </resources>

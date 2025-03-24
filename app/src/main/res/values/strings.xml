@@ -174,5 +174,7 @@
     <string name="select_crypto">انتخاب ارز</string>
     <string name="searchSubtitle">ارز مورد نظر خود را از لیست انتخاب کنید.</string>
     <string name="dollarPriceToman">قیمت دلار (تومان)</string>
+    <string name="grant_permission">برای ادامه لطفا دسترسی های مورد نیاز برنامه را بدهید</string>
+    <string name="continu">ادامه</string>
 
 </resources>

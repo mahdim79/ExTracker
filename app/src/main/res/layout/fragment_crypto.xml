@@ -108,11 +108,8 @@
                         android:scrollbars="vertical"
                         android:layout_height="match_parent" />
 
-
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
-
-
         </RelativeLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

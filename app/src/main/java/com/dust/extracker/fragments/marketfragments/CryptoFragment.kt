@@ -1,12 +1,14 @@
 package com.dust.extracker.fragments.marketfragments
 
 import android.Manifest
+import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
@@ -33,6 +35,7 @@ import com.android.volley.toolbox.Volley
 import com.dust.extracker.R
 import com.dust.extracker.adapters.recyclerviewadapters.MarketRecyclerViewAdapter
 import com.dust.extracker.apimanager.ApiCenter
+import com.dust.extracker.customviews.CButton
 import com.dust.extracker.dataclasses.CryptoMainData
 import com.dust.extracker.dataclasses.LastChangeDataClass
 import com.dust.extracker.dataclasses.PriceDataClass
@@ -42,6 +45,7 @@ import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.util.*
+import androidx.core.graphics.drawable.toDrawable
 
 class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGetMainPrices,
     OnGetDailyChanges {
@@ -71,7 +75,7 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
 
     private val notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
         if (it)
-            runPermissionCheckProcess()
+            requestPermissions()
     }
 
     private val batteryIgnoreLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){}
@@ -286,7 +290,39 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     }
 
     private fun runPermissionCheckProcess() {
+        if (checkRunTimePermissionNeed()){
+            showPermissionDialog()
+        }
+    }
 
+    private fun showPermissionDialog(){
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.dialog_grant_permission)
+        dialog.findViewById<CButton>(R.id.dialog_grantPermission_continue).setOnClickListener {
+            dialog.dismiss()
+            requestPermissions()
+        }
+        dialog.apply {
+            window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+            window?.setDimAmount(0.4f)
+            setCancelable(false)
+            setCanceledOnTouchOutside(false)
+            show()
+        }
+    }
+
+    private fun checkRunTimePermissionNeed():Boolean{
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            if (requireContext().checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
+                return true
+            }
+        }
+        if (!isIgnoringBatteryOptimization())
+            return true
+        return false
+    }
+
+    private fun requestPermissions(){
         // notification
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
             if (requireContext().checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
@@ -365,6 +401,8 @@ class CryptoFragment : Fragment(), OnGetAllCryptoList, OnRealmDataChanged, OnGet
     }
 
     private fun updateOffline() {
+        if (datalist.isEmpty())
+            return
         recyclerAdapter.submitList(datalist)
         INDEX = 1
         if (timer == null)
