@@ -62,6 +62,27 @@ class SharedPreferencesCenter(var context: Context, var preferencesName: String 
         ).commit()
     }
 
+    fun updateNotificationData(id:Int,lastUpdatedPrice:Double){
+        val list = arrayListOf<NotificationDataClass>()
+        list.addAll(getNotificationData())
+
+        val targetDataIndex = list.indexOfFirst { it.id == id }
+        if (targetDataIndex != -1)
+            list[targetDataIndex].lastUpdatedPrice = lastUpdatedPrice
+        else
+            return
+
+        val rawDataList = arrayListOf<String>()
+        for (i in 0 until list.size){
+            rawDataList.add(Gson().toJson(list[i], NotificationDataClass::class.java))
+        }
+
+        getSharedPreferencesEditor("NOTIFICATION_DATA").putString(
+            "DATA",
+            rawDataList.joinToString("|")
+        ).commit()
+    }
+
     fun getNotificationData(): List<NotificationDataClass> {
         try {
             val shaData =

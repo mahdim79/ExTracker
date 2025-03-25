@@ -153,7 +153,7 @@
     <string name="sendAgain">ارسال دوباره</string>
     <string name="done">انجام شد</string>
     <string name="errorLog">خطایی رخ داده است</string>
-    <string name="dollarPrice">قیمت دلار:</string>
+    <string name="dollarPrice">قیمت تتر:</string>
     <string name="time">زمان:</string>
     <string name="addToWatchlist">افزودن به تحت نظر</string>
     <string name="deleteFromWatchlist">حذف از تحت نظر</string>
@@ -173,8 +173,15 @@
     <string name="exchangerSubtitle">بررسی لحظه ای نرخ ها،نرخ تبدیل ارز ها و…</string>
     <string name="select_crypto">انتخاب ارز</string>
     <string name="searchSubtitle">ارز مورد نظر خود را از لیست انتخاب کنید.</string>
-    <string name="dollarPriceToman">قیمت دلار (تومان)</string>
+    <string name="dollarPriceToman">قیمت تتر (تومان)</string>
     <string name="grant_permission">برای ادامه لطفا دسترسی های مورد نیاز برنامه را بدهید</string>
     <string name="continu">ادامه</string>
+    <string name="priceWarning">هشدار قیمت</string>
+    <string name="downwardPriceWarning">قیمت %s به زیر سطح %d دلار رسید.</string>
+    <string name="upwardPriceWarning">قیمت %s به بالای سطح %d دلار رسید.</string>
+    <string name="priceChanges">تغییرات قیمت %s</string>
+    <string name="dailyPriceChangeAmount">میزان تغییرات روزانه قیمت: %s</string>
+    <string name="portfolioNotification">پرتفوی %s</string>
+    <string name="portfolioNotificationContent">ارزش %s تومان | درصد تغییر %s</string>
 
 </resources>

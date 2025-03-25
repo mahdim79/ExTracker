@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/standardMargin10x"
         android:background="?colorOnSecondary"
-        android:layoutDirection="rtl">
+        android:layoutDirection="ltr">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/news_image"
@@ -43,7 +43,7 @@
             android:layout_alignTop="@+id/news_image"
             android:layout_marginEnd="@dimen/standardMargin"
             android:layout_toEndOf="@+id/news_image"
-            android:textDirection="rtl"
+            android:textDirection="ltr"
             android:maxLines="2"
             android:textColor="?android:textColor"
             android:textSize="@dimen/standardMargin"
@@ -57,7 +57,7 @@
             android:layout_below="@+id/news_title"
             android:layout_marginEnd="@dimen/standardMargin"
             android:layout_toEndOf="@+id/news_image"
-            android:textDirection="rtl"
+            android:textDirection="ltr"
             android:textColor="?colorAccent"
             android:maxLines="3"
             android:textSize="@dimen/standardMargin"

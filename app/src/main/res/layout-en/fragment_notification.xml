@@ -175,6 +175,7 @@
                 android:background="?colorPrimaryVariant"/>
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cv_portfolio_notification"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardElevation="0dp"

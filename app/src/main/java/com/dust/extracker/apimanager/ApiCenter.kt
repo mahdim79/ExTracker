@@ -43,6 +43,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
+import saman.zamani.persiandate.PersianDate
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -102,17 +103,21 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
 
         val request = JsonObjectRequest(
             Request.Method.GET,
-            "https://brsapi.ir/FreeTsetmcBourseApi/Api_Free_Gold_Currency_v2.json",
+            "https://baha24.com/api/v1/price",
             null,
             {
-                val currencies = it!!.getJSONArray("currency")
-                val res = currencies.getJSONObject(0)
-                onGetDollarPrice.onGet(
-                    DollarInfoDataClass(
-                        res.getDouble("price").toString(),
-                        res.getString("date")
+                try {
+                    val usdtObject = it!!.getJSONObject("USDT")
+                    val date = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH)
+                    date.parse(usdtObject.getString("last_update"))
+                    val persianTime = PersianDate(date.calendar.time)
+                    onGetDollarPrice.onGet(
+                        DollarInfoDataClass(
+                            usdtObject.getDouble("sell").toString(),
+                            "${persianTime.shYear}-${persianTime.shMonth}-${persianTime.shDay} ${persianTime.hour}:${persianTime.minute}"
+                        )
                     )
-                )
+                }catch (e:Exception){}
             },
             {
 
@@ -612,47 +617,37 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
     fun getNews(onGetNews: OnGetNews) {
         val request = JsonObjectRequest(
             Request.Method.GET,
-            "https://newsdata.io/api/1/news?apikey=pub_75401313d1b4e67864e7abdcdbc857925d56a&q=بیت%20کوین&language=fa",
+            "https://data-api.coindesk.com/news/v1/article/list?lang=EN&limit=15",
             null,
             {
                 try {
-                    val data = it.getJSONArray("results")
+                    val data = it.getJSONArray("Data")
                     val resultList = arrayListOf<NewsDataClass>()
-                    for (i in 0 until data.length()) {
-                        try {
-                            val obj = data.getJSONObject(i)!!
-
-                            val formatter =
-                                SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                            formatter.timeZone = TimeZone.getTimeZone("UTC")
-
-                            var date = 0
-                            formatter.parse(obj.getString("pubDate"))?.let { newsDate ->
-                                date = (newsDate.time / 1000).toInt()
-                            }
-
+                    try {
+                        for (i in 0 until data.length()){
+                            val obj = data.getJSONObject(i)
                             resultList.add(
                                 NewsDataClass(
                                     i,
-                                    obj.getString("article_id"),
-                                    obj.getString("title"),
-                                    obj.getString("description"),
+                                    obj.getDouble("ID").toString(),
+                                    obj.getString("TITLE"),
+                                    obj.getString("BODY"),
                                     0,
                                     0,
-                                    obj.getString("image_url"),
+                                    obj.getString("IMAGE_URL"),
                                     false,
-                                    date,
-                                    obj.getString("link"),
+                                    obj.getInt("PUBLISHED_ON"),
+                                    obj.getString("URL"),
                                     getNewsCategory(
-                                        obj.getString("source_name"),
-                                        obj.getString("title")
+                                        "",
+                                        obj.getString("TITLE")
                                     ),
-                                    obj.getString("source_id")
+                                    obj.getJSONObject("SOURCE_DATA").getString("SOURCE_KEY")
                                 )
                             )
-                        } catch (e: Exception) {
-                            Log.i("afd", "adsf")
                         }
+                    } catch (e: Exception) {
+                        Log.i("afd", "adsf")
                     }
                     onGetNews.onGetNews(resultList)
                 } catch (e: Exception) {
@@ -673,13 +668,13 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
         var category = defaultCategory
         if (category.isEmpty())
             category = "any"
-        if (text.contains("بیت کوین") || text.contains("بیت"))
+        if (text.contains("Bitcoin") || text.contains("BTC"))
             category += ",BTC"
-        if (text.contains("اتریوم"))
+        if (text.contains("Ethereum") || text.contains("ETH"))
             category += ",ETH"
-        if (text.contains("تحلیل"))
+        if (text.contains("Prediction"))
             category += ",Trading"
-        if (text.contains("آلتکوین"))
+        if (text.contains("Altcoin"))
             category += ",Altcoin"
         return category
     }

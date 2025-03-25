@@ -445,7 +445,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
             Axis(axListX).setLineColor(Color.GRAY).setTextColor(Color.GRAY).setTextSize(0)
         val formatter = SimpleAxisValueFormatter()
         formatter.decimalSeparator = '.'
-        formatter.decimalDigitsNumber = 2
+        formatter.decimalDigitsNumber = 4
         formatter.prependedText = CharArray(1) { '$' }
         data.axisYRight =
             Axis(
@@ -509,7 +509,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
         setUpTotalChange()
 
-        date.text = "${requireActivity().resources.getString(R.string.time)} ${freshDollarPrice.date}"
+        date.text = freshDollarPrice.date
 
         dollarPrice.text = "${requireActivity().resources.getString(R.string.dollarPrice)} ${Utils.formatPriceNumber(freshDollarPrice.price.toDouble(),0)}"
 
@@ -522,7 +522,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
                 13
             }
             price.text = "$${Utils.formatPriceNumber(lp,decimal)}"
-            coinPrice.text = price.text.toString()
+            coinPrice.text = "$${Utils.formatPriceNumber(lp,decimal,Locale.ENGLISH)}"
             tomanPrice.text = "${Utils.formatPriceNumber((lp * freshDollarPrice.price.toDouble()),decimal)} ${requireActivity().resources.getString(R.string.toman)}"
         }
 

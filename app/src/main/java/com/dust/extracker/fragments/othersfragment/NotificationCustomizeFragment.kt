@@ -178,6 +178,7 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
                         0,
                         data.Symbol!!,
                         data.LastPrice!!,
+                        data.LastPrice!!,
                         resultOne_edittext.text.toString().toDouble(),
                         timeingNotificationSpinner.selectedItemPosition
                     )

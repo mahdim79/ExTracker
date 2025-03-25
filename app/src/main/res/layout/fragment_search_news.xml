@@ -34,7 +34,7 @@
             android:textSize="@dimen/standardMargin1.5x"
             android:padding="6dp"
             android:drawableTint="?colorAccent"
-            android:background="@drawable/edittext_selector"
+            android:background="@drawable/input_data_edittext_shape"
             android:layout_marginHorizontal="@dimen/standardMargin"
             />
     </LinearLayout>

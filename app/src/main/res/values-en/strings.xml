@@ -176,5 +176,11 @@
     <string name="dollarPriceToman">Dollar Price (Toman)</string>
     <string name="grant_permission">Please grant permissions to continue.</string>
     <string name="continu">Continue</string>
-
+    <string name="priceWarning">Price Warning!</string>
+    <string name="downwardPriceWarning">%s price drops below $%d</string>
+    <string name="upwardPriceWarning">%s price rises above $%d</string>
+    <string name="priceChanges">%s Price Changes</string>
+    <string name="dailyPriceChangeAmount">Daily Price Change: %s</string>
+    <string name="portfolioNotification">Portfolio %s</string>
+    <string name="portfolioNotificationContent">Total: %s Toman | Change Rate: %s</string>
 </resources>
