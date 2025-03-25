@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dust.extracker.R
-import com.dust.extracker.adapters.recyclerviewadapters.MarketRecyclerViewAdapter
 import com.dust.extracker.adapters.recyclerviewadapters.WatchListRecyclerViewAdapter
 import com.dust.extracker.apimanager.ApiCenter
 import com.dust.extracker.dataclasses.CryptoMainData
@@ -40,12 +39,11 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
     lateinit var apiCenter: ApiCenter
     private lateinit var favlist: List<String>
     private lateinit var alphaAnimation: AlphaAnimation
-    private lateinit var searchNotifier: SearchNotifier
     private var timer: Timer? = null
     private lateinit var swiprefreshLayout: SwipeRefreshLayout
     var dollarPrice = 0.0
 
-
+    private var lastRefreshTime = 0L
 
     private lateinit var notifyDataChanged: NotifyDataChanged
     override fun onCreateView(
@@ -128,10 +126,13 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
             Color.CYAN
         )
         swiprefreshLayout.setOnRefreshListener {
-            if (checkConnection()) {
-                updateOnline()
-            } else {
-                Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.connectionFailure), Toast.LENGTH_SHORT).show()
+            if (System.currentTimeMillis() - lastRefreshTime > 5000){
+                lastRefreshTime = System.currentTimeMillis()
+                if (checkConnection()) {
+                    updateOnline()
+                } else {
+                    Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.connectionFailure), Toast.LENGTH_SHORT).show()
+                }
             }
             swiprefreshLayout.isRefreshing = false
         }
@@ -168,30 +169,26 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
     override fun onStart() {
         super.onStart()
         startTimer()
-        searchNotifier = SearchNotifier()
-
         notifyDataChanged = NotifyDataChanged()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"),Context.RECEIVER_EXPORTED)
             requireActivity().registerReceiver(
                 notifyDataChanged,
                 IntentFilter("com.dust.extracker.notifyDataSetChanged"),
                 Context.RECEIVER_EXPORTED
             )
         }else{
-            requireActivity().registerReceiver(searchNotifier, IntentFilter("com.dust.extracker.OnSearchData"))
             requireActivity().registerReceiver(
                 notifyDataChanged,
                 IntentFilter("com.dust.extracker.notifyDataSetChanged")
-            )        }
+            )
+        }
 
     }
 
     override fun onStop() {
         super.onStop()
         stopTimer()
-        requireActivity().unregisterReceiver(searchNotifier)
         requireActivity().unregisterReceiver(notifyDataChanged)
     }
 
@@ -217,8 +214,8 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
     private fun updateOnline() {
         val coinList = arrayListOf<String>()
         val datalist = realmDB.getCryptoDataByIds(favlist)
-        for (i in 0 until datalist.size)
-            coinList.add(datalist[i].Name!!)
+        for (element in datalist)
+            coinList.add(element.Symbol!!)
         apiCenter.getMainPrices(coinList.joinToString(","), this)
         apiCenter.getDailyChanges(coinList.joinToString(","), this)
     }
@@ -227,11 +224,13 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
     inner class MyTimerTask : TimerTask() {
         override fun run() {
             requireActivity().runOnUiThread {
-                if (checkConnection()) {
+                try {
+                    if (checkConnection()) {
                         updateOnline()
-                } else {
-                    stopTimer()
-                }
+                    } else {
+                        stopTimer()
+                    }
+                }catch (e:Exception){}
             }
         }
 
@@ -243,47 +242,6 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
             requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = connectivityManager.activeNetworkInfo
         return info != null && info.isConnectedOrConnecting
-    }
-
-    inner class SearchNotifier: BroadcastReceiver(){
-        override fun onReceive(p0: Context?, p1: Intent?) {
-            if (p1!!.extras != null && p1.extras!!.containsKey("EXTRA_DATA")){
-                val data = p1.extras!!.getString("EXTRA_DATA")
-                if (data == "com.dust.extracker.kdsfjgksdjflasdk.START"){
-                    stopTimer()
-                    setRecyclerAdapter(arrayListOf())
-                }else if (data == "com.dust.extracker.kdsfjgksdjflasdk.STOP"){
-                    startTimer()
-                    setPrimaryDataInRecyclerView()
-                }else{
-                    if (data == ""){
-                        setRecyclerAdapter(arrayListOf())
-                        return
-                    }
-                    val results = realmDB.getCryptoDataByIds(data!!.split(","))
-                    val finalData = arrayListOf<MainRealmObject>()
-                    val favData = realmDB.getCryptoDataByIds(favlist)
-                    results.forEach {res ->
-                        favData.forEach {
-                            if (res.CoinName == it.CoinName)
-                                finalData.add(it)
-                        }
-                    }
-                    if (finalData.size > 25){
-                        val pList = arrayListOf<MainRealmObject>()
-                        for (i in 0 until finalData.size){
-                            if (i < 24)
-                                pList.add(finalData[i])
-                            else
-                                break
-                        }
-                        setRecyclerAdapter(pList)
-                    }else{
-                        setRecyclerAdapter(finalData)
-                    }
-                }
-            }
-        }
     }
 
     override fun onGetPrices(priceList: List<PriceDataClass>) {
@@ -315,7 +273,7 @@ class WatchListFragment() : Fragment() , OnGetMainPrices,
         val changes = realmDB.getLastDailyChangesByIds(list)
         val intent = Intent("com.dust.extracker.UPDATE_ITEMS_WatchList")
         intent.putExtra("IS_DAILY_CHANGE", true)
-        for (i in 0 until changes.size) {
+        for (i in changes.indices) {
             intent.putExtra(changes[i].CoinName, changes[i].ChangePercentage)
         }
         try {

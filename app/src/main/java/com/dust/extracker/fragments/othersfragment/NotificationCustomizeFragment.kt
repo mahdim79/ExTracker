@@ -141,7 +141,7 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
         notif_save.isEnabled = true
         pbar.visibility = View.GONE
         data = realmDB.getCryptoDataByName(requireArguments().getString("CoinName", "BTC"))
-        Picasso.get().load("${data.BaseImageUrl}${data.ImageUrl}").into(cryptoImage)
+        Picasso.get().load(data.ImageUrl).into(cryptoImage)
         cryptoName.text = data.Name
         resultOne_edittext.setText(
             String.format(
@@ -176,7 +176,8 @@ class NotificationCustomizeFragment : Fragment(), OnGetAllCryptoList {
                 SharedPreferencesCenter(requireActivity()).setNotificationData(
                     NotificationDataClass(
                         0,
-                        data.Name!!,
+                        data.Symbol!!,
+                        data.LastPrice!!,
                         data.LastPrice!!,
                         resultOne_edittext.text.toString().toDouble(),
                         timeingNotificationSpinner.selectedItemPosition

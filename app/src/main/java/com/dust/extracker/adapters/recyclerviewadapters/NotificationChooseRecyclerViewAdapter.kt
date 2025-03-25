@@ -14,11 +14,11 @@ import com.dust.extracker.realmdb.MainRealmObject
 import com.squareup.picasso.Picasso
 
 class NotificationChooseRecyclerViewAdapter(
-    var list: List<MainRealmObject>,
-    var fragmentManager: FragmentManager,
-    var index:Int = 0
+    var list: List<MainRealmObject>
 ) :
     RecyclerView.Adapter<NotificationChooseRecyclerViewAdapter.MainViewHolder>() {
+
+    private lateinit var onItemClick:(symbol:String) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         return MainViewHolder(
@@ -30,32 +30,23 @@ class NotificationChooseRecyclerViewAdapter(
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        holder.cryptotext.text = list[position].FullName
-        Picasso.get().load("${list[position].BaseImageUrl}${list[position].ImageUrl}")
+        holder.cryptotext.text = list[position].Name
+        Picasso.get().load(list[position].ImageUrl)
             .into(holder.cryptoImage)
         holder.itemView.setOnClickListener {
-            if (index == 0){
-                fragmentManager.beginTransaction()
-                    .replace(
-                        R.id.others_frame_holder,
-                        NotificationCustomizeFragment().newInstance(list[position].Name!!)
-                    )
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .addToBackStack("NotificationCustomizeFragment")
-                    .commit()
-            }else{
-                fragmentManager.beginTransaction()
-                    .replace(
-                        R.id.main_frame,
-                        NotificationCustomizeFragment().newInstance(list[position].Name!!)
-                    )
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .addToBackStack("NotificationCustomizeFragment")
-                    .commit()
-            }
 
+            if (::onItemClick.isInitialized){
+                list[position].Symbol?.let { s ->
+                    onItemClick.invoke(s)
+                }
+            }
         }
     }
+
+    fun setOnItemClickListener(onItemClick:(symbol:String) -> Unit){
+        this.onItemClick = onItemClick
+    }
+
 
     inner class MainViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var cryptoImage: ImageView = itemView.findViewById(R.id.item_image)

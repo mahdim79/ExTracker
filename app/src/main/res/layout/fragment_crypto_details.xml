@@ -142,13 +142,28 @@
                         android:textColor="?android:textColor"
                         android:textSize="8dp" />
 
-                    <com.dust.extracker.customviews.CTextView
-                        android:id="@+id/date"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="-"
-                        android:textColor="?android:textColor"
-                        android:textSize="8dp" />
+                        android:gravity="center"
+                        android:orientation="horizontal">
+                        <com.dust.extracker.customviews.CTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/time"
+                            android:textColor="?android:textColor"
+                            android:textSize="8dp" />
+
+                        <com.dust.extracker.customviews.CTextView
+                            android:id="@+id/date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-"
+                            android:layout_marginHorizontal="5dp"
+                            android:textColor="?android:textColor"
+                            android:textSize="8dp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 

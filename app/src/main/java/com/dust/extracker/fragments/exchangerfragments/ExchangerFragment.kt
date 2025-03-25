@@ -130,16 +130,8 @@ class ExchangerFragment : Fragment(), View.OnClickListener, OnGetAllCryptoList {
         last_linear_text.text = CRYPTO_TWO
 
         // setting images
-        Picasso.get().load(
-            "${realmDB.getCryptoDataByName(CRYPTO_ONE).BaseImageUrl}${realmDB.getCryptoDataByName(
-                CRYPTO_ONE
-            ).ImageUrl}"
-        ).into(first_img)
-        Picasso.get().load(
-            "${realmDB.getCryptoDataByName(CRYPTO_TWO).BaseImageUrl}${realmDB.getCryptoDataByName(
-                CRYPTO_TWO
-            ).ImageUrl}"
-        ).into(last_img)
+        Picasso.get().load(realmDB.getCryptoDataByName(CRYPTO_ONE).ImageUrl).into(first_img)
+        Picasso.get().load(realmDB.getCryptoDataByName(CRYPTO_TWO).ImageUrl).into(last_img)
     }
 
     private fun setUpLinearLayouts() {

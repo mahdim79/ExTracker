@@ -62,6 +62,27 @@ class SharedPreferencesCenter(var context: Context, var preferencesName: String 
         ).commit()
     }
 
+    fun updateNotificationData(id:Int,lastUpdatedPrice:Double){
+        val list = arrayListOf<NotificationDataClass>()
+        list.addAll(getNotificationData())
+
+        val targetDataIndex = list.indexOfFirst { it.id == id }
+        if (targetDataIndex != -1)
+            list[targetDataIndex].lastUpdatedPrice = lastUpdatedPrice
+        else
+            return
+
+        val rawDataList = arrayListOf<String>()
+        for (i in 0 until list.size){
+            rawDataList.add(Gson().toJson(list[i], NotificationDataClass::class.java))
+        }
+
+        getSharedPreferencesEditor("NOTIFICATION_DATA").putString(
+            "DATA",
+            rawDataList.joinToString("|")
+        ).commit()
+    }
+
     fun getNotificationData(): List<NotificationDataClass> {
         try {
             val shaData =
@@ -117,17 +138,17 @@ class SharedPreferencesCenter(var context: Context, var preferencesName: String 
 
     fun getPriceNotificationsLevel():Int = getSharedPreferences("SETTINGS").getInt("PRICE_NOTIFICATIONS_LEVEL" , 1)
 
-    fun setLastDatePriceNotified(day:Int) = getSharedPreferencesEditor("SETTINGS").putInt("PRICE_NOTIFICATIONS_DAY" , day).apply()
+    fun setLastDatePriceNotified(time:Long) = getSharedPreferencesEditor("SETTINGS").putLong("PRICE_NOTIFICATIONS_DAY" , time).apply()
 
-    fun getLastDatePriceNotified():Int = getSharedPreferences("SETTINGS").getInt("PRICE_NOTIFICATIONS_DAY" , 1)
+    fun getLastDatePriceNotified():Long = getSharedPreferences("SETTINGS").getLong("PRICE_NOTIFICATIONS_DAY" , 0)
 
     fun setImportantNewsNotificationsEnabled(enabled:Boolean) = getSharedPreferencesEditor("SETTINGS").putBoolean("NEWS_NOTIFICATIONS" , enabled).apply()
 
     fun getImportantNewsNotificationsEnabled():Boolean = getSharedPreferences("SETTINGS").getBoolean("NEWS_NOTIFICATIONS" , false)
 
-    fun getLastDateNewsNotified():Int = getSharedPreferences("SETTINGS").getInt("NEWS_NOTIFICATIONS_DAY" , 1)
+    fun getLastDateNewsNotified():Long = getSharedPreferences("SETTINGS").getLong("NEWS_NOTIFICATIONS_DAY" , 0)
 
-    fun setLastDateNewsNotified(day:Int) = getSharedPreferencesEditor("SETTINGS").putInt("NEWS_NOTIFICATIONS_DAY" , day).apply()
+    fun setLastDateNewsNotified(time:Long) = getSharedPreferencesEditor("SETTINGS").putLong("NEWS_NOTIFICATIONS_DAY" , time).apply()
 
     fun setEnabledPortfolioNotifications(name:String){
         val data = getEnabledPortfolioNotifications()
@@ -154,9 +175,9 @@ class SharedPreferencesCenter(var context: Context, var preferencesName: String 
         getSharedPreferencesEditor("PORTFOLIO_NOTIFICATIONS").putString("PORTFOLIOS" , list.joinToString(",")).apply()
     }
 
-    fun setLastDatePortfolioNotified(day:Int) = getSharedPreferencesEditor("SETTINGS").putInt("PORTFOLIO_NOTIFICATIONS_DAY" , day).apply()
+    fun setLastDatePortfolioNotified(time:Long) = getSharedPreferencesEditor("SETTINGS").putLong("PORTFOLIO_NOTIFICATIONS_DAY" , time).apply()
 
-    fun getLastDatePortfolioNotified():Int = getSharedPreferences("SETTINGS").getInt("PORTFOLIO_NOTIFICATIONS_DAY" , 1)
+    fun getLastDatePortfolioNotified():Long = getSharedPreferences("SETTINGS").getLong("PORTFOLIO_NOTIFICATIONS_DAY" , 0)
 
     fun setFingerPrintEnabled(enabled: Boolean) = getSharedPreferencesEditor("SETTINGS").putBoolean("FINGERPRINT_ENABLED" , enabled).apply()
 

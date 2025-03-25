@@ -41,9 +41,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Date
 import kotlin.math.abs
 import kotlin.math.floor
+import androidx.core.net.toUri
+import com.dust.extracker.utils.Utils
+import java.math.BigDecimal
+import java.util.Locale
 
 class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChanges, OnGetNews {
 
@@ -57,14 +60,14 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
     private lateinit var portfolioList: List<String>
     private lateinit var shared: SharedPreferencesCenter
 
-    private val notificationJobInterval = 1 * 60 * 1000L // one minute
+    private val notificationJobInterval = 30 * 1000L
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         return Service.START_STICKY
     }
 
     override fun onStartJob(params: JobParameters?): Boolean {
-        Log.i(tag,"starting NotificationJobService")
+        Log.i(tag, "starting NotificationJobService")
         CoroutineScope(Dispatchers.IO).launch {
             while (true) {
                 withContext(Dispatchers.Main) {
@@ -80,6 +83,9 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
         // super.onNetworkChanged(params)
     }
 
+    private fun checkDayPassedForShowingNotification(lastShow: Long): Boolean =
+        System.currentTimeMillis() - lastShow > 86_400_000
+
     private fun handleNotifications() {
         shared = SharedPreferencesCenter(this)
         priceNotificationEnabled = shared.getPriceNotificationsEnabled()
@@ -91,12 +97,12 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
 
         if (checkConn()) {
             if (notificationEnabled) {
-                Log.i(tag, "Request Sending ...")
+                Log.i(tag, "Request Sending ... count: ${data.size}")
                 for (i in data.indices)
                     apiService.getCryptoPriceByName(data[i].symbol, i)
 
                 if (priceNotificationEnabled) {
-                    if (shared.getLastDatePriceNotified() != Date().day) {
+                    if (checkDayPassedForShowingNotification(shared.getLastDatePriceNotified())) {
                         if (popularList.isEmpty()) {
                             val allData = RealmDataBaseCenter().getPopularCoins()
                             for (i in allData.indices) {
@@ -114,12 +120,12 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
                 }
 
                 if (newsNotificationEnabled)
-                    if (shared.getLastDateNewsNotified() != Date().day)
+                    if (checkDayPassedForShowingNotification(shared.getLastDateNewsNotified()))
                         apiService.getNews(this@NotificationJobService)
 
 
                 if (portfolioList.isNotEmpty()) {
-                    if (shared.getLastDatePortfolioNotified() != Date().day) {
+                    if (checkDayPassedForShowingNotification(shared.getLastDatePortfolioNotified())) {
                         try {
                             getAllHistoryData(Realm.getDefaultInstance()).forEach {
                                 if (portfolioList.contains(it.portfolioName)) {
@@ -140,7 +146,7 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
 
     }
 
-    fun getAllHistoryData(realmDB: Realm): List<HistoryDataClass> {
+    private fun getAllHistoryData(realmDB: Realm): List<HistoryDataClass> {
         val list = arrayListOf<HistoryDataClass>()
         realmDB.executeTransaction {
             val result = it.where(HistoryObject::class.java).findAll()
@@ -188,6 +194,7 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
         name: String,
         transactionList: List<TransactionDataClass>
     ) {
+        Log.i(tag, "sendingPortfolioRequest for : $name")
         val list1 = arrayListOf<String>()
         transactionList.forEach {
             list1.add(it.coinName)
@@ -195,8 +202,8 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
         apiService.getPortfolioMainData(list1.joinToString(","), object : OnGetPortfolioMainData {
             override fun onGetPortfolioData(data: List<PortfotioDataClass>) {
                 var totalMoney = 0.toDouble()
-                for (j in 0 until transactionList.size) {
-                    for (i in 0 until data.size) {
+                for (j in transactionList.indices) {
+                    for (i in data.indices) {
                         if (data[i].coinName == transactionList[j].coinName) {
                             transactionList[j].currentPrice = data[i].price
                             transactionList[j].currentDailyChange = data[i].dailyChange
@@ -229,12 +236,13 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
                     abs((lastCapital - (currentCapital)))
                 val pct = (changeValue * 100) / lastCapital
                 if (lastCapital > (currentCapital))
-                    changePct = "${String.format("%.2f", pct)}"
+                    changePct = "${Utils.formatPriceNumber(pct,2, Locale.ENGLISH)}"
                 else
-                    changePct = "+${String.format("%.2f", pct)}"
+                    changePct = "+${Utils.formatPriceNumber(pct,2, Locale.ENGLISH)}"
 
-                if (abs(pct).toInt() > 10)
-                    sendPortfolioNotification(name, currentCapital, changePct)
+                if (abs(pct).toInt() > 5)
+                    sendPortfolioNotification(name, Utils.formatPriceNumber(currentCapital,0,
+                        Locale.ENGLISH), changePct)
 
             }
         })
@@ -261,23 +269,24 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
 
     fun sendPortfolioNotification(
         portfolioName: String,
-        currentCapital: Double,
+        currentCapital: String,
         changePct: String
     ) {
 
         if (checkNotificationPermission()) {
-            shared.setLastDatePortfolioNotified(Date().day)
+            shared.setLastDatePortfolioNotified(System.currentTimeMillis())
             val intent = Intent(this, SplashActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
             val notification = NotificationCompat.Builder(this, createNotificationChannel())
                 .setOngoing(false)
-                .setContentTitle("اطلاعیه پرتفولیو: $portfolioName")
-                .setContentText("ارزش$currentCapital تومان | تغییر$changePct درصد")
+                .setAutoCancel(true)
+                .setContentTitle(getString(R.string.portfolioNotification,portfolioName))
+                .setContentText(getString(R.string.portfolioNotificationContent,currentCapital,changePct))
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setVibrate(LongArray(1) {
                     1000
                 })
-                .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
+                .setSound("android.resources://${this.packageName}/${R.raw.notification_rington}".toUri())
                 .setContentIntent(
                     PendingIntent.getActivity(
                         this, 101, intent, PendingIntent.FLAG_IMMUTABLE
@@ -309,10 +318,10 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
             2 -> changes = 20
         }
 
-        loop@ for (i in 0 until list.size) {
+        loop@ for (i in list.indices) {
             if (abs(list[i].ChangePercentage) >= changes.toDouble()) {
                 sendPriceNotification(list[i])
-                shared.setLastDatePriceNotified(Date().day)
+                shared.setLastDatePriceNotified(System.currentTimeMillis())
                 break@loop
             }
         }
@@ -321,21 +330,22 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
     private fun sendPriceNotification(data: LastChangeDataClass) {
         if (checkNotificationPermission()) {
             var changes = ""
-            if (data.ChangePercentage > 0)
-                changes = "+${String.format("%.2f", data.ChangePercentage)}"
+            changes = if (data.ChangePercentage > 0)
+                "+${String.format("%.2f", data.ChangePercentage)}"
             else
-                changes = "${String.format("%.2f", data.ChangePercentage)}"
+                "${String.format("%.2f", data.ChangePercentage)}"
             val intent = Intent(this, SplashActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
             val notification = NotificationCompat.Builder(this, createNotificationChannel())
                 .setOngoing(false)
-                .setContentTitle("تغییرات قیمت ${data.CoinName}")
-                .setContentText("میزان تغییر روزانه قیمت: $changes")
+                .setAutoCancel(true)
+                .setContentTitle(getString(R.string.priceChanges,data.CoinName))
+                .setContentText(getString(R.string.dailyPriceChangeAmount, changes))
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setVibrate(LongArray(1) {
                     1000
                 })
-                .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
+                .setSound("android.resources://${this.packageName}/${R.raw.notification_rington}".toUri())
                 .setContentIntent(
                     PendingIntent.getActivity(
                         this, 101, intent, PendingIntent.FLAG_IMMUTABLE
@@ -349,25 +359,32 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
     }
 
     override fun onGetByName(price: Double, dataNum: Int) {
-        Log.i(tag, "data receiver : $price $dataNum ${data[dataNum].targetPrice}")
         try {
-            if (data[dataNum].lastPrice > data[dataNum].targetPrice) {
-                if (price <= data[dataNum].targetPrice)
+            val notificationData = data[dataNum]
+            Log.i(tag, "data receiver : $price $dataNum ${notificationData.targetPrice} ${notificationData.lastUpdatedPrice}")
+
+            val downwardNotification = notificationData.lastPrice > notificationData.targetPrice
+
+            if (downwardNotification) {
+                if (price <= notificationData.targetPrice && notificationData.lastUpdatedPrice > notificationData.targetPrice)
                     sendNotification(
-                        data[dataNum].symbol,
-                        data[dataNum].lastPrice,
-                        data[dataNum].mode,
-                        data[dataNum].id
+                        notificationData.symbol,
+                        notificationData.targetPrice,
+                        notificationData.mode,
+                        notificationData.id,
+                        true
                     )
             } else {
-                if (price >= data[dataNum].targetPrice)
+                if (price >= notificationData.targetPrice && notificationData.lastUpdatedPrice < notificationData.targetPrice)
                     sendNotification(
-                        data[dataNum].symbol,
-                        data[dataNum].lastPrice,
-                        data[dataNum].mode,
-                        data[dataNum].id
+                        notificationData.symbol,
+                        notificationData.targetPrice,
+                        notificationData.mode,
+                        notificationData.id,
+                        false
                     )
             }
+            shared.updateNotificationData(notificationData.id,price)
         } catch (e: Exception) {
             Log.i(tag, "exception :${e.message!!}")
         }
@@ -375,23 +392,32 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
 
     private fun sendNotification(
         symbol: String,
-        lastPrice: Double,
+        targetPrice: Double,
         mode: Int,
-        id: Int
+        id: Int,
+        downwardNotification:Boolean
     ) {
         if (checkNotificationPermission()) {
             Log.i(tag, "notify")
             val intent = Intent(this, SplashActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+            val contentText = if (downwardNotification){
+                getString(R.string.downwardPriceWarning,symbol,targetPrice)
+            }else{
+                getString(R.string.upwardPriceWarning,symbol,targetPrice)
+            }
+
             val notification = NotificationCompat.Builder(this, createNotificationChannel())
                 .setOngoing(false)
-                .setContentTitle("قیمت به مقدار مد نظر رسید")
-                .setContentText("قیمت$symbol از$lastPrice عبور کرد!")
+                .setAutoCancel(true)
+                .setContentTitle(getString(R.string.priceWarning))
+                .setContentText(contentText)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setVibrate(LongArray(1) {
                     1000
                 })
-                .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
+                .setSound("android.resources://${this.packageName}/${R.raw.notification_rington}".toUri())
                 .setContentIntent(
                     PendingIntent.getActivity(
                         this, 101, intent, PendingIntent.FLAG_IMMUTABLE
@@ -438,11 +464,12 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
 
     private fun sendNewsNotification(data: NewsDataClass) {
         if (checkNotificationPermission()) {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(data.url))
+            val intent = Intent(Intent.ACTION_VIEW, data.url.toUri())
             val notification = NotificationCompat.Builder(this, createNotificationChannel())
                 .setOngoing(false)
-                .setContentTitle("${data.title}")
-                .setContentText("${data.description}")
+                .setAutoCancel(true)
+                .setContentTitle(data.title)
+                .setContentText(data.description)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setVibrate(LongArray(1) {
                     1000
@@ -452,7 +479,7 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
                         this, 101, intent, PendingIntent.FLAG_IMMUTABLE
                     )
                 )
-                .setSound(Uri.parse("android.resources://${this.packageName}/${R.raw.notification_rington}"))
+                .setSound("android.resources://${this.packageName}/${R.raw.notification_rington}".toUri())
                 .build()
             val notify =
                 this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -461,12 +488,11 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
     }
 
     override fun onGetNews(list: List<NewsDataClass>) {
-        loopN@ for (i in list.indices) {
-            if (list[i].categories.indexOf("Bitcoin", 0, true) != -1) {
-                sendNewsNotification(list[i])
-                shared.setLastDateNewsNotified(Date().day)
-                break@loopN
-            }
+        if (!checkDayPassedForShowingNotification(shared.getLastDateNewsNotified()))
+            return
+        list.find { it.categories.indexOf("BTC", 0, true) != -1 }?.let { notifyNews ->
+            sendNewsNotification(notifyNews)
+            shared.setLastDateNewsNotified(System.currentTimeMillis())
         }
     }
 

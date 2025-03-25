@@ -36,7 +36,7 @@ class CButton : AppCompatButton {
     }
 
     private fun setTxtColor() {
-        setTextColor(ContextCompat.getColor(context , R.color.green_primary))
+        setTextColor(ContextCompat.getColor(context , R.color.white))
     }
 
 }

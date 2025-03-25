@@ -1,5 +1,6 @@
 package com.dust.extracker.fragments.exchangerfragments
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,6 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dust.extracker.R
 import com.dust.extracker.adapters.recyclerviewadapters.ExchangerRecyclerViewAdapter
+import com.dust.extracker.apimanager.ApiCenter
+import com.dust.extracker.dataclasses.CryptoMainData
+import com.dust.extracker.interfaces.OnGetAllCryptoList
+import com.dust.extracker.interfaces.OnRealmDataChanged
 import com.dust.extracker.realmdb.MainRealmObject
 import com.dust.extracker.realmdb.RealmDataBaseCenter
 import io.realm.RealmResults
@@ -23,25 +28,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ExchnagerChooseCryptoFragment(
     var positionMain: Int,
     var CR1: String = "BTC",
     var CR2: String = "ETH"
-) : Fragment() {
+) : Fragment(),OnGetAllCryptoList {
 
     private lateinit var crypto_recycler_view: RecyclerView
     private lateinit var search_pb: ProgressBar
     private lateinit var crypto_name: EditText
     private lateinit var search_nested: NestedScrollView
     lateinit var realmDB: RealmDataBaseCenter
-    private var datalist = arrayListOf<MainRealmObject>()
-
-    var MODE: Int = 0
-    private lateinit var tempList: List<MainRealmObject>
+    private lateinit var apiCenter: ApiCenter
     lateinit var list1: List<MainRealmObject>
-
-    var PaginationCount: Int = 1
 
     var searchJob:Job? = null
 
@@ -59,18 +60,18 @@ class ExchnagerChooseCryptoFragment(
         setUpDataBase()
         setUpRecyclerView()
         setUpBackImage(view)
-        setUpPagination()
         setUpEditText()
     }
 
     private fun setUpEditText() {
-        val l = realmDB.getAllCryptoData()
         crypto_name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 searchJob?.cancel()
                 searchJob = CoroutineScope(Dispatchers.IO).launch {
                     delay(1000)
-                    doSearch(l)
+                    withContext(Dispatchers.Main){
+                        doSearch(crypto_name.text.toString())
+                    }
                 }
             }
 
@@ -84,25 +85,21 @@ class ExchnagerChooseCryptoFragment(
 
     }
 
-    private fun doSearch(l: RealmResults<MainRealmObject>){
-        if (crypto_name.text.toString() == "") {
-            MODE = 0
-            PaginationCount = 1
-            setUpRecyclerView(PaginationCount)
+    private fun doSearch(query:String){
+        if (query.trim() == "") {
+            setUpRecyclerView()
             return
         }
-        MODE = 1
-        val listTemp = arrayListOf<MainRealmObject>()
-        for (i in 0 until l.size){
-            if (l[i]!!.FullName!!.indexOf(crypto_name.text.toString() , ignoreCase = true) != -1)
-                listTemp.add(l[i]!!)
+
+        apiCenter.searchCrypto(query) { result ->
+            setUpRecyclerView(result)
         }
-        tempList = listTemp
-        setUpRecyclerView(PaginationCount)
     }
 
     private fun setUpDataBase() {
         realmDB = RealmDataBaseCenter()
+        apiCenter = ApiCenter(requireContext(), this)
+        list1 = realmDB.getPopularCoins()
     }
 
     private fun setUpViews(view: View) {
@@ -115,46 +112,37 @@ class ExchnagerChooseCryptoFragment(
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
     }
 
-    private fun setUpPagination() {
-        search_nested.setOnScrollChangeListener { v: NestedScrollView?, _: Int, scrollY: Int, _: Int, _: Int ->
-            if (scrollY == v!!.getChildAt(0).measuredHeight - v.measuredHeight) {
-                PaginationCount++
-                setUpRecyclerView(PaginationCount)
-            }
-        }
-    }
+    private fun setUpRecyclerView(list:List<MainRealmObject>? = null) {
 
-    private fun setUpRecyclerView(PaginationCount: Int = 1) {
-
-        if (MODE == 0) {
-            list1 = realmDB.getCryptoData(PaginationCount)
-            if (PaginationCount == 1) {
-                datalist.clear()
-            }
-            datalist.addAll(list1)
-        } else {
-            if (PaginationCount == 1)
-                datalist.clear()
-
-            val start = 50 * (PaginationCount - 1)
-            val stop = 50 * PaginationCount
-            try {
-
-                for (i in start.rangeTo(stop)) {
-                    datalist.add(tempList[i])
-                }
-
-            } catch (e: Exception) {
-            }
-        }
+        val dataList = list ?: list1
 
         crypto_recycler_view.adapter =
             ExchangerRecyclerViewAdapter(
-                positionMain,
                 requireActivity(),
-                datalist,
+                dataList,
                 requireFragmentManager()
-            )
+            ).apply {
+                setOnItemClickListener { symbol ->
+                    dataList.find { it.Symbol == symbol }?.let { selectedCrypto ->
+                        realmDB.insertSearchCryptoData(
+                            CryptoMainData(
+                                selectedCrypto.ID!!,
+                                selectedCrypto.ImageUrl!!,
+                                selectedCrypto.Name!!,
+                                selectedCrypto.Symbol!!,
+                                selectedCrypto.maxSupply ?: 0.0,
+                                selectedCrypto.circulatingSupply ?: 0.0
+                            ), object : OnRealmDataChanged {
+                                override fun onAddComplete() {
+                                    context.getSharedPreferences("CRS", Context.MODE_PRIVATE).edit()
+                                        .putString("CR$positionMain", symbol).apply()
+                                    fragmentManager.popBackStack("ExchnagerChooseCryptoFragment", 1)
+                                }
+
+                            })
+                    }
+                }
+            }
     }
 
     private fun setUpBackImage(view: View) {
@@ -165,6 +153,9 @@ class ExchnagerChooseCryptoFragment(
         }
     }
 
+    override fun onGet(cryptoList: List<CryptoMainData>) {}
+
+    override fun onGetByName(price: Double, dataNum: Int) {}
 
 
 }

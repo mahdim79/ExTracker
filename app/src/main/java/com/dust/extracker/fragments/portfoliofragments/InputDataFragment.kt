@@ -2,6 +2,7 @@ package com.dust.extracker.fragments.portfoliofragments
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,16 +15,21 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.dust.extracker.R
+import com.dust.extracker.apimanager.ApiCenter
 import com.dust.extracker.customviews.CButton
 import com.dust.extracker.customviews.CTextView
+import com.dust.extracker.dataclasses.CryptoMainData
 import com.dust.extracker.dataclasses.HistoryDataClass
 import com.dust.extracker.dataclasses.TransactionDataClass
+import com.dust.extracker.interfaces.OnGetAllCryptoList
 import com.dust.extracker.realmdb.RealmDataBaseCenter
 import com.dust.extracker.sharedpreferences.SharedPreferencesCenter
+import com.dust.extracker.utils.Utils
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import java.util.Locale
 
-class InputDataFragment : Fragment(), View.OnClickListener {
+class InputDataFragment : Fragment(), View.OnClickListener,OnGetAllCryptoList {
     lateinit var btnBuy: CButton
     lateinit var btnSell: CButton
     lateinit var btnAdd: CButton
@@ -50,6 +56,8 @@ class InputDataFragment : Fragment(), View.OnClickListener {
 
     lateinit var viewMain: View
 
+    private lateinit var apiService:ApiCenter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -69,6 +77,7 @@ class InputDataFragment : Fragment(), View.OnClickListener {
 
     private fun setUpRealmDb() {
         realmDB = RealmDataBaseCenter()
+        apiService = ApiCenter(requireContext(),this)
     }
 
     private fun syncViews() {
@@ -135,16 +144,29 @@ class InputDataFragment : Fragment(), View.OnClickListener {
             spinnerRelativeLayout.visibility = View.GONE
         }
 
-        mainPrice.editText!!.setText(
-            realmDB.getCryptoDataByName(
-                requireArguments().getString(
-                    "COINNAME",
-                    "BTC"
-                )
-            ).LastPrice!!.toString()
-        )
+        val cachedPrice = realmDB.getCryptoDataByName(requireArguments().getString("COINNAME", "BTC")).LastPrice
+        if (cachedPrice == null || cachedPrice == 0.0){
+            apiService.getCryptoPriceByName(requireArguments().getString("COINNAME", "BTC"), 0)
+        }else{
+            setMainPrice(cachedPrice)
+        }
+
         realmDB.getDollarPrice()?.price?.let {
-            dollarPrice.editText!!.setText(it)
+            dollarPrice.editText!!.setText(Utils.formatPriceNumber(it.toDouble(),0, Locale.ENGLISH))
+        }
+    }
+
+    private fun setMainPrice(price:Double){
+        mainPrice.editText!!.setText(Utils.formatPriceNumber(price,calculateDecimal(price), Locale.ENGLISH))
+    }
+
+    private fun calculateDecimal(price:Double):Int{
+        return if (price > 1){
+            2
+        }else if (price > 0.00001){
+            7
+        }else{
+            12
         }
     }
 
@@ -215,8 +237,8 @@ class InputDataFragment : Fragment(), View.OnClickListener {
                                 requireArguments().getString("COINNAME", "BTC"),
                                 dealType,
                                 count.editText!!.text.toString().toDouble(),
-                                dollarPrice.editText!!.text.toString().toDouble(),
-                                mainPrice.editText!!.text.toString().toDouble(),
+                                dollarPrice.editText!!.text.toString().replace(",","").toDouble(),
+                                mainPrice.editText!!.text.toString().replace(",","").toDouble(),
                                 0.toDouble(),
                                 "null"
                             )
@@ -260,8 +282,8 @@ class InputDataFragment : Fragment(), View.OnClickListener {
                 requireArguments().getString("COINNAME", "BTC"),
                 dealType,
                 count.editText!!.text.toString().toDouble(),
-                dollarPrice.editText!!.text.toString().toDouble(),
-                mainPrice.editText!!.text.toString().toDouble(),
+                dollarPrice.editText!!.text.toString().replace(",","").toDouble(),
+                mainPrice.editText!!.text.toString().replace(",","").toDouble(),
                 0.toDouble(),
                 "null"
             )
@@ -277,9 +299,9 @@ class InputDataFragment : Fragment(), View.OnClickListener {
             portfolioName.editText!!.text.toString(),
             transactionDataList,
             desc,
-            (mainPrice.editText!!.text.toString().toDouble() * count.editText!!.text.toString()
+            (mainPrice.editText!!.text.toString().replace(",","").toDouble() * count.editText!!.text.toString()
                 .toDouble()),
-            (mainPrice.editText!!.text.toString().toDouble() * count.editText!!.text.toString()
+            (mainPrice.editText!!.text.toString().replace(",","").toDouble() * count.editText!!.text.toString()
                 .toDouble()),
             "0"
         )
@@ -328,5 +350,11 @@ class InputDataFragment : Fragment(), View.OnClickListener {
 
 
         return result
+    }
+
+    override fun onGet(cryptoList: List<CryptoMainData>) {}
+
+    override fun onGetByName(price: Double, dataNum: Int) {
+        setMainPrice(price)
     }
 }

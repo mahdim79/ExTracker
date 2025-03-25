@@ -44,9 +44,9 @@ class WatchListRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: MainRecyclerViewHolder, position: Int) {
-        Picasso.get().load("${list[position].BaseImageUrl}${list[position].ImageUrl}")
+        Picasso.get().load(list[position].ImageUrl)
             .into(holder.item_image)
-        holder.item_text.text = list[position].CoinName
+        holder.item_text.text = list[position].Name
         holder.itemView.setOnLongClickListener {
             val resultList = arrayListOf<String>()
             val sharedPreferences = context.getSharedPreferences("FAV", Context.MODE_PRIVATE)
@@ -78,7 +78,7 @@ class WatchListRecyclerViewAdapter(
 
             val dialog = Dialog(context)
             dialog.setContentView(R.layout.dialog_remove_transaction)
-            dialog.setCancelable(false)
+            dialog.setCancelable(true)
             dialog.findViewById<Button>(R.id.btnCancel).setOnClickListener {
                 dialog.dismiss()
             }
@@ -94,21 +94,22 @@ class WatchListRecyclerViewAdapter(
             true
         }
         try {
+            val decimal = calculateDecimalByPrice(list[position].LastPrice!!)
             if (list[position].LastPrice!! == 0.0)
                 holder.item_price.text = ""
             else
-                holder.item_price.text = "$${Utils.formatPriceNumber(list[position].LastPrice!!,4,
+                holder.item_price.text = "$${Utils.formatPriceNumber(list[position].LastPrice!!,decimal,
                     Locale.ENGLISH)}"
+            holder.item_price_toman.text = "${Utils.formatPriceNumber((list[position].LastPrice!! * dollarPrice),decimal)} ${context.resources.getString(R.string.toman)}"
+
         } catch (e: Exception) {
             holder.item_price.text = ""
         }
         holder.item_price.startAnimation(alphaAnimation)
 
-        holder.sort_num.text = list[position].SortOrder
+      //  holder.sort_num.text = list[position].SortOrder
 
-        holder.item_price_toman.text = "${Utils.formatPriceNumber((list[position].LastPrice!! * dollarPrice),1)} ${context.resources.getString(R.string.toman)}"
-
-        holder.item_text_coinName.text = list[position].Name
+        holder.item_text_coinName.text = list[position].Symbol
 
         holder.dailyChange.text = "${list[position].DailyChangePCT.toString()}%"
 
@@ -129,7 +130,7 @@ class WatchListRecyclerViewAdapter(
 
         holder.itemView.setOnClickListener {
             val intent = Intent("com.dust.extracker.OnClickMainData")
-            intent.putExtra("COIN_NAME", list[position].Name)
+            intent.putExtra("Symbol", list[position].Symbol)
             context.sendBroadcast(intent)
         }
 
@@ -150,7 +151,7 @@ class WatchListRecyclerViewAdapter(
                         }
                         if (dayChange >= 0
                         ) {
-                            holder.dailyChange.text = "${bundle.getDouble(list[position].Name)}%"
+                            holder.dailyChange.text = "${bundle.getDouble(list[position].Symbol)}%"
 
                             holder.dailyChange.background = ResourcesCompat.getDrawable(
                                 context.resources,
@@ -159,7 +160,7 @@ class WatchListRecyclerViewAdapter(
                             )
 
                         } else {
-                            holder.dailyChange.text = "${bundle.getDouble(list[position].Name)}%"
+                            holder.dailyChange.text = "${bundle.getDouble(list[position].Symbol)}%"
 
                             holder.dailyChange.background = ResourcesCompat.getDrawable(
                                 context.resources,
@@ -170,7 +171,7 @@ class WatchListRecyclerViewAdapter(
                         holder.dailyChange.startAnimation(alphaAnimation)
 
                     } else {
-                        if (!bundle.isEmpty && bundle.containsKey(list[position].Name)) {
+                        if (!bundle.isEmpty && bundle.containsKey(list[position].Symbol)) {
                             var price = 0.0
                             try {
                                 price =
@@ -178,25 +179,27 @@ class WatchListRecyclerViewAdapter(
                             } catch (e: Exception) {
                                 price = 0.0
                             }
-                            if (price < bundle.getDouble(list[position].Name)
-                            ) {
-                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Name),4,
+                            val bundlePrice = bundle.getDouble(list[position].Symbol)
+                            val decimalCount = calculateDecimalByPrice(bundlePrice)
+                            if (price < bundlePrice) {
+                                holder.item_price.text = "$${Utils.formatPriceNumber(bundlePrice,decimalCount,
                                     Locale.ENGLISH)}"
                                 holder.item_price.setTextColor(Color.GREEN)
 
                             } else if (price == 0.0) {
-                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Name),4,
+                                holder.item_price.text = "$${Utils.formatPriceNumber(bundlePrice,decimalCount,
                                     Locale.ENGLISH)}"
 
                             } else {
-                                holder.item_price.text = "$${Utils.formatPriceNumber(bundle.getDouble(list[position].Name),4,
+                                holder.item_price.text = "$${Utils.formatPriceNumber(bundlePrice,decimalCount,
                                     Locale.ENGLISH)}"
 
                                 holder.item_price.setTextColor(Color.RED)
 
                             }
-                            holder.item_price_toman.text = "${Utils.formatPriceNumber(((holder.item_price.text.toString().replace("$", "").replace(",","").toDouble()) * (p1!!.extras!!.getString("PRICE")!!.toDouble())),1,
-                                Locale.ENGLISH)} ${context.resources.getString(R.string.toman)}"
+                            val tomanPrice = ((holder.item_price.text.toString().replace("$", "").replace(",","").toDouble()) * (p1!!.extras!!.getString("PRICE")!!.toDouble()))
+                            val decimal = calculateDecimalByPrice(tomanPrice)
+                            holder.item_price_toman.text = "${Utils.formatPriceNumber(tomanPrice,decimal, Locale.ENGLISH)} ${context.resources.getString(R.string.toman)}"
 
                             holder.item_price.startAnimation(alphaAnimation)
                         }
@@ -221,11 +224,10 @@ class WatchListRecyclerViewAdapter(
 
         class UpdateTomanData : BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
-                holder.item_price_toman.text = "${String.format(
-                    "%.1f",
-                    ((holder.item_price.text.toString().replace("$", "")
-                        .toDouble()) * (p1!!.extras!!.getString("PRICE")!!.toDouble()))
-                )} ${context.resources.getString(R.string.toman)}"
+                val tomanPrice = ((holder.item_price.text.toString().replace("$", "").toDouble()) * (p1!!.extras!!.getString("PRICE")!!.toDouble()))
+                val decimal = calculateDecimalByPrice(tomanPrice)
+                holder.item_price_toman.text = "${Utils.formatPriceNumber(tomanPrice,decimal)} ${context.resources.getString(R.string.toman)}"
+
                 holder.item_price_toman.startAnimation(alphaAnimation)
 
             }
@@ -242,6 +244,16 @@ class WatchListRecyclerViewAdapter(
                 UpdatePrices(),
                 IntentFilter("com.dust.extracker.onDollarPriceRecieve")
             )
+        }
+    }
+
+    private fun calculateDecimalByPrice(price:Double):Int{
+        return if (price > 1){
+            2
+        }else if (price >0.00001){
+            7
+        }else{
+            12
         }
     }
 

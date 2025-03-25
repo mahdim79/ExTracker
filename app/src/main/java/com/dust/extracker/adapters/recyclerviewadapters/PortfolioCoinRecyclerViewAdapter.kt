@@ -21,6 +21,8 @@ import com.dust.extracker.utils.Utils
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import okhttp3.internal.Util
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.*
 
 class PortfolioCoinRecyclerViewAdapter(
@@ -44,9 +46,9 @@ class PortfolioCoinRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        Picasso.get().load("${list[position].BaseImageUrl}${list[position].ImageUrl}")
+        Picasso.get().load(list[position].ImageUrl)
             .error(R.drawable.ic_baseline_error_24).into(holder.coin_img)
-        holder.coin_amount.text = historyDataClass.transactionList[position].dealAmount.toString()
+        holder.coin_amount.text = BigDecimal(historyDataClass.transactionList[position].dealAmount.toString()).toPlainString()
         holder.coinName.text = historyDataClass.transactionList[position].coinName
         holder.dollarAggregation.text = "${Utils.formatPriceNumber(calculateDollarCapital(position),4)} ~ ${Utils.formatPriceNumber((historyDataClass.transactionList[position].currentPrice),6)}"
         holder.tomanAggregation.text = Utils.formatPriceNumber((calculateDollarCapital(position) * dollarObject.price.toDouble()),2)

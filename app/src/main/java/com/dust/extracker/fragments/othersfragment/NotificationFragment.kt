@@ -14,6 +14,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.SwitchCompat
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -36,6 +37,7 @@ class NotificationFragment : Fragment(), View.OnClickListener {
     private lateinit var create_customization: Button
     private lateinit var add_Image: ImageView
     private lateinit var container_linear: LinearLayout
+    private lateinit var cv_portfolio_notification: CardView
     private lateinit var shared: SharedPreferencesCenter
     private lateinit var notification_customized_recycler: RecyclerView
     private lateinit var notification_Linear: LinearLayout
@@ -93,6 +95,8 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                     requireContext().sendBroadcast(intent)
                 }
             }
+        }else{
+            cv_portfolio_notification.visibility = View.GONE
         }
     }
 
@@ -187,6 +191,7 @@ class NotificationFragment : Fragment(), View.OnClickListener {
       //  notification_tick_seekBar = view.findViewById(R.id.notification_tick_seekBar)
         create_customization = view.findViewById(R.id.create_customization)
         container_linear = view.findViewById(R.id.container_linear)
+        cv_portfolio_notification = view.findViewById(R.id.cv_portfolio_notification)
 
         notification_customized_recycler.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
