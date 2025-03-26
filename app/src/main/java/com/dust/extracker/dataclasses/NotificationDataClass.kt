@@ -7,5 +7,4 @@ data class NotificationDataClass(
     var lastUpdatedPrice:Double,
     var targetPrice: Double,
     var mode: Int
-) {
-}
+)

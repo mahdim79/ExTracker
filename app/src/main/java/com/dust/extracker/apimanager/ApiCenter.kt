@@ -103,17 +103,14 @@ class ApiCenter(var context: Context, var onGetAllCryptoList: OnGetAllCryptoList
 
         val request = JsonObjectRequest(
             Request.Method.GET,
-            "https://baha24.com/api/v1/price",
+            "https://api.nobitex.ir/v3/orderbook/USDTIRT",
             null,
             {
                 try {
-                    val usdtObject = it!!.getJSONObject("USDT")
-                    val date = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH)
-                    date.parse(usdtObject.getString("last_update"))
-                    val persianTime = PersianDate(date.calendar.time)
+                    val persianTime = PersianDate(it.getLong("lastUpdate"))
                     onGetDollarPrice.onGet(
                         DollarInfoDataClass(
-                            usdtObject.getDouble("sell").toString(),
+                            (it.getString("lastTradePrice").toDouble() / 10).toInt().toString(),
                             "${persianTime.shYear}-${persianTime.shMonth}-${persianTime.shDay} ${persianTime.hour}:${persianTime.minute}"
                         )
                     )

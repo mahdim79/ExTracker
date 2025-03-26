@@ -366,7 +366,7 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
             val downwardNotification = notificationData.lastPrice > notificationData.targetPrice
 
             if (downwardNotification) {
-                if (price <= notificationData.targetPrice && notificationData.lastUpdatedPrice > notificationData.targetPrice)
+                if (price <= notificationData.targetPrice && notificationData.lastUpdatedPrice > notificationData.targetPrice){
                     sendNotification(
                         notificationData.symbol,
                         notificationData.targetPrice,
@@ -374,8 +374,11 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
                         notificationData.id,
                         true
                     )
+                    if (notificationData.mode == 0)
+                        return
+                }
             } else {
-                if (price >= notificationData.targetPrice && notificationData.lastUpdatedPrice < notificationData.targetPrice)
+                if (price >= notificationData.targetPrice && notificationData.lastUpdatedPrice < notificationData.targetPrice){
                     sendNotification(
                         notificationData.symbol,
                         notificationData.targetPrice,
@@ -383,6 +386,9 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
                         notificationData.id,
                         false
                     )
+                    if (notificationData.mode == 0)
+                        return
+                }
             }
             shared.updateNotificationData(notificationData.id,price)
         } catch (e: Exception) {
@@ -403,9 +409,9 @@ class NotificationJobService : JobService(), OnGetAllCryptoList, OnGetDailyChang
             intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
 
             val contentText = if (downwardNotification){
-                getString(R.string.downwardPriceWarning,symbol,targetPrice)
+                getString(R.string.downwardPriceWarning,symbol,targetPrice.toString())
             }else{
-                getString(R.string.upwardPriceWarning,symbol,targetPrice)
+                getString(R.string.upwardPriceWarning,symbol,targetPrice.toString())
             }
 
             val notification = NotificationCompat.Builder(this, createNotificationChannel())

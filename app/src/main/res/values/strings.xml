@@ -177,8 +177,8 @@
     <string name="grant_permission">برای ادامه لطفا دسترسی های مورد نیاز برنامه را بدهید</string>
     <string name="continu">ادامه</string>
     <string name="priceWarning">هشدار قیمت</string>
-    <string name="downwardPriceWarning">قیمت %s به زیر سطح %d دلار رسید.</string>
-    <string name="upwardPriceWarning">قیمت %s به بالای سطح %d دلار رسید.</string>
+    <string name="downwardPriceWarning">قیمت %s به زیر سطح %s دلار رسید.</string>
+    <string name="upwardPriceWarning">قیمت %s به بالای سطح %s دلار رسید.</string>
     <string name="priceChanges">تغییرات قیمت %s</string>
     <string name="dailyPriceChangeAmount">میزان تغییرات روزانه قیمت: %s</string>
     <string name="portfolioNotification">پرتفوی %s</string>
