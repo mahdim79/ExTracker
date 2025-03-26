@@ -281,8 +281,13 @@ private lateinit var onUserLogIn: OnUserLogIn
     }
 
     private fun openTelegramAccount(){
-        val intent = Intent(Intent.ACTION_VIEW, "tg://resolve?domain=${Constants.TELEGRAM_USER_NAME}".toUri())
-        startActivity(intent)
+        try{
+            val intent = Intent(Intent.ACTION_VIEW, "tg://resolve?domain=${Constants.TELEGRAM_USER_NAME}".toUri())
+            startActivity(intent)
+        }catch (e:Exception){
+            val intent = Intent(Intent.ACTION_VIEW,"https://telegram.me/${Constants.TELEGRAM_USER_NAME}".toUri())
+            startActivity(intent)
+        }
     }
 
     private fun openInstagramAccount(){

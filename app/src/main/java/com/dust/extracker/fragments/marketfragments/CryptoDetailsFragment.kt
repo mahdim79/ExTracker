@@ -238,7 +238,7 @@ class CryptoDetailsFragment : Fragment(), OnGetChartData, View.OnClickListener,
 
         shareImg.setOnClickListener {
             val txtBody =
-                "ارز دیجیتال${mainObject.Name}در بیست و چهار ساعت گذشته %${mainObject.DailyChangePCT!!} بازدهی داشته! میتونی از طریق این لینک جزییاتش رو ببینی.  www.ExSite.ir/coins/${mainObject.Name}"
+                "ارز دیجیتال${mainObject.Name}در بیست و چهار ساعت گذشته %${mainObject.DailyChangePCT!!} بازدهی داشته!${mainObject.Name}"
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "text/plain"
             intent.putExtra(Intent.EXTRA_TEXT, txtBody)

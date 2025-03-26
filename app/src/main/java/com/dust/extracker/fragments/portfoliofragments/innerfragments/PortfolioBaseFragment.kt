@@ -65,6 +65,7 @@ class PortfolioBaseFragment(
     private lateinit var chartProgressBar: ProgressBar
     private lateinit var add_Transaction: Button
     private lateinit var portfolioCoinRecyclerView: RecyclerView
+    private lateinit var shared:SharedPreferencesCenter
 
     private lateinit var ondollarpriceRecieve: onDollarPriceRecieve
 
@@ -89,6 +90,7 @@ class PortfolioBaseFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpRealmDb()
+        shared = SharedPreferencesCenter(requireContext())
         setPrimaryDataClass()
         setUpApiService()
         setUpViews(view)
@@ -217,11 +219,11 @@ class PortfolioBaseFragment(
                     }
 
                     if (newList.isEmpty()) {
+                        realmDB.deleteHistoryData(portfolioDataClass.id)
+                        shared.removeEnabledPortfolioNotifications(portfolioDataClass.portfolioName)
                         if (realmDB.getHistoryDataCount() == 1) {
-                            realmDB.deleteHistoryData(portfolioDataClass.id)
                             requireActivity().sendBroadcast(Intent("com.dust.extracker.DeleteFragment"))
                         } else {
-                            realmDB.deleteHistoryData(portfolioDataClass.id)
                             onHistoryFragmentUpdate.onHistoryFragmentUpdate()
                         }
                     } else {
@@ -497,6 +499,7 @@ class PortfolioBaseFragment(
             dialog.findViewById<Button>(R.id.btnConfirm).setOnClickListener {
                 dialog.dismiss()
                 realmDB.deleteHistoryData(portfolioDataClass.id)
+                shared.removeEnabledPortfolioNotifications(portfolioDataClass.portfolioName)
                 onHistoryFragmentUpdate.onHistoryFragmentUpdate()
             }
             dialog.findViewById<CTextView>(R.id.txt_remove_question).text =

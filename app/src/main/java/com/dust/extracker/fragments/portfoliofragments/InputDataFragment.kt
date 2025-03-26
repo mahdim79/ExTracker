@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.dust.extracker.R
 import com.dust.extracker.apimanager.ApiCenter
 import com.dust.extracker.customviews.CButton
@@ -255,6 +256,11 @@ class InputDataFragment : Fragment(), View.OnClickListener,OnGetAllCryptoList {
                     "InputDataFragment",
                     FragmentManager.POP_BACK_STACK_INCLUSIVE
                 )
+                requireFragmentManager().beginTransaction()
+                    .replace(R.id.frame_holder, PortfolioFragment())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack("PortfolioFragment")
+                    .commit()
                 return
             }
             realmDB.getAllHistoryData().forEach {
