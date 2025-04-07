@@ -2,10 +2,6 @@
 
 CryptoCurrency Tracker Application made with kotlin
 
-## ScreenShots
-
-![alt text](https://i.postimg.cc/CxFBD8n2/Pixel-True-Mockup.png)  ![alt text](https://i.postimg.cc/4xBK13zx/Pixel-True-Mockup-1.png)  ![alt text](https://i.postimg.cc/s2xMHRc9/Pixel-True-Mockup-2.png)  ![alt text](https://i.postimg.cc/Hx7VH4Fr/Pixel-True-Mockup-3.png)  ![alt text](https://i.postimg.cc/q7Fz9ZDf/Pixel-True-Mockup-4.png)
-
 ## About This Project
 
 CryptoLine is a cryptocurrency Application. In this application users can track cryptoCurrencies market, track prices, charts, marketcap and etc... . also users can create their own portfolio and see their capital value changes.
@@ -31,3 +27,7 @@ CryptoLine has five main sections:
 - market
 - news
 - settings
+
+## ScreenShots
+
+![alt text](https://i.postimg.cc/sDCKkTbZ/Pixel-True-Mockup.png)  ![alt text](https://i.postimg.cc/sgDPzqm1/Pixel-True-Mockup-1.png)  ![alt text](https://i.postimg.cc/6pjrpcbc/Pixel-True-Mockup-2.png)  ![alt text](https://i.postimg.cc/yN20FdHS/Pixel-True-Mockup-3.png)  ![alt text](https://i.postimg.cc/CKRjB8Wg/Pixel-True-Mockup-4.png)
