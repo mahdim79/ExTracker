@@ -1,11 +1,11 @@
 # ExTracker
 
-a professional application for tracking cryptoCurrencies developed with kotlin
+CryptoCurrency Tracker Application developed with kotlin
 
 
 ## ScreenShots
 
-![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134047.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134054.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134105.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134109.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134119.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134135.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134158.png)
+![alt text](https://i.postimg.cc/Bnc5fsHr/Pixel-True-Mockup.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134054.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134105.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134109.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134119.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134135.png)  ![alt text](https://www.linkpicture.com/q/Screenshot_20220223-134158.png)
 
 ## About This Project
 
